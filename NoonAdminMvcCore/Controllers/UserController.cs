@@ -10,9 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using NoonAdminMvcCore.Models;
 using Repository.GenericRepository;
 using Repository.UnitWork;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NoonAdminMvcCore.Controllers
 {
+    [Authorize(Roles = AuthorizeRoles.Admin)]
     public class UserController : Controller
     {
         #region Inject Dependencies
@@ -169,7 +171,7 @@ namespace NoonAdminMvcCore.Controllers
                     _addressRepository.Add(address);
                     _unitOfWork.Save();
 
-                    return RedirectToAction("Index", model.Role);
+                    return RedirectToAction("Index", new { role = model.Role });
                 }
 
                 // updating
@@ -204,7 +206,7 @@ namespace NoonAdminMvcCore.Controllers
                 }
             }
 
-            return RedirectToAction("Index", model.Role);
+            return RedirectToAction("Index", new {role = model.Role});
         }
 
         // GET: User/Edit/5
