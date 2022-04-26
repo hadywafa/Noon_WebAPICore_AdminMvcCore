@@ -1,0 +1,116 @@
+﻿@model IQueryable<EFModel.Models.EFModels.Product>
+@{
+    <div class="nk-tb-item nk-tb-head">
+        <div class="nk-tb-col nk-tb-col-check">
+            <div class="custom-control custom-control-sm custom-checkbox notext">
+                <input type="checkbox" class="custom-control-input" id="uid">
+                <label class="custom-control-label" for="uid"></label>
+            </div>
+        </div>
+        <div class="nk-tb-col">
+            <span class="sub-text">Product Name</span>
+        </div>
+        <div class="nk-tb-col tb-col-mb">
+            <span class="sub-text">product Name Arabic</span>
+        </div>
+        <div class="nk-tb-col tb-col-md">
+            <span class="sub-text">Description</span>
+        </div>
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Description Arabic</span>
+        </div>
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Price</span>
+        </div>
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Quentity</span>
+        </div>
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Category</span>
+        </div>
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Seller</span>
+        </div>
+
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Created At</span>
+        </div>
+        <div class="nk-tb-col tb-col-md">
+            <span class="sub-text">Status</span>
+        </div>
+
+    </div>
+    <!-- .nk-tb-item -->
+    foreach (var product in Model)
+    {
+        <div class="nk-tb-item">
+            <div class="nk-tb-col nk-tb-col-check">
+                <div class="custom-control custom-control-sm custom-checkbox notext">
+                    <input type="checkbox" class="custom-control-input" id="uid1">
+                    <label class="custom-control-label" for="uid1"></label>
+                </div>
+            </div>
+            <div class="nk-tb-col">
+                <a href="html/user-details-regular.html">
+                    <div class="user-card">
+                        <div class="user-avatar bg-primary">
+                            <span>AB</span>
+                        </div>
+                        <div class="user-info">
+                            <span class="tb-lead">
+                                @product.Name <span class="dot dot-success d-md-none ms-1"></span>
+                            </span>
+
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.NameArabic
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.Description
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.DescriptionArabic
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.Price
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.Quantity
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-md">
+                <span>@product.Category.Name</span>
+            </div>
+            <div class="nk-tb-col tb-col-lg">
+                <span>@product.Sellers.User.FirstName</span>
+            </div>
+            <div class="nk-tb-col tb-col-lg">
+                <span>@product.AddedOn.ToShortDateString()</span>
+            </div>
+            <div class="nk-tb-col tb-col-md">
+                @if (product.IsActive)
+                {
+                    <span class="tb-status text-success">@product.IsActive</span>
+                }
+                else
+                {
+                    <span class="tb-status text-danger">@product.IsActive</span>
+                }
+
+            </div>
+
+        </div>
+    }
+}

@@ -19,6 +19,8 @@ namespace EFModel.Models.EFModels
         public string DescriptionArabic { get; set; }
 
         // Each Category has an Image
+
+        [ForeignKey("Image")]
         public int ImageId { get; set; }
         [Required]
         public Images Image { get; set; }

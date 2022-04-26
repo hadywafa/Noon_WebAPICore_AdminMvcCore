@@ -1,0 +1,170 @@
+﻿@model NoonAdminMvcCore.Models.ProductViewModel
+
+<div class="nk-content-body">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+            <div class="nk-block-head-content">
+                <h3 class="nk-block-title page-title">
+                    @*@(Model.Id == 0 ? "Add New Product" : "Edit Product")*@kkkkk
+                </h3>
+            </div><!-- .nk-block-head-content -->
+        </div><!-- .nk-block-between -->
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <div class="card card-bordered">
+            <div class="card-inner">
+                @using (Html.BeginForm("Create", "Product", FormMethod.Post))
+                {
+                    <div class="row gy-4">
+
+                        @*For security*@
+                        @Html.AntiForgeryToken()
+
+
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Name, "Name", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Name, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.NameArabic, "NameArabic", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.NameArabic, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.NameArabic, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Description, "Description", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Description, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.DescriptionArabic, "DescriptionArabic", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.DescriptionArabic, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.DescriptionArabic, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Price, "Price", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Price, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Quantity, "Quantity", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Quantity, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Weight, "Weight", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.Weight, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Weight, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Discount, "Discount", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.Discount, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Discount, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.SellerId, "Seller", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.DropDownListFor(m => m.SellerId, ViewBag.Seller as SelectList, new { @class = "orm-select js-select2" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.CategoryId, "Category", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.DropDownListFor(m => m.CategoryId, ViewBag.category as SelectList, new { @class = "orm-select js-select2" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.IsActive, "Status", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.DropDownListFor(m => m.IsActive, new List<SelectListItem>
+                                        {
+                                        new SelectListItem { Text = "Active", Value = "true"},
+                                        new SelectListItem { Text = "Suspended", Value = "false"}
+                                        }, new { @class = "orm-select js-select2" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+                        <div class="col-xxl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Images, "Image", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+
+                                    <input type="file" multiple name="Images" class="form-control" asp-for="Images" />
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">@( Model ==null ? "Add Product" : "Edit Product") </button>
+                            </div>
+                        </div>
+                        <!--col-->
+                    </div>
+                    <!--row-->
+                }
+            </div><!-- .card-inner-group -->
+        </div><!-- .card -->
+    </div><!-- .nk-block -->
+</div>
+
+
+
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
