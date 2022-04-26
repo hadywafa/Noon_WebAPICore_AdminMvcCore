@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace NoonAdminMvcCore.Models
         [MaxLength(200)]
         public string DescriptionArabic { get; set; }
 
-        public int imageid { get; set; }
+        public IFormFile image { get; set; }
 
         public int? ParentID { get; set; }
     }

@@ -152,7 +152,8 @@ namespace SqlServerDBContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId");
+                    b.HasIndex("ImageId")
+                        .IsUnique();
 
                     b.HasIndex("ParentID");
 
@@ -176,10 +177,18 @@ namespace SqlServerDBContext.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Images");
                 });
@@ -377,21 +386,6 @@ namespace SqlServerDBContext.Migrations
                     b.ToTable("Shippers");
                 });
 
-            modelBuilder.Entity("ImagesProduct", b =>
-                {
-                    b.Property<int>("ImagesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ImagesId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ImagesProduct");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -416,7 +410,7 @@ namespace SqlServerDBContext.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -440,7 +434,7 @@ namespace SqlServerDBContext.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("RoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
@@ -509,7 +503,7 @@ namespace SqlServerDBContext.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("Users");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
@@ -535,7 +529,7 @@ namespace SqlServerDBContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -557,7 +551,7 @@ namespace SqlServerDBContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("UserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -572,7 +566,7 @@ namespace SqlServerDBContext.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -591,7 +585,7 @@ namespace SqlServerDBContext.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("UserTokens");
                 });
 
             modelBuilder.Entity("Models.Wishlist", b =>
@@ -691,8 +685,8 @@ namespace SqlServerDBContext.Migrations
             modelBuilder.Entity("EFModel.Models.EFModels.Category", b =>
                 {
                     b.HasOne("EFModel.Models.EFModels.Images", "Image")
-                        .WithMany("Category")
-                        .HasForeignKey("ImageId")
+                        .WithOne("Category")
+                        .HasForeignKey("EFModel.Models.EFModels.Category", "ImageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -714,6 +708,17 @@ namespace SqlServerDBContext.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EFModel.Models.EFModels.Images", b =>
+                {
+                    b.HasOne("EFModel.Models.EFModels.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Like", b =>
@@ -829,21 +834,6 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ImagesProduct", b =>
-                {
-                    b.HasOne("EFModel.Models.EFModels.Images", null)
-                        .WithMany()
-                        .HasForeignKey("ImagesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EFModel.Models.EFModels.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -941,6 +931,8 @@ namespace SqlServerDBContext.Migrations
             modelBuilder.Entity("EFModel.Models.EFModels.Product", b =>
                 {
                     b.Navigation("Carts");
+
+                    b.Navigation("Images");
 
                     b.Navigation("Likes");
 

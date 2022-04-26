@@ -72,10 +72,17 @@
                     <!--col-->
                     <div class="col-xxl-3 col-md-4">
                         <div class="form-group">
+
                             @Html.LabelFor(m => m.image, "Image", new { @class = "form-label" })
                             <div class="form-control-wrap">
 
                                 <input type="file"  name="Images" class="form-control" asp-for="image" />
+
+                            @Html.LabelFor(m => m.image, "Image", new { @class = "form-label" })
+                            <div class="form-control-wrap">
+
+                                <input type="file" multiple name="Images" class="form-control" asp-for="image" />
+
 
 
                             </div>

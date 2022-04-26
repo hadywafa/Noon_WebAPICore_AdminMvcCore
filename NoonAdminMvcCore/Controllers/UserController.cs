@@ -50,7 +50,7 @@ namespace NoonAdminMvcCore.Controllers
         {
             // Get all users including his phone and address
 
-            #region Solution 1
+            #region Another Solution
 
             //var users = new List<User>();
             //switch (role)
@@ -77,17 +77,22 @@ namespace NoonAdminMvcCore.Controllers
 
             #endregion
 
-            #region Solution 2
+            #region Used Solution
 
-
+            // Initializing a List of Users
             var users = new List<User>();
+
+            // Get Users by role
             var data = await _userManager.GetUsersInRoleAsync(role);
-            foreach (var u in data)
+
+            // Loop in users including their addresses
+            foreach (var user in data)
             {
-                var _user = _userRepository.GetAll().Include(u => u.Addresses).FirstOrDefault(x => x.Id == u.Id);
+                var _user = _userRepository.Find(u => u.Id == user.Id, u => u.Addresses);
                 users.Add(_user);
             }
 
+            // Check if their users
             if (users.Any())
             {
                 return View(users);
@@ -127,8 +132,11 @@ namespace NoonAdminMvcCore.Controllers
                     await _userManager.SetEmailAsync(user, model.Email);
                     await _userManager.AddPasswordAsync(user, model.Password);
                     await _userManager.AddToRoleAsync(user, model.Role);
+
+                    // Add to users table
                     _userRepository.Add(user);
 
+                    // Add to the role's table of new user
                     switch (model.Role)
                     {
                         case AuthorizeRoles.Admin:
@@ -145,13 +153,19 @@ namespace NoonAdminMvcCore.Controllers
                             break;
                     }
 
+                    // Save
                     _unitOfWork.Save();
+
+                    // Initialize new Address
                     var address = new Address
                     {
                         User = user, Street = model.Street, City = model.City, PostalCode = model.PostalCode
                     };
+
+                    // Add to the Address table
                     _addressRepository.Add(address);
                     _unitOfWork.Save();
+
                     return RedirectToAction("Index", model.Role);
                 }
 
@@ -190,6 +204,7 @@ namespace NoonAdminMvcCore.Controllers
             }
 
             var role = _userManager.GetRolesAsync(user).Result.AsQueryable().FirstOrDefault();
+
             var userViewModel = new UserViewModel
             {
                 Id = user.Id,
@@ -198,17 +213,17 @@ namespace NoonAdminMvcCore.Controllers
                 Email = user.Email,
                 Password = "",
                 Balance = user.Balance,
-                // (From Emad To Hady) => kindly return one role here <== you are welcome Bro ^_^
                 Role = role,
                 IsActive = user.IsActive,
                 PhoneNumber = user.PhoneNumber,
                 Street = user.Addresses.FirstOrDefault()?.Street,
                 City = user.Addresses.FirstOrDefault()?.City,
             };
+
             return View("UserForm", userViewModel);
         }
 
-        public ActionResult Suspend(int id)
+        public ActionResult Suspend(string id)
         {
             // get the user
             var user = _userRepository.GetById(id);
@@ -227,7 +242,7 @@ namespace NoonAdminMvcCore.Controllers
             return PartialView("_UserPartial", users.ToList());
         }
 
-        public ActionResult Activate(int id)
+        public ActionResult Activate(string id)
         {
             // get the user
             var user = _userRepository.GetById(id);
@@ -236,7 +251,7 @@ namespace NoonAdminMvcCore.Controllers
             user.IsActive = true;
 
             // update database
-            //_userRepository.Update(user);
+            _userRepository.Update(user);
 
             // save updates
             _unitOfWork.Save();
