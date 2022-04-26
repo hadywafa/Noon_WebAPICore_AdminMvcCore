@@ -130,13 +130,16 @@ namespace NoonAdminMvcCore.Controllers
                         Balance = model.Balance,
                         IsActive = model.IsActive,
                         PhoneNumber = model.PhoneNumber,
+                        Email = model.Email,
+                        UserName = model.Email
                     };
-                    await _userManager.SetEmailAsync(user, model.Email);
-                    await _userManager.AddPasswordAsync(user, model.Password);
+
+                    // Add user and save Context
+                    await _userManager.CreateAsync(user, model.Password);
+
+                    // Add To UserRoles table
                     await _userManager.AddToRoleAsync(user, model.Role);
 
-                    // Add to users table
-                    _userRepository.Add(user);
 
                     // Add to the role's table of new user
                     switch (model.Role)
