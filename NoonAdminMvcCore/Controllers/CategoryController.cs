@@ -123,25 +123,25 @@ namespace NoonAdminMvcCore.Controllers
 
                     cat.Description = categoryVM.Description;
                     cat.DescriptionArabic = categoryVM.DescriptionArabic;
+                    if (files != null)
+                    {
 
+                        var imgsave = Path.Combine(iweb.WebRootPath, "Images", (files
+                            .FileName + DateTime.Now.ToShortDateString()));
+                        var straem = new FileStream(imgsave, FileMode.Create);
+                        files.CopyTo(straem);
+
+                        Images img = _imageRepository.GetAll().Where(i => i.CategoryId == cat.Id).FirstOrDefault();
+
+                        img.Image = imgsave;
+                        _unitOfWork.Save();
+
+
+                    }
+                    return View("Index", _categoryRepository.GetAll());
                 }
 
-                if (files != null)
-                {
-
-                    var imgsave = Path.Combine(iweb.WebRootPath, "Images", (files
-                        .FileName + DateTime.Now.ToShortDateString()));
-                    var straem = new FileStream(imgsave, FileMode.Create);
-                    files.CopyTo(straem);
-
-                    Images img = _imageRepository.GetAll().Where(i => i.Id == categoryVM.imageid).FirstOrDefault();
-
-                    img.Image = imgsave;
-                    _unitOfWork.Save();
-
-
-                }
-                return View("Index", _categoryRepository.GetAll());
+                
             }
 
             return RedirectToAction();
