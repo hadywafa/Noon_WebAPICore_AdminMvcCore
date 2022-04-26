@@ -7,14 +7,13 @@ namespace EFModel.Models.EFModels
     {
         public string Image { get; set; }
 
-        // Each Image is belonged to one Product
-<<<<<<< HEAD
+  
         [ForeignKey("Product")]
 
         public virtual int Productid { get; set; }
-=======
+
         public int ProductId { get; set; }
->>>>>>> ddddcad7cedcb2f205b16c64e8653babf6c4bdba
+
         public virtual Product Product { get; set; }
 
         // Each Image is belonged to one Category
