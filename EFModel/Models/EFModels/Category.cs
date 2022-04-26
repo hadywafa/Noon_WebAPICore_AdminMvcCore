@@ -20,7 +20,7 @@ namespace EFModel.Models.EFModels
 
         // Each Category has an Image
 
-   
+
         [Required]
         public Images Image { get; set; }
 
