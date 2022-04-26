@@ -182,6 +182,13 @@ namespace NoonAdminMvcCore.Controllers
                         AddedOn = DateTime.Now,
                         Weight = $"{5 * (i + 1)} kg",
                         Sellers = _sellerRepo.Find(s => s.User.Email == "MoSeller@gmail.com"),
+                        Images = new List<Images>()
+                        {
+                            new Images(){Image = $"Pro{i}Img{1}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{2}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{3}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{4}.jpg"},
+                        }
                     };
                     _productRepo.Add(pro);
                     _unitOfWork.Save();
@@ -203,6 +210,13 @@ namespace NoonAdminMvcCore.Controllers
                         AddedOn = DateTime.Now,
                         Weight = $"{5 * (i + 1)} kg",
                         Sellers = _sellerRepo.Find(s => s.User.Email == "EmadSeller@gmail.com"),
+                        Images = new List<Images>()
+                        {
+                            new Images(){Image = $"Pro{i}Img{1}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{2}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{3}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{4}.jpg"},
+                        }
                     };
                     _productRepo.Add(pro);
                     _unitOfWork.Save();
@@ -224,6 +238,13 @@ namespace NoonAdminMvcCore.Controllers
                         AddedOn = DateTime.Now,
                         Weight = $"{5 * (i + 1)} kg",
                         Sellers = _sellerRepo.Find(s => s.User.Email == "KeroSeller@gmail.com"),
+                        Images = new List<Images>()
+                        {
+                            new Images(){Image = $"Pro{i}Img{1}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{2}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{3}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{4}.jpg"},
+                        }
                     };
                     _productRepo.Add(pro);
                     _unitOfWork.Save();
@@ -245,6 +266,13 @@ namespace NoonAdminMvcCore.Controllers
                         AddedOn = DateTime.Now,
                         Weight = $"{5 * (i + 1)} kg",
                         Sellers = _sellerRepo.Find(s => s.User.Email == "HadySeller@gmail.com"),
+                        Images = new List<Images>()
+                        {
+                            new Images(){Image = $"Pro{i}Img{1}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{2}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{3}.jpg"},
+                            new Images(){Image = $"Pro{i}Img{4}.jpg"},
+                        }
                     };
                     _productRepo.Add(pro);
                     _unitOfWork.Save();
