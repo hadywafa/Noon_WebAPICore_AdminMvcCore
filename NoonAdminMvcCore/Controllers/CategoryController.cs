@@ -26,11 +26,11 @@ namespace NoonAdminMvcCore.Controllers
         readonly IGenericRepo<Images> _imageRepository;
         readonly IGenericRepo<Category> _categoryRepository;
 
-
-        public CategoryController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment iweb;
+        public CategoryController(IUnitOfWork unitOfWork, IWebHostEnvironment _iwab)
         {
             _unitOfWork = unitOfWork;
-
+            iweb = _iwab;
             _imageRepository = _unitOfWork.Images;
             _categoryRepository = _unitOfWork.Categories;
         }
@@ -58,13 +58,13 @@ namespace NoonAdminMvcCore.Controllers
         }
 
 
-        private readonly IWebHostEnvironment iweb;
+       
         // POST: Category/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CategoryViewModel categoryVM, IFormFile files)
+        public IActionResult Create(CategoryViewModel categoryVM,[FromForm] IFormFile files)
         {
             if (!ModelState.IsValid)
             {
@@ -72,34 +72,38 @@ namespace NoonAdminMvcCore.Controllers
                 if (_categoryRepository.GetById(categoryVM.Id) == null)
                 {
 
+                    files = categoryVM.image;
                     if (files != null)
                     {
 
-                        var imgsave = Path.Combine(iweb.WebRootPath, "Images", (files.FileName + DateTime.Now.ToShortDateString()));
-                        var straem = new FileStream(imgsave, FileMode.Create);
+                        Category cat = new Category()
+                        {
+                            Name = categoryVM.Name,
+                            NameArabic = categoryVM.NameArabic,
+                            Description = categoryVM.Description,
+                            DescriptionArabic = categoryVM.DescriptionArabic,
+                            ParentID = categoryVM.ParentID == null ? null : categoryVM.ParentID,
+                                  
+
+                        };
+                        _categoryRepository.Add(cat);
+                        _unitOfWork.Save();
+                        var imgsave = Path.Combine(iweb.WebRootPath, "Images" );
+                        string filepath = Path.Combine(imgsave, (files.FileName + DateTime.Now.ToShortDateString()));
+                        var straem = new FileStream(filepath, FileMode.Create);
                         files.CopyTo(straem);
 
                         Images img = new Images()
-                        {     Image = imgsave};
+                        { Image = imgsave,
+                            
+                                                                 
+                        };
 
                         _imageRepository.Add(img);
                         _unitOfWork.Save();
 
 
 
-                        Category prod = new Category()
-                        {
-                            Name = categoryVM.Name,
-                            NameArabic = categoryVM.NameArabic,
-                            Description = categoryVM.Description,
-                            DescriptionArabic = categoryVM.DescriptionArabic,
-                            ParentID = 1,
-                            Image = img
-
-
-                        };
-                        _categoryRepository.Add(prod);
-                        _unitOfWork.Save();
 
                     }
 
@@ -131,7 +135,7 @@ namespace NoonAdminMvcCore.Controllers
                         var straem = new FileStream(imgsave, FileMode.Create);
                         files.CopyTo(straem);
 
-                        Images img = _imageRepository.GetAll().Where(i => i.CategoryId == cat.Id).FirstOrDefault();
+                        Images img = _imageRepository.GetAll().Where(i => i.Id== cat.Id).FirstOrDefault();
 
                         img.Image = imgsave;
                         _unitOfWork.Save();
