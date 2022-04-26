@@ -7,18 +7,17 @@ namespace EFModel.Models.EFModels
     {
         public string Image { get; set; }
 
-  
+        #region Navigation Property
+
         [ForeignKey("Product")]
-
-        public virtual int Productid { get; set; }
-
-        public int ProductId { get; set; }
-
+        public int? ProductId { get; set; }
         public virtual Product Product { get; set; }
 
         // Each Image is belonged to one Category
         [ForeignKey("Category")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public virtual  Category Category { get; set; }
+
+        #endregion
     }
 }

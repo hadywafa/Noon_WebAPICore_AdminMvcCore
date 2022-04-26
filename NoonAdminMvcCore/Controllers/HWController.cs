@@ -147,7 +147,9 @@ namespace NoonAdminMvcCore.Controllers
                         NameArabic = $"صنف{i}",
                         Description = "HHHHHHHHHHH",
                         DescriptionArabic = "هههههههههههههههه",
-                        Image = new Images() { Image = "" },
+                        Image = new Images() { Image = "12345" },
+                        
+                        
                     };
                     _catRepo.Add(cat);
                     _unitOfWork.Save();
