@@ -46,13 +46,15 @@ namespace Repository.GenericRepository
 
         public IQueryable<T> GetAll() => _table;
 
+        public T GetById(string id) => _table.Find(id);
+
         public T GetById(int id) => _table.Find(id);
 
         public void Add(T entity) => _table.Add(entity);
 
         public void Remove(T entity) => _table.Remove(entity);
 
-        public void RemoveById(int id) => _table.Remove(GetById(id));
+        public void RemoveById(string id) => _table.Remove(GetById(id));
 
         public void Update(T entity) => _context.Update(entity);
     }

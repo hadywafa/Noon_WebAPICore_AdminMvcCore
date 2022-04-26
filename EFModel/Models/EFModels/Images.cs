@@ -7,9 +7,11 @@ namespace EFModel.Models.EFModels
         public string Image { get; set; }
 
         // Each Image is belonged to one Product
-        public virtual ICollection<Product> Product { get; set; }
+        public int ProductId { get; set; }
+        public virtual Product Product { get; set; }
 
         // Each Image is belonged to one Category
+        public int CategoryId { get; set; }
         public virtual  Category Category { get; set; }
     }
 }

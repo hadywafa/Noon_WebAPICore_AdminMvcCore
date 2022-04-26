@@ -13,6 +13,8 @@ namespace Repository.GenericRepository
         IQueryable<T> GetAll();
 
         // Get Entity by his ID => (get a customer by his ID)
+        T GetById(string id);
+
         T GetById(int id);
 
         // Get Entity by matching given expression
@@ -25,7 +27,7 @@ namespace Repository.GenericRepository
         // Remove an Entity => (remove a customer, remove a seller ...etc)
         void Remove(T entity);
 
-        void RemoveById(int id);
+        void RemoveById(string id);
 
         // Update Entity info => (update Customer's Info ...etc)
         void Update(T entity);
