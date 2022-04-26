@@ -1,0 +1,249 @@
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
+using BL.AppPolicy;
+using EFModel.Models;
+using EFModel.Models.EFModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using NoonAdminMvcCore.Models;
+using Repository.GenericRepository;
+using Repository.UnitWork;
+
+namespace NoonAdminMvcCore.Controllers
+{
+    public class UserController : Controller
+    {
+        #region Inject Dependencies
+
+        // Unit Of Work which is responsible on operations on Context
+        private readonly IUnitOfWork _unitOfWork;
+
+        // User Repo which is responsible on operations on user
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        readonly IGenericRepo<User> _userRepository;
+        readonly IGenericRepo<Address> _addressRepository;
+        readonly IGenericRepo<Admin> _adminRepo;
+        readonly IGenericRepo<Customer> _customerRepo;
+        readonly IGenericRepo<Seller> _sellerRepo;
+        readonly IGenericRepo<Shipper> _shipperRepo;
+
+        // Constructor
+        public UserController(IUnitOfWork unitOfWork, UserManager<User> userManager)
+        {
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
+            _userRepository = _unitOfWork.Users;
+            _addressRepository = _unitOfWork.Addresses;
+            _adminRepo = _unitOfWork.Admins;
+            _customerRepo = _unitOfWork.Customers;
+            _sellerRepo = _unitOfWork.Sellers;
+            _shipperRepo = _unitOfWork.Shippers;
+        }
+
+        #endregion
+
+        // GET: Customers
+        public async Task<ActionResult> Index(string role)
+        {
+            // Get all users including his phone and address
+
+            #region Solution 1
+
+            //var users = new List<User>();
+            //switch (role)
+            //{
+            //    case AuthorizeRoles.Admin:
+            //    { users = _userRepository.GetAll().Where(u => u.Admin != null).Include(u => u.Addresses).ToList(); }
+            //    break;
+            //    case AuthorizeRoles.Customer:
+            //    { users = _userRepository.GetAll().Where(u => u.Customer != null).Include(u => u.Addresses).ToList(); }
+            //    break;
+            //    case AuthorizeRoles.Seller:
+            //    { users = _userRepository.GetAll().Where(u => u.Seller != null).Include(u => u.Addresses).ToList(); }
+            //    break;
+            //    case AuthorizeRoles.Shipper:
+            //    { users = _userRepository.GetAll().Where(u => u.Shipper != null).Include(u => u.Addresses).ToList(); }
+            //    break;
+            //}
+            //if (users.Any())
+            //{
+            //    return View(users);
+            //}
+
+            //return NotFound();
+
+            #endregion
+
+            #region Solution 2
+
+
+            var users = new List<User>();
+            var data = await _userManager.GetUsersInRoleAsync(role);
+            foreach (var u in data)
+            {
+                var _user = _userRepository.GetAll().Include(u => u.Addresses).FirstOrDefault(x => x.Id == u.Id);
+                users.Add(_user);
+            }
+
+            if (users.Any())
+            {
+                return View(users);
+            }
+
+            return NotFound();
+
+            #endregion
+
+        }
+
+        // GET: User/Create
+        public ActionResult Create(string role = AuthorizeRoles.Customer)
+        {
+            var userViewModel = new UserViewModel { IsActive = true, Role = role };
+            return View("UserForm", userViewModel);
+        }
+
+        // POST: Customers/Save (Responsible on creating and Post updates
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Save(UserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // means you create new user not updating
+                if (model.Id == null)
+                {
+                    var user = new User
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Balance = model.Balance,
+                        IsActive = model.IsActive,
+                        PhoneNumber = model.PhoneNumber,
+                    };
+                    await _userManager.SetEmailAsync(user, model.Email);
+                    await _userManager.AddPasswordAsync(user, model.Password);
+                    await _userManager.AddToRoleAsync(user, model.Role);
+                    _userRepository.Add(user);
+
+                    switch (model.Role)
+                    {
+                        case AuthorizeRoles.Admin:
+                            _adminRepo.Add(new Admin() { User = user });
+                            break;
+                        case AuthorizeRoles.Customer:
+                            _customerRepo.Add(new Customer() { User = user });
+                            break;
+                        case AuthorizeRoles.Seller:
+                            _sellerRepo.Add(new Seller() { User = user });
+                            break;
+                        case AuthorizeRoles.Shipper:
+                            _shipperRepo.Add(new Shipper() { User = user });
+                            break;
+                    }
+
+                    _unitOfWork.Save();
+                    var address = new Address
+                    {
+                        User = user, Street = model.Street, City = model.City, PostalCode = model.PostalCode
+                    };
+                    _addressRepository.Add(address);
+                    _unitOfWork.Save();
+                    return RedirectToAction("Index", model.Role);
+                }
+
+                // updating
+                else
+                {
+                    var user = _userManager.Users.FirstOrDefault(u => u.Id == model.Id);
+                    if (user == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // update basic info
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.Balance = model.Balance;
+                    user.IsActive = model.IsActive;
+                    user.Email = model.Email;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.Addresses.FirstOrDefault()!.City = model.City;
+                    user.Addresses.FirstOrDefault()!.Street = model.Street;
+                    _unitOfWork.Save();
+                }
+            }
+
+            return RedirectToAction("Index", model.Role);
+        }
+
+        // GET: User/Edit/5
+        public async Task<ActionResult> Edit(string id)
+        {
+            var user = _userRepository.Find(u => u.Id == id, u => u.Addresses);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var role = _userManager.GetRolesAsync(user).Result.AsQueryable().FirstOrDefault();
+            var userViewModel = new UserViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Password = "",
+                Balance = user.Balance,
+                // (From Emad To Hady) => kindly return one role here <== you are welcome Bro ^_^
+                Role = role,
+                IsActive = user.IsActive,
+                PhoneNumber = user.PhoneNumber,
+                Street = user.Addresses.FirstOrDefault()?.Street,
+                City = user.Addresses.FirstOrDefault()?.City,
+            };
+            return View("UserForm", userViewModel);
+        }
+
+        public ActionResult Suspend(int id)
+        {
+            // get the user
+            var user = _userRepository.GetById(id);
+
+            //suspend the user
+            user.IsActive = false;
+
+            //update database
+            _userRepository.Update(user);
+
+            // save updates
+            _unitOfWork.Save();
+
+            // get all users
+            var users = _userManager.Users;
+            return PartialView("_UserPartial", users.ToList());
+        }
+
+        public ActionResult Activate(int id)
+        {
+            // get the user
+            var user = _userRepository.GetById(id);
+
+            // suspend the user
+            user.IsActive = true;
+
+            // update database
+            //_userRepository.Update(user);
+
+            // save updates
+            _unitOfWork.Save();
+
+            // get all users
+            var users = _userManager.Users;
+            return PartialView("_UserPartial", users.ToList());
+        }
+    }
+}
