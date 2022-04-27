@@ -11,6 +11,7 @@ using NoonAdminMvcCore.Models;
 using Repository.GenericRepository;
 using Repository.UnitWork;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace NoonAdminMvcCore.Controllers
 {
@@ -47,39 +48,14 @@ namespace NoonAdminMvcCore.Controllers
 
         #endregion
 
+
         // GET: Customers
-        public async Task<ActionResult> Index(string role)
+        public async Task<ActionResult> Index(string role, string searchString)
         {
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentRole"] = role;
+
             // Get all users including his phone and address
-
-            #region Another Solution
-
-            //var users = new List<User>();
-            //switch (role)
-            //{
-            //    case AuthorizeRoles.Admin:
-            //    { users = _userRepository.GetAll().Where(u => u.Admin != null).Include(u => u.Addresses).ToList(); }
-            //    break;
-            //    case AuthorizeRoles.Customer:
-            //    { users = _userRepository.GetAll().Where(u => u.Customer != null).Include(u => u.Addresses).ToList(); }
-            //    break;
-            //    case AuthorizeRoles.Seller:
-            //    { users = _userRepository.GetAll().Where(u => u.Seller != null).Include(u => u.Addresses).ToList(); }
-            //    break;
-            //    case AuthorizeRoles.Shipper:
-            //    { users = _userRepository.GetAll().Where(u => u.Shipper != null).Include(u => u.Addresses).ToList(); }
-            //    break;
-            //}
-            //if (users.Any())
-            //{
-            //    return View(users);
-            //}
-
-            //return NotFound();
-
-            #endregion
-
-            #region Used Solution
 
             // Initializing a List of Users
             var users = new List<User>();
@@ -87,11 +63,33 @@ namespace NoonAdminMvcCore.Controllers
             // Get Users by role
             var data = await _userManager.GetUsersInRoleAsync(role);
 
-            // Loop in users including their addresses
-            foreach (var user in data)
+            // Get Searched user if existed
+            if (!String.IsNullOrEmpty(searchString))
             {
-                var _user = _userRepository.Find(u => u.Id == user.Id, u => u.Addresses);
-                users.Add(_user);
+                foreach (var user in data)
+                {
+                    var _user =
+                        _userRepository.Find(u => u.Id == user.Id
+
+                        && (u.FirstName.Contains(searchString)
+                        || u.LastName.Contains(searchString)
+                        || u.Email.Contains(searchString)), 
+
+                    u => u.Addresses);
+
+                    if( _user != null )
+                        users.Add(_user);
+                }
+
+            }
+            else
+            {
+                // Loop in users including their addresses
+                foreach (var user in data)
+                {
+                    var _user = _userRepository.Find(u => u.Id == user.Id, u => u.Addresses);
+                    users.Add(_user);
+                }
             }
 
             // Check if their users
@@ -102,7 +100,7 @@ namespace NoonAdminMvcCore.Controllers
 
             return NotFound();
 
-            #endregion
+
 
         }
 
@@ -163,9 +161,9 @@ namespace NoonAdminMvcCore.Controllers
                     // Initialize new Address
                     var address = new Address
                     {
-                        User = user, 
-                        Street = model.Street, 
-                        City = model.City, 
+                        User = user,
+                        Street = model.Street,
+                        City = model.City,
                         PostalCode = model.PostalCode
                     };
 
@@ -184,7 +182,7 @@ namespace NoonAdminMvcCore.Controllers
                     {
                         return NotFound();
                     }
-                    
+
                     var gotUser = _userRepository.Find(u => u.Id == user.Id, u => u.Addresses);
 
                     // update basic info
@@ -210,7 +208,7 @@ namespace NoonAdminMvcCore.Controllers
                 }
             }
 
-            return RedirectToAction("Index", new {role = model.Role});
+            return RedirectToAction("Index", new { role = model.Role });
         }
 
         // GET: User/Edit/5

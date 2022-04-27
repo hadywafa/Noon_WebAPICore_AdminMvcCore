@@ -18,13 +18,6 @@ namespace EFModel.Models.EFModels
         [MaxLength(200)]
         public string DescriptionArabic { get; set; }
 
-<<<<<<< HEAD
-=======
-        // Each Category has an Image
-
-
-        [Required]
->>>>>>> 693bbcf2e78960b27343861fca2eb70f66141b49
         public Images Image { get; set; }
 
         #region Navigation Property
