@@ -18,19 +18,19 @@ namespace NoonAdminMvcCore.Controllers
 {
     public class CategoryController : Controller
     {
-        // Unit Of Work which is responsible on operations on Context
-        private readonly IUnitOfWork _unitOfWork;
 
-        // User Repo which is responsible on operations on user
+        #region intilaztion repo
+        private readonly IUnitOfWork _unitOfWork;
 
         readonly IGenericRepo<Images> _imageRepository;
         readonly IGenericRepo<Category> _categoryRepository;
 
+        #endregion
         private readonly IWebHostEnvironment iweb;
         public CategoryController(IUnitOfWork unitOfWork, IWebHostEnvironment _iwab)
         {
             _unitOfWork = unitOfWork;
-            iweb = _iwab;
+             iweb = _iwab;
             _imageRepository = _unitOfWork.Images;
             _categoryRepository = _unitOfWork.Categories;
         }
@@ -38,22 +38,23 @@ namespace NoonAdminMvcCore.Controllers
         // GET: Category
         public IActionResult Index()
         {
-            var product = _categoryRepository.GetAll();
-            if (product.Any())
+            var cat= _categoryRepository.GetAll().Include(c=>c.Image);
+            if (cat.Any())
             {
-                return View(product);
+
+                return View("Index",cat);
             }
 
             return NotFound();
         }
 
-        // GET: Category/Details/5
+        
 
 
         // GET: Category/Create
         public IActionResult Create()
         {
-            ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID != null).ToList(), "Id", "Name");
+            ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID == null).ToList(), "Id", "Name");
             return View("CategoryForm");
         }
 
@@ -66,7 +67,7 @@ namespace NoonAdminMvcCore.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CategoryViewModel categoryVM,[FromForm] IFormFile files)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
 
                 if (_categoryRepository.GetById(categoryVM.Id) == null)
@@ -89,13 +90,13 @@ namespace NoonAdminMvcCore.Controllers
                         _categoryRepository.Add(cat);
                         _unitOfWork.Save();
                         var imgsave = Path.Combine(iweb.WebRootPath, "Images" );
-                        string filepath = Path.Combine(imgsave, (files.FileName + DateTime.Now.ToShortDateString()));
+                        string filepath = Path.Combine(imgsave, (files.FileName));
                         var straem = new FileStream(filepath, FileMode.Create);
                         files.CopyTo(straem);
 
                         Images img = new Images()
-                        { Image = imgsave,
-                            
+                        { Image =files.FileName,
+                            CategoryId = cat.Id
                                                                  
                         };
 
@@ -110,8 +111,7 @@ namespace NoonAdminMvcCore.Controllers
 
 
 
-
-                    return View("Index", _categoryRepository.GetAll());
+                    return View("Index", _categoryRepository.GetAll().Include(c => c.Image));
                 }
                 else
                 {
@@ -127,22 +127,28 @@ namespace NoonAdminMvcCore.Controllers
 
                     cat.Description = categoryVM.Description;
                     cat.DescriptionArabic = categoryVM.DescriptionArabic;
+
+                    _categoryRepository.Update(cat);
+                    _unitOfWork.Save();
                     if (files != null)
                     {
-
-                        var imgsave = Path.Combine(iweb.WebRootPath, "Images", (files
-                            .FileName + DateTime.Now.ToShortDateString()));
-                        var straem = new FileStream(imgsave, FileMode.Create);
+                                        
+                        var imgsave = Path.Combine(iweb.WebRootPath, "Images", (files.FileName));
+                        string filepath = Path.Combine(imgsave, (files.FileName));
+                        var straem = new FileStream(filepath, FileMode.Create);
                         files.CopyTo(straem);
 
-                        Images img = _imageRepository.GetAll().Where(i => i.Id== cat.Id).FirstOrDefault();
+                        Images img = _imageRepository.GetAll().Where(i => i.CategoryId== cat.Id).FirstOrDefault();
+                        deleteFilefromRoot(img.Image);
+                        img.Image = files.FileName;
 
-                        img.Image = imgsave;
+                        _imageRepository.Update(img);
                         _unitOfWork.Save();
+                      
 
 
                     }
-                    return View("Index", _categoryRepository.GetAll());
+                    return View("Index", _categoryRepository.GetAll().Include(c => c.Image));
                 }
 
                 
@@ -154,6 +160,7 @@ namespace NoonAdminMvcCore.Controllers
         // GET: Category/Edit/5
         public IActionResult Edit(int? id)
         {
+            #region fetch data for Updating
             var categoryVM = _categoryRepository.Find(u => u.Id == id);
 
             if (categoryVM == null)
@@ -169,30 +176,42 @@ namespace NoonAdminMvcCore.Controllers
                 DescriptionArabic = categoryVM.DescriptionArabic,
                 ParentID = categoryVM.ParentID == null ? null : categoryVM.ParentID
             };
-
+            ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID == null).ToList(), "Id", "Name");
+            #endregion
             return View("CategoryForm", catViewmodel);
         }
 
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        [HttpGet]
+        public IActionResult Delete(int id)
         {
             if (id.Equals(null))
             {
                 return NotFound();
             }
 
-            var product = _categoryRepository.GetById(id);
-
-            _categoryRepository.Remove(product);
-
-            if (product == null)
+            var cat = _categoryRepository.GetById(id);
+            var img = _imageRepository.GetAll().Where(i => i.CategoryId == id).FirstOrDefault();
+            if (img.Image != null)
             {
-                return NotFound();
+                deleteFilefromRoot(img.Image);
             }
+            _categoryRepository.Remove(cat);
+            _unitOfWork.Save();
 
-            return View(product);
+           
+            return View("Index",_categoryRepository.GetAll().Include(c => c.Image));
+        }
+
+        private void deleteFilefromRoot(string  img)
+        {
+            img = Path.Combine(iweb.WebRootPath, "Images", img);
+            FileInfo fileinfo = new FileInfo(img);
+            if (fileinfo != null)
+            {
+                System.IO.File.SetAttributes(img, FileAttributes.Normal);
+                System.IO.File.Delete(img);
+            }
         }
     }
 }

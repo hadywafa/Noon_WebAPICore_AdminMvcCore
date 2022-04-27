@@ -18,7 +18,7 @@ namespace EFModel.Models.EFModels
         [MaxLength(200)]
         public string DescriptionArabic { get; set; }
 
-        public string image { get; set; }
+        public Images Image { get; set; }
 
         #region Navigation Property
 

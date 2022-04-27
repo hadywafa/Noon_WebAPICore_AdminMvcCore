@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EFModel.Models.EFModels;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -36,10 +38,10 @@ namespace NoonAdminMvcCore.Models
 
         // Each Product has a collection of Images
         [Required]
-        public string Images { get; set; }
+        public IFormFile[] Images { get; set; }
 
         // Each Product is sold by a collection of Sellers
-        public int SellerId { get; set; }
+        public string SellerId { get; set; }
 
 
         public int CategoryId { get; set; }

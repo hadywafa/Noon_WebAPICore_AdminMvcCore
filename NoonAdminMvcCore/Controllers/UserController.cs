@@ -10,9 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using NoonAdminMvcCore.Models;
 using Repository.GenericRepository;
 using Repository.UnitWork;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NoonAdminMvcCore.Controllers
 {
+    [Authorize(Roles = AuthorizeRoles.Admin)]
     public class UserController : Controller
     {
         #region Inject Dependencies
@@ -128,13 +130,16 @@ namespace NoonAdminMvcCore.Controllers
                         Balance = model.Balance,
                         IsActive = model.IsActive,
                         PhoneNumber = model.PhoneNumber,
+                        Email = model.Email,
+                        UserName = model.Email
                     };
-                    await _userManager.SetEmailAsync(user, model.Email);
-                    await _userManager.AddPasswordAsync(user, model.Password);
+
+                    // Add user and save Context
+                    await _userManager.CreateAsync(user, model.Password);
+
+                    // Add To UserRoles table
                     await _userManager.AddToRoleAsync(user, model.Role);
 
-                    // Add to users table
-                    _userRepository.Add(user);
 
                     // Add to the role's table of new user
                     switch (model.Role)
@@ -159,14 +164,17 @@ namespace NoonAdminMvcCore.Controllers
                     // Initialize new Address
                     var address = new Address
                     {
-                        User = user, Street = model.Street, City = model.City, PostalCode = model.PostalCode
+                        User = user, 
+                        Street = model.Street, 
+                        City = model.City, 
+                        PostalCode = model.PostalCode
                     };
 
                     // Add to the Address table
                     _addressRepository.Add(address);
                     _unitOfWork.Save();
 
-                    return RedirectToAction("Index", model.Role);
+                    return RedirectToAction("Index", new { role = model.Role });
                 }
 
                 // updating
@@ -187,23 +195,34 @@ namespace NoonAdminMvcCore.Controllers
                     user.PhoneNumber = model.PhoneNumber;
                     user.Addresses.FirstOrDefault()!.City = model.City;
                     user.Addresses.FirstOrDefault()!.Street = model.Street;
+
+                    // Get current Role
+                    var role = await _userManager.GetRolesAsync(user);
+
+                    // Remove Current Role
+                    await _userManager.RemoveFromRoleAsync(user, role.FirstOrDefault());
+
+                    //Add new Role
+                    await _userManager.AddToRoleAsync(user, model.Role);
+
                     _unitOfWork.Save();
                 }
             }
 
-            return RedirectToAction("Index", model.Role);
+            return RedirectToAction("Index", new {role = model.Role});
         }
 
         // GET: User/Edit/5
         public async Task<ActionResult> Edit(string id)
         {
             var user = _userRepository.Find(u => u.Id == id, u => u.Addresses);
+
             if (user == null)
             {
                 return NotFound();
             }
 
-            var role = _userManager.GetRolesAsync(user).Result.AsQueryable().FirstOrDefault();
+            var role = await _userManager.GetRolesAsync(user);
 
             var userViewModel = new UserViewModel
             {
@@ -213,7 +232,7 @@ namespace NoonAdminMvcCore.Controllers
                 Email = user.Email,
                 Password = "",
                 Balance = user.Balance,
-                Role = role,
+                Role = role.FirstOrDefault(),
                 IsActive = user.IsActive,
                 PhoneNumber = user.PhoneNumber,
                 Street = user.Addresses.FirstOrDefault()?.Street,
@@ -223,7 +242,7 @@ namespace NoonAdminMvcCore.Controllers
             return View("UserForm", userViewModel);
         }
 
-        public ActionResult Suspend(string id)
+        public async Task<ActionResult> SuspendAsync(string id)
         {
             // get the user
             var user = _userRepository.GetById(id);
@@ -237,12 +256,26 @@ namespace NoonAdminMvcCore.Controllers
             // save updates
             _unitOfWork.Save();
 
-            // get all users
-            var users = _userManager.Users;
-            return PartialView("_UserPartial", users.ToList());
+            // Get current Role
+            var role = await _userManager.GetRolesAsync(user);
+
+            // Initializing a List of Users
+            var users = new List<User>();
+
+            // Get Users by role
+            var data = await _userManager.GetUsersInRoleAsync(role.FirstOrDefault());
+
+            // Loop in users including their addresses
+            foreach (var _u in data)
+            {
+                var _user = _userRepository.Find(u => u.Id == _u.Id, u => u.Addresses);
+                users.Add(_user);
+            }
+
+            return PartialView("_UserPartial", users);
         }
 
-        public ActionResult Activate(string id)
+        public async Task<ActionResult> ActivateAsync(string id)
         {
             // get the user
             var user = _userRepository.GetById(id);
@@ -256,9 +289,23 @@ namespace NoonAdminMvcCore.Controllers
             // save updates
             _unitOfWork.Save();
 
-            // get all users
-            var users = _userManager.Users;
-            return PartialView("_UserPartial", users.ToList());
+            // Get current Role
+            var role = await _userManager.GetRolesAsync(user);
+
+            // Initializing a List of Users
+            var users = new List<User>();
+
+            // Get Users by role
+            var data = await _userManager.GetUsersInRoleAsync(role.FirstOrDefault());
+
+            // Loop in users including their addresses
+            foreach (var _u in data)
+            {
+                var _user = _userRepository.Find(u => u.Id == _u.Id, u => u.Addresses);
+                users.Add(_user);
+            }
+
+            return PartialView("_UserPartial", users);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EFModel.Models.EFModels
 {
@@ -40,8 +41,10 @@ namespace EFModel.Models.EFModels
         public virtual ICollection<Images> Images { get; set; }
 
         // Each Product is sold by a collection of Sellers
-        [Required]
-        public virtual Seller Sellers { get; set; }
+        [ForeignKey("Sellers")]
+        public string SellerId { set; get; }
+        
+        public virtual Seller Seller { get; set; }
 
         // Each Product has a collection of reviews
         public virtual ICollection<Review> Reviews { get; set; }
@@ -54,10 +57,11 @@ namespace EFModel.Models.EFModels
         public virtual ICollection<OrderItem> Orders { get; set; }
 
         public virtual ICollection<Cart> Carts { get; set; }
-        
+
         // Each Product is related to One Category
-        //public int CategoryId { get; set; }
-        [Required]
+        [ForeignKey("Category")]
+        public int CategoryId { get; set; }
+       
         public virtual Category Category { get; set; }
         #endregion
 

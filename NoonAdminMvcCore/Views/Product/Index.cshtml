@@ -1,4 +1,4 @@
-﻿@model IList<EFModel.Models.EFModels.Product>
+﻿@model IQueryable<EFModel.Models.EFModels.Product>
 @*<div id="table">
         @Html.Partial("_CusPartial")
     </div>*@
@@ -227,7 +227,7 @@
 
                         @* Render Partial To Use Ajax *@
 
-                        @await Html.PartialAsync("_productPartial")
+                        @await Html.PartialAsync("_ProductPartial")
 
                     </div><!-- .nk-tb-list -->
                 </div><!-- .card-inner -->

@@ -43,6 +43,7 @@ namespace SqlServerDBContext
             builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
             builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
             builder.ApplyConfiguration(new UserConfig());
+
             //builder.ApplyConfiguration(new AdminConfig());
             //builder.ApplyConfiguration(new CustomerConfig());
             //builder.ApplyConfiguration(new SellerConfig());

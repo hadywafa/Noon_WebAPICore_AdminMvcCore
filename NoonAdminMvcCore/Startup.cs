@@ -47,7 +47,7 @@ namespace NoonAdminMvcCore
             #endregion
 
             #region Register IdentityUser to my DB Context
-            services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<SqlContext>().AddDefaultUI().AddDefaultTokenProviders();
             #endregion
 

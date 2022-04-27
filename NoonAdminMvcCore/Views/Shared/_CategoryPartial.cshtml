@@ -22,70 +22,84 @@
         <div class="nk-tb-col tb-col-lg">
             <span class="sub-text">Category Perant</span>
         </div>
+        
+        <div class="nk-tb-col tb-col-lg">
+                 <span>Edit</span>
+        </div>
+        <div class="nk-tb-col tb-col-lg">
+           <span>Delete</span>
+        </div>
 
     </div>
     <!-- .nk-tb-item -->
     foreach (var Category in Model)
     {
-        <div class="nk-tb-item">
-            <div class="nk-tb-col nk-tb-col-check">
-                <div class="custom-control custom-control-sm custom-checkbox notext">
-                    <input type="checkbox" class="custom-control-input" id="uid1">
-                    <label class="custom-control-label" for="uid1"></label>
+<div class="nk-tb-item">
+    <div class="nk-tb-col nk-tb-col-check">
+        <div class="custom-control custom-control-sm custom-checkbox notext">
+            <input type="checkbox" class="custom-control-input" id="uid1">
+            <label class="custom-control-label" for="uid1"></label>
+        </div>
+    </div>
+    <div class="nk-tb-col">
+        <a href="html/user-details-regular.html">
+            <div class="user-card">
+                <div class="user-avatar bg-primary">
+                    <span><img src="~/Images/@Category.Image.Image" /></span>
+                </div>
+                <div class="user-info">
+                    <span class="tb-lead">
+                        @Category.Name <span class="dot dot-success d-md-none ms-1"></span>
+                    </span>
+
                 </div>
             </div>
-            <div class="nk-tb-col">
-                <a href="html/user-details-regular.html">
-                    <div class="user-card">
-                        <div class="user-avatar bg-primary">
-                            <span>AB</span>
-                        </div>
-                        <div class="user-info">
-                            <span class="tb-lead">
-                                @Category.Name <span class="dot dot-success d-md-none ms-1"></span>
-                            </span>
+        </a>
+    </div>
+    <div class="nk-tb-col tb-col-mb">
+        <span class="tb-amount">
+            @Category.NameArabic
+        </span>
+    </div>
+    <div class="nk-tb-col tb-col-mb">
+        <span class="tb-amount">
+            @Category.Description
+        </span>
+    </div>
+    <div class="nk-tb-col tb-col-mb">
+        <span class="tb-amount">
+            @Category.DescriptionArabic
+        </span>
+    </div>
 
-                        </div>
-                    </div>
-                </a>
-            </div>
+    @{
+        if (Category.ParentID != null)
+        {
             <div class="nk-tb-col tb-col-mb">
                 <span class="tb-amount">
-                    @Category.NameArabic
+                    @Category.Parent.Name
                 </span>
             </div>
+        }
+        else
+        {
             <div class="nk-tb-col tb-col-mb">
                 <span class="tb-amount">
-                    @Category.Description
+                    this is perant
                 </span>
             </div>
-            <div class="nk-tb-col tb-col-mb">
-                <span class="tb-amount">
-                    @Category.DescriptionArabic
-                </span>
-            </div>
+        }
 
-            @{
-                if (Category.ParentID != null)
-                {
-                    <div class="nk-tb-col tb-col-mb">
-                        <span class="tb-amount">
-                            @Category.Parent.Name
-                        </span>
-                    </div>
-                }
-                else
-                {
-                    <div class="nk-tb-col tb-col-mb">
-                        <span class="tb-amount">
-                            this is perant
-                        </span>
-                    </div>
-                }
-
-            }
+    }
+    
+    <div class="nk-tb-col tb-col-lg">
+        @Html.ActionLink("Edit", "Edit", "Category", new { Category.Id }, new { @class = "btn btn-primary" })
+    </div>
+    <div class="nk-tb-col tb-col-lg">
+        @Html.ActionLink("Delete", "Delete", "Category", new { Category.Id }, new { @class = "btn btn-warning" })
+    </div>
 
 
-        </div>
+</div>
     }
 }
