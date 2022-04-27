@@ -140,7 +140,6 @@ namespace NoonAdminMvcCore.Controllers
                     // Add To UserRoles table
                     await _userManager.AddToRoleAsync(user, model.Role);
 
-
                     // Add to the role's table of new user
                     switch (model.Role)
                     {
@@ -185,25 +184,27 @@ namespace NoonAdminMvcCore.Controllers
                     {
                         return NotFound();
                     }
+                    
+                    var gotUser = _userRepository.Find(u => u.Id == user.Id, u => u.Addresses);
 
                     // update basic info
-                    user.FirstName = model.FirstName;
-                    user.LastName = model.LastName;
-                    user.Balance = model.Balance;
-                    user.IsActive = model.IsActive;
-                    user.Email = model.Email;
-                    user.PhoneNumber = model.PhoneNumber;
-                    user.Addresses.FirstOrDefault()!.City = model.City;
-                    user.Addresses.FirstOrDefault()!.Street = model.Street;
+                    gotUser.FirstName = model.FirstName;
+                    gotUser.LastName = model.LastName;
+                    gotUser.Balance = model.Balance;
+                    gotUser.IsActive = model.IsActive;
+                    gotUser.Email = model.Email;
+                    gotUser.PhoneNumber = model.PhoneNumber;
+                    gotUser.Addresses.FirstOrDefault()!.City = model.City;
+                    gotUser.Addresses.FirstOrDefault()!.Street = model.Street;
 
                     // Get current Role
-                    var role = await _userManager.GetRolesAsync(user);
+                    var role = await _userManager.GetRolesAsync(gotUser);
 
                     // Remove Current Role
-                    await _userManager.RemoveFromRoleAsync(user, role.FirstOrDefault());
+                    await _userManager.RemoveFromRoleAsync(gotUser, role.FirstOrDefault());
 
                     //Add new Role
-                    await _userManager.AddToRoleAsync(user, model.Role);
+                    await _userManager.AddToRoleAsync(gotUser, model.Role);
 
                     _unitOfWork.Save();
                 }

@@ -94,11 +94,23 @@ namespace NoonAdminMvcCore.Controllers
                 {
                     foreach (var role in roles)
                     {
-                        var user = new User { FirstName = name, LastName = role, Balance = 5000, IsActive = true , PhoneNumber = "0123456789"};
-                        await _userManager.AddPasswordAsync(user, $"{name}@1234");
-                        await _userManager.SetEmailAsync(user, $"{user.FirstName + user.LastName}@gmail.com");
+                        var user = new User
+                        {
+                            FirstName = name,
+                            LastName = role,
+                            Balance = 5000,
+                            IsActive = true,
+                            PhoneNumber = "0123456789",
+                            Email = $"{name + role}@gmail.com",
+                            UserName = $"{name + role}@gmail.com"
+                        };
+
+                        // Add user and save Context
+                        await _userManager.CreateAsync(user, $"{name}@1234");
+
+                        // Add To UserRoles table
                         await _userManager.AddToRoleAsync(user, role);
-                        _userRepo.Add(user);
+                        //_userRepo.Add(user);
                         switch (role)
                         {
                             case AuthorizeRoles.Admin:

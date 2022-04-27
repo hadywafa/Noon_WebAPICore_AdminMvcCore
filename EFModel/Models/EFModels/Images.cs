@@ -19,7 +19,7 @@ namespace EFModel.Models.EFModels
         // Each Image is belonged to one Category
         [ForeignKey("Category")]
         public int? CategoryId { get; set; }
-        public virtual  Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
         #endregion
 
