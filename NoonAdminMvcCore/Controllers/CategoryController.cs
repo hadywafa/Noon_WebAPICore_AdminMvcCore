@@ -70,9 +70,8 @@ namespace NoonAdminMvcCore.Controllers
             if (ModelState.IsValid)
             {
 
-                if (_categoryRepository.GetById(categoryVM.Id) == null)
+                if (categoryVM.Id == null)
                 {
-
                     files = categoryVM.image;
                     if (files != null)
                     {
@@ -103,19 +102,14 @@ namespace NoonAdminMvcCore.Controllers
                         _imageRepository.Add(img);
                         _unitOfWork.Save();
 
-
-
-
                     }
-
-
-
-
                     return View("Index", _categoryRepository.GetAll().Include(c => c.Image));
+
                 }
                 else
                 {
-                    var cat = _categoryRepository.Find(u => u.Id == categoryVM.Id);
+                    int targtedId = int.Parse(categoryVM.Id);
+                    var cat = _categoryRepository.GetById(targtedId);
 
                     if (cat == null)
                     {
@@ -170,6 +164,7 @@ namespace NoonAdminMvcCore.Controllers
 
             var catViewmodel = new CategoryViewModel
             {
+                Id = categoryVM.Id.ToString(),
                 Name = categoryVM.Name,
                 NameArabic = categoryVM.NameArabic,
                 Description = categoryVM.Description,
@@ -192,10 +187,8 @@ namespace NoonAdminMvcCore.Controllers
 
             var cat = _categoryRepository.GetById(id);
             var img = _imageRepository.GetAll().Where(i => i.CategoryId == id).FirstOrDefault();
-            if (img.Image != null)
-            {
-                deleteFilefromRoot(img.Image);
-            }
+           
+            
             _categoryRepository.Remove(cat);
             _unitOfWork.Save();
 

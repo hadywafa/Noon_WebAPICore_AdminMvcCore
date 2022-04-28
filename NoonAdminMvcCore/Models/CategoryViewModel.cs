@@ -9,7 +9,7 @@ namespace NoonAdminMvcCore.Models
 {
     public class CategoryViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required, MaxLength(20)]
         public string Name { get; set; }

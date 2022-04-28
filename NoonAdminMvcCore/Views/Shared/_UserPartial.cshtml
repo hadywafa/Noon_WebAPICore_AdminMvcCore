@@ -103,11 +103,11 @@
             <div class="nk-tb-col tb-col-md">
                 @if (user.IsActive)
                 {
-                    <span class="tb-status text-success">@user.IsActive</span>
+                    <span class="tb-status text-success">Active</span>
                 }
                 else
                 {
-                    <span class="tb-status text-danger">@user.IsActive</span>
+                    <span class="tb-status text-danger">Suspended</span>
                 }
 
             </div>
@@ -138,24 +138,24 @@
                                     <li class="divider"></li>
 
                                     <li>
-                                        @Html.ActionLink("Suspend", "Suspend", "User", new { @id = user.Id }, new
-                                        {
-                                            data_ajax = "true",
-                                            data_ajax_method = "GET",
-                                            data_ajax_mode = "replace",
-                                            data_ajax_update = "#ajax",
-                                        })
+                                        @Html.ActionLink("Suspend", "Suspend", "User",
+                                        new{@id = user.Id,
+                                            @role = @ViewBag.Role,
+                                            @currentFilter = @ViewBag.Search,
+                                            @pageNumber = @ViewBag.Page,
+                                            })
                                     </li>
 
                                     <li>
-                                        @Html.ActionLink("Activate", "Activate", "User", new { @id = user.Id }, new
-                                        {
-                                            data_ajax = "true",
-                                            data_ajax_method = "GET",
-                                            data_ajax_mode = "replace",
-                                            data_ajax_update = "#ajax"
-                                        })
+                                        @Html.ActionLink("Activate", "Activate", "User",
+                                        new{@id = user.Id,
+                                            @role = @ViewBag.Role,
+                                            @currentFilter = @ViewBag.Search,
+                                            @searchString = @ViewBag.Search,
+                                            @pageNumber = @ViewBag.Page,
+                                            })
                                     </li>
+                                    
                                     <li>
                                         @Html.ActionLink("Edit", "Edit", new { id = user.Id })
                                     </li>

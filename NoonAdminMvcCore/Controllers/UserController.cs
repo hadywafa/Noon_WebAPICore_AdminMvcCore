@@ -50,22 +50,34 @@ namespace NoonAdminMvcCore.Controllers
 
 
         // GET: Customers
-        public async Task<ActionResult> Index(string role, string searchString)
+        public async Task<ActionResult> Index(string role, string currentFilter, string searchString, int? pageNumber)
         {
+            // To maintain the searched keyword and show it again in the view
             ViewData["CurrentFilter"] = searchString;
-            ViewData["CurrentRole"] = role;
 
             // Get all users including his phone and address
-
-            // Initializing a List of Users
+            // 1- Initializing a List of Users
             var users = new List<User>();
 
-            // Get Users by role
+            // 2- Get Users by role
             var data = await _userManager.GetUsersInRoleAsync(role);
 
-            // Get Searched user if existed
-            if (!String.IsNullOrEmpty(searchString))
+            // A- Get user in case of search
+            if (!(String.IsNullOrEmpty(searchString) && string.IsNullOrEmpty(currentFilter)))
             {
+                // Case: first search but not first page => second, third ...etc
+                if (string.IsNullOrEmpty(searchString))
+                {
+                    searchString = currentFilter;
+                    ViewData["CurrentFilter"] = searchString;
+                }
+                else
+                {
+                    // Case: Search changed
+                    //If the search string is changed during paging, the page has to be reset to 1
+                    pageNumber = 1;
+                }
+
                 foreach (var user in data)
                 {
                     var _user =
@@ -73,15 +85,12 @@ namespace NoonAdminMvcCore.Controllers
 
                         && (u.FirstName.Contains(searchString)
                         || u.LastName.Contains(searchString)
-                        || u.Email.Contains(searchString)), 
+                        || u.Email.Contains(searchString)), u => u.Addresses);
 
-                    u => u.Addresses);
-
-                    if( _user != null )
+                    if (_user != null)
                         users.Add(_user);
                 }
-
-            }
+            } // B- No search => Get All
             else
             {
                 // Loop in users including their addresses
@@ -92,16 +101,31 @@ namespace NoonAdminMvcCore.Controllers
                 }
             }
 
-            // Check if their users
+            // 3- Check if there are users
             if (users.Any())
             {
-                return View(users);
+                // send role, users count, and the current page number to the view page
+                // we will need to get them later in suspend and activate actions below
+                ViewBag.Role = role;
+                ViewBag.Count = users.Count();
+                ViewBag.Page = pageNumber;
+
+                if(searchString != null)
+                {
+                    ViewBag.Search = searchString;
+                }
+
+                // Sepcifiy number of users you want to display in one page
+                int pageSize = 3;
+
+                //return View(users);
+                return View(EFModel.Models.PaginatedList<User>.CreateAsync(users, pageNumber ?? 1, pageSize));
             }
-
-            return NotFound();
-
-
-
+            else
+            {
+                // else no users are found
+                return NotFound();
+            }
         }
 
         // GET: User/Create
@@ -138,7 +162,7 @@ namespace NoonAdminMvcCore.Controllers
                     // Add To UserRoles table
                     await _userManager.AddToRoleAsync(user, model.Role);
 
-                    // Add to the role's table of new user
+                    // Add the new user to his role table
                     switch (model.Role)
                     {
                         case AuthorizeRoles.Admin:
@@ -172,10 +196,9 @@ namespace NoonAdminMvcCore.Controllers
                     _unitOfWork.Save();
 
                     return RedirectToAction("Index", new { role = model.Role });
-                }
 
-                // updating
-                else
+                }
+                else // updating
                 {
                     var user = _userManager.Users.FirstOrDefault(u => u.Id == model.Id);
                     if (user == null)
@@ -241,7 +264,7 @@ namespace NoonAdminMvcCore.Controllers
             return View("UserForm", userViewModel);
         }
 
-        public async Task<ActionResult> SuspendAsync(string id)
+        public ActionResult Suspend(string id, string role, string currentFilter, int? pageNumber)
         {
             // get the user
             var user = _userRepository.GetById(id);
@@ -255,26 +278,10 @@ namespace NoonAdminMvcCore.Controllers
             // save updates
             _unitOfWork.Save();
 
-            // Get current Role
-            var role = await _userManager.GetRolesAsync(user);
-
-            // Initializing a List of Users
-            var users = new List<User>();
-
-            // Get Users by role
-            var data = await _userManager.GetUsersInRoleAsync(role.FirstOrDefault());
-
-            // Loop in users including their addresses
-            foreach (var _u in data)
-            {
-                var _user = _userRepository.Find(u => u.Id == _u.Id, u => u.Addresses);
-                users.Add(_user);
-            }
-
-            return PartialView("_UserPartial", users);
+            return RedirectToAction("Index", new { role = role, currentFilter = currentFilter, pageNumber = pageNumber });
         }
 
-        public async Task<ActionResult> ActivateAsync(string id)
+        public ActionResult Activate (string id, string role, string currentFilter, int? pageNumber)
         {
             // get the user
             var user = _userRepository.GetById(id);
@@ -288,23 +295,7 @@ namespace NoonAdminMvcCore.Controllers
             // save updates
             _unitOfWork.Save();
 
-            // Get current Role
-            var role = await _userManager.GetRolesAsync(user);
-
-            // Initializing a List of Users
-            var users = new List<User>();
-
-            // Get Users by role
-            var data = await _userManager.GetUsersInRoleAsync(role.FirstOrDefault());
-
-            // Loop in users including their addresses
-            foreach (var _u in data)
-            {
-                var _user = _userRepository.Find(u => u.Id == _u.Id, u => u.Addresses);
-                users.Add(_user);
-            }
-
-            return PartialView("_UserPartial", users);
+            return RedirectToAction("Index", new { role = role, currentFilter = currentFilter, pageNumber = pageNumber });
         }
     }
 }
