@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,8 @@ namespace EFModel.Models.EFModels
     public class Seller
     {
         public string Id { get; set; }
+
+        public DateTime createdAt { get; set; }
 
         #region Navigation Propererty
 
@@ -17,6 +20,11 @@ namespace EFModel.Models.EFModels
         public virtual User User { get; set; }
 
         #endregion
+
+        public Seller()
+        {
+            createdAt = DateTime.Now;
+        }
 
     }
 }

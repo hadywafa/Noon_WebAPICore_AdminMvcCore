@@ -9,6 +9,7 @@ namespace EFModel.Models.EFModels
         // Each Order is made by one Customer
         //public int CustoemerId { get; set; } 
         public Customer Customer { get; set; }
+        public User User { get; set; }
 
         //public int ShipperId { get; set; }
         public Shipper Shipper { get; set; }

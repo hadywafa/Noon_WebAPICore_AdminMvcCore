@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SqlServerDBContext;
 
 namespace SqlServerDBContext.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20220429144324_addCreatedAtColumn")]
+    partial class addCreatedAtColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,16 +250,11 @@ namespace SqlServerDBContext.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("ShipperId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -757,15 +754,9 @@ namespace SqlServerDBContext.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("ShipperId");
 
-                    b.HasOne("EFModel.Models.User", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Customer");
 
                     b.Navigation("Shipper");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.OrderItem", b =>
@@ -970,8 +961,6 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("Cards");
 
                     b.Navigation("Customer");
-
-                    b.Navigation("Orders");
 
                     b.Navigation("Seller");
 

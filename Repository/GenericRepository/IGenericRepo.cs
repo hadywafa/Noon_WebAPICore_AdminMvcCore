@@ -12,6 +12,8 @@ namespace Repository.GenericRepository
         // Get all Entites => (get all customers, get all products ...etc)
         IQueryable<T> GetAll();
 
+        IQueryable<T> GetAll(params Expression<Func<T, object>>[] includes);
+
         // Get Entity by his ID => (get a customer by his ID)
         T GetById(string id);
 
@@ -19,6 +21,7 @@ namespace Repository.GenericRepository
 
         // Get Entity by matching given expression
         T Find(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[] includes);
+
         IQueryable<T> FindAll(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[] includes);
 
         // Add any Entity => (add customer, add seller ...et)

@@ -4,7 +4,8 @@
     {
         Processing ,
         Shipped,
-        InTransit,
-        Delivered
+        Delivered,
+        Cancelled,
+        Returned
     }
 }

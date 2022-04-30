@@ -45,6 +45,16 @@ namespace Repository.GenericRepository
         }
 
         public IQueryable<T> GetAll() => _table;
+        public IQueryable<T> GetAll(params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _table;
+
+            if (includes != null)
+                query = includes.Aggregate(query,
+                    (current, include) => current.Include(include));
+
+            return query;
+        }
 
         public T GetById(string id) => _table.Find(id);
 

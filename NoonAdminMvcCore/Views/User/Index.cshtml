@@ -17,11 +17,7 @@
                     </a>
                     <div class="toggle-expand-content" data-content="pageMenu">
                         <ul class="nk-block-tools g-3">
-                            <li>
-                                <a href="#" class="btn btn-white btn-outline-light">
-                                    <em class="icon ni ni-download-cloud"></em><span>Export</span>
-                                </a>
-                            </li>
+
                             <li class="nk-block-tools-opt">
                                 <div class="drodown">
                                     <a href="#" class="dropdown-toggle btn btn-icon btn-primary" data-bs-toggle="dropdown">
@@ -60,27 +56,7 @@
                 <div class="card-inner position-relative card-tools-toggle">
                     <div class="card-title-group">
                         <div class="card-tools">
-                            <div class="form-inline flex-nowrap gx-3">
-                                <div class="form-wrap w-150px">
-                                    <select class="form-select js-select2" data-search="off" data-placeholder="Bulk Action">
-                                        <option value="">Bulk Action</option>
-                                        <option value="email">Send Email</option>
-                                        <option value="group">Change Group</option>
-                                        <option value="suspend">Suspend User</option>
-                                        <option value="delete">Delete User</option>
-                                    </select>
-                                </div>
-                                <div class="btn-wrap">
-                                    <span class="d-none d-md-block">
-                                        <button class="btn btn-dim btn-outline-light disabled">Apply</button>
-                                    </span>
-                                    <span class="d-md-none">
-                                        <button class="btn btn-dim btn-outline-light btn-icon disabled">
-                                            <em class="icon ni ni-arrow-right"></em>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div><!-- .form-inline -->
+
                         </div><!-- .card-tools -->
                         <div class="card-tools me-n1">
                             <ul class="btn-toolbar gx-1">
@@ -175,25 +151,29 @@
                                                                 <li>
                                                                     <span>Show</span>
                                                                 </li>
-                                                                <li class="active">
-                                                                    <a href="#">10</a>
+                                                                <li class="@(@ViewBag.rowsPerPage == 10 ? "active" : "hide")" >
+                                                                    <a asp-action="Index"
+                                                                       asp-route-currentFilter=@ViewBag.Search
+                                                                       asp-route-role=@ViewBag.Role
+                                                                       asp-route-pageSize = "2">
+                                                                        2
+                                                                    </a>
                                                                 </li>
-                                                                <li>
-                                                                    <a href="#">20</a>
+                                                                <li class="@(@ViewBag.rowsPerPage == 20 ? "active" : "hide")" >
+                                                                    <a asp-action="Index"
+                                                                       asp-route-currentFilter=@ViewBag.Search
+                                                                       asp-route-role=@ViewBag.Role
+                                                                       asp-route-pageSize = "4">
+                                                                        4
+                                                                    </a>
                                                                 </li>
-                                                                <li>
-                                                                    <a href="#">50</a>
-                                                                </li>
-                                                            </ul>
-                                                            <ul class="link-check">
-                                                                <li>
-                                                                    <span>Order</span>
-                                                                </li>
-                                                                <li class="active">
-                                                                    <a href="#">DESC</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">ASC</a>
+                                                                <li class="@(@ViewBag.rowsPerPage == 50 ? "active" : "hide")" >
+                                                                    <a asp-action="Index"
+                                                                       asp-route-currentFilter=@ViewBag.Search
+                                                                       asp-route-role=@ViewBag.Role
+                                                                       asp-route-pageSize = "6">
+                                                                        6
+                                                                    </a>
                                                                 </li>
                                                             </ul>
                                                         </div>
@@ -254,6 +234,7 @@
                asp-route-pageNumber="@(Model.PageIndex - 1)"
                asp-route-currentFilter=@ViewBag.Search
                asp-route-role=@ViewBag.Role
+               asp-route-pageSize=@ViewBag.rowsPerPage
                class="btn @prevDisabled"
                style="text-decoration: none;
                             color: white;
@@ -270,6 +251,7 @@
                asp-route-pageNumber="@(Model.PageIndex + 1)"
                asp-route-currentFilter=@ViewBag.Search
                asp-route-role=@ViewBag.Role
+               asp-route-pageSize=@ViewBag.rowsPerPage
                class="btn @nextDisabled"
                style="text-decoration: none;
                             color: white;

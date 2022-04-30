@@ -1,4 +1,5 @@
 ﻿using Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,8 +10,9 @@ namespace EFModel.Models.EFModels
     {
         public string Id { get; set; }
 
-        #region Navigation Propererty
+        public DateTime createdAt { get; set; }
 
+        #region Navigation Propererty
         // Each  customer has one cart
         public virtual ICollection<Cart> Cart { get; set; }
 
@@ -29,10 +31,11 @@ namespace EFModel.Models.EFModels
 
         //1-1 customer is a user
         public virtual User User { get; set; }
-
-
         #endregion
 
-
+        public Customer()
+        {
+            createdAt = DateTime.Now;
+        }
     }
 }

@@ -48,12 +48,12 @@ namespace NoonAdminMvcCore.Controllers
 
         #endregion
 
-
         // GET: Customers
-        public async Task<ActionResult> Index(string role, string currentFilter, string searchString, int? pageNumber)
+        public async Task<ActionResult> Index(string role, string currentFilter, string searchString, int? pageNumber, int? pageSize)
         {
             // To maintain the searched keyword and show it again in the view
             ViewData["CurrentFilter"] = searchString;
+            ViewData["PageSize"] = pageSize;
 
             // Get all users including his phone and address
             // 1- Initializing a List of Users
@@ -116,10 +116,12 @@ namespace NoonAdminMvcCore.Controllers
                 }
 
                 // Sepcifiy number of users you want to display in one page
-                int pageSize = 3;
+                int rowsPerPage = pageSize ?? 3;
+                ViewBag.rowsPerPage = rowsPerPage;
+
 
                 //return View(users);
-                return View(EFModel.Models.PaginatedList<User>.CreateAsync(users, pageNumber ?? 1, pageSize));
+                return View(EFModel.Models.PaginatedList<User>.CreateAsync(users, pageNumber ?? 1, rowsPerPage));
             }
             else
             {

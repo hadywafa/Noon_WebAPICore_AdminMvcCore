@@ -1,5 +1,7 @@
-﻿using EFModel.Models;
+﻿using BL.AppPolicy;
+using EFModel.Models;
 using EFModel.Models.EFModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Repository.GenericRepository;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace NoonAdminMvcCore.Controllers
 {
+    [Authorize(Roles = AuthorizeRoles.Admin)]
     public class OrderController : Controller
     {
 

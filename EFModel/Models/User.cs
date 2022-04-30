@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using EFModel.Models.EFModels;
@@ -33,6 +34,8 @@ namespace EFModel.Models
 
         //1-m User have many Card
         public virtual Collection<Card> Cards { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; }
         #endregion
 
         public User()

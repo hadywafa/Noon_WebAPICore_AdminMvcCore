@@ -1,8 +1,394 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IQueryable<EFModel.Models.EFModels.Order>
+<div class="nk-content-body">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+            <div class="nk-block-head-content">
+                <h3 class="nk-block-title page-title">Dashboard</h3>
+                <div class="nk-block-des text-soft">
+                    <p>Welcome to Noon Dashboard.</p>
+                </div>
+            </div><!-- .nk-block-head-content -->
+            <div class="nk-block-head-content">
+                <div class="toggle-wrap nk-block-tools-toggle">
+                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em class="icon ni ni-more-v"></em></a>
+                    <div class="toggle-expand-content" data-content="pageMenu">
+                        <ul class="nk-block-tools g-3">
+                            <li>
+                                <div class="drodown">
+                                    <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light" data-bs-toggle="dropdown"><em class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span class="d-none d-md-inline">Last</span> 30 Days</span><em class="dd-indc icon ni ni-chevron-right"></em></a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <ul class="link-list-opt no-bdr">
+                                            <li><a href="#"><span>Last 30 Days</span></a></li>
+                                            <li><a href="#"><span>Last 6 Months</span></a></li>
+                                            <li><a href="#"><span>Last 1 Years</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nk-block-tools-opt"><a href="#" class="btn btn-primary"><em class="icon ni ni-reports"></em><span>Reports</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- .nk-block-head-content -->
+        </div><!-- .nk-block-between -->
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <div class="row g-gs">
+            <div class="col-xxl-3 col-sm-6">
+                <div class="card">
+                    <div class="nk-ecwg nk-ecwg6">
+                        <div class="card-inner">
+                            <div class="card-title-group">
+                                <div class="card-title">
+                                    <h6 class="title">Today Orders</h6>
+                                </div>
+                            </div>
+                            <div class="data">
+                                <div class="data-group">
+                                    <div class="amount">@ViewBag.todayOrdersCount</div>
+                                    <div class="nk-ecwg6-ck">
+                                        <canvas class="ecommerce-line-chart-s3" id="todayOrders"></canvas>
+                                    </div>
+                                </div>
+                                @* <div class="info"><span class="change up text-danger"><em class="icon ni ni-arrow-long-up"></em>4.63%</span><span> vs. last week</span></div>*@
+                            </div>
+                        </div><!-- .card-inner -->
+                    </div><!-- .nk-ecwg -->
+                </div><!-- .card -->
+            </div><!-- .col -->
+            <div class="col-xxl-3 col-sm-6">
+                <div class="card">
+                    <div class="nk-ecwg nk-ecwg6">
+                        <div class="card-inner">
+                            <div class="card-title-group">
+                                <div class="card-title">
+                                    <h6 class="title">Today Revenue</h6>
+                                </div>
+                            </div>
+                            <div class="data">
+                                <div class="data-group">
+                                    <div class="amount">@ViewBag.todayRevenue</div>
+                                    <div class="nk-ecwg6-ck">
+                                        <canvas class="ecommerce-line-chart-s3" id="todayRevenue"></canvas>
+                                    </div>
+                                </div>
+                                @* <div class="info"><span class="change down text-danger"><em class="icon ni ni-arrow-long-down"></em>2.34%</span><span> vs. last week</span></div>*@
+                            </div>
+                        </div><!-- .card-inner -->
+                    </div><!-- .nk-ecwg -->
+                </div><!-- .card -->
+            </div><!-- .col -->
+            <div class="col-xxl-3 col-sm-6">
+                <div class="card">
+                    <div class="nk-ecwg nk-ecwg6">
+                        <div class="card-inner">
+                            <div class="card-title-group">
+                                <div class="card-title">
+                                    <h6 class="title">Today Customers</h6>
+                                </div>
+                            </div>
+                            <div class="data">
+                                <div class="data-group">
+                                    <div class="amount">@ViewBag.todayCustomersCount</div>
+                                    <div class="nk-ecwg6-ck">
+                                        <canvas class="ecommerce-line-chart-s3" id="todayCustomers"></canvas>
+                                    </div>
+                                </div>
+                                @*                 <div class="info"><span class="change up text-danger"><em class="icon ni ni-arrow-long-up"></em>4.63%</span><span> vs. last week</span></div>*@
+                            </div>
+                        </div><!-- .card-inner -->
+                    </div><!-- .nk-ecwg -->
+                </div><!-- .card -->
+            </div><!-- .col -->
+            <div class="col-xxl-3 col-sm-6">
+                <div class="card">
+                    <div class="nk-ecwg nk-ecwg6">
+                        <div class="card-inner">
+                            <div class="card-title-group">
+                                <div class="card-title">
+                                    <h6 class="title">Today Sellers</h6>
+                                </div>
+                            </div>
+                            <div class="data">
+                                <div class="data-group">
+                                    <div class="amount">@ViewBag.todaySellersCount</div>
+                                    <div class="nk-ecwg6-ck">
+                                        <canvas class="ecommerce-line-chart-s3" id="todayVisitors"></canvas>
+                                    </div>
+                                </div>
+                                @*<div class="info"><span class="change down text-danger"><em class="icon ni ni-arrow-long-down"></em>2.34%</span><span> vs. last week</span></div>*@
+                            </div>
+                        </div><!-- .card-inner -->
+                    </div><!-- .nk-ecwg -->
+                </div><!-- .card -->
+            </div><!-- .col -->
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+            <div class="col-xxl-9">
+                <div class="card card-full">
+                    <div class="card-inner">
+                        <div class="card-title-group">
+                            <div class="card-title">
+                                <h6 class="title">Recent Orders</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nk-tb-list mt-n2">
+                        <div class="nk-tb-item nk-tb-head">
+                            <div class="nk-tb-col"><span>Order No.</span></div>
+                            <div class="nk-tb-col tb-col-sm"><span>Customer</span></div>
+                            <div class="nk-tb-col tb-col-md"><span>Date</span></div>
+                            <div class="nk-tb-col"><span>Amount</span></div>
+                            <div class="nk-tb-col"><span>Payment</span></div>
+                            <div class="nk-tb-col"><span class="d-none d-sm-inline">Status</span></div>
+                        </div>
+
+                        @foreach (var order in Model)
+                        {
+                            <div class="nk-tb-item">
+                                <div class="nk-tb-col">
+                                    <span class="tb-lead"><a href="#">#@order.Id</a></span>
+                                </div>
+                                <div class="nk-tb-col tb-col-sm">
+                                    <div class="user-card">
+                                        <div class="user-avatar sm bg-purple-dim">
+                                            <span>@order.User.FirstName[0]@order.User.LastName[0]</span>
+                                        </div>
+                                        <div class="user-name">
+                                            <span class="tb-lead">@order.User.FirstName @order.User.LastName</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="nk-tb-col tb-col-md">
+                                    <span class="tb-sub">@order.OrderDate.ToShortDateString()</span>
+                                </div>
+                                <div class="nk-tb-col">
+                                    <span class="tb-sub tb-amount">@order.TotalPrice <span>EGP</span></span>
+                                </div>
+
+                                <div class="nk-tb-col">
+                                    <span class="tb-sub tb-amount">@(@order.IsPaid ? "Card" : "Cash")</span>
+                                </div>
+
+                                @{
+                                    var deliveryStatus = @order.DeliveryStatus;
+
+                                    switch (deliveryStatus)
+                                    {
+                                        case EFModel.Enums.DeliveryStatus.Processing:
+                                            <text>
+                                                <div class="nk-tb-col">
+                                                    <span class="badge badge-dot badge-dot-xs bg-primary">
+                                                        Processing
+                                                    </span>
+                                                </div>
+                                            </text>
+                                            break;
+
+                                        case EFModel.Enums.DeliveryStatus.Shipped:
+                                            <text>
+                                                <div class="nk-tb-col">
+                                                    <span class="badge badge-dot badge-dot-xs bg-info">
+                                                        Shipped
+                                                    </span>
+                                                </div>
+                                            </text>
+                                            break;
+
+                                        case EFModel.Enums.DeliveryStatus.Delivered:
+                                            <text>
+                                                <div class="nk-tb-col">
+                                                    <span class="badge badge-dot badge-dot-xs bg-success">
+                                                        Delivered
+                                                    </span>
+                                                </div>
+                                            </text>
+                                            break;
+
+                                        case EFModel.Enums.DeliveryStatus.Cancelled:
+                                            <text>
+                                                <div class="nk-tb-col">
+                                                    <span class="badge badge-dot badge-dot-xs bg-warning">
+                                                        Cancelled
+                                                    </span>
+                                                </div>
+                                            </text>
+                                            break;
+
+                                        case EFModel.Enums.DeliveryStatus.Returned:
+                                            <text>
+                                                <div class="nk-tb-col">
+                                                    <span class="badge badge-dot badge-dot-xs bg-danger">
+                                                        Returned
+                                                    </span>
+                                                </div>
+                                            </text>
+                                            break;
+
+                                       default:
+                                       <text>
+                                                <div class="nk-tb-col">
+                                                    <span class="badge badge-dot badge-dot-xs bg-secondary">
+                                                        Not Known
+                                                    </span>
+                                                </div>
+                                            </text>
+                                            break;
+
+                                    }
+                                }
+
+                            </div>
+                        }
+
+
+
+
+
+                    </div>
+                </div><!-- .card -->
+            </div>
+
+            <div class="col-xxl-3">
+                <div class="card h-100">
+                    <div class="card-inner">
+                        <div class="card-title-group mb-2">
+                            <div class="card-title">
+                                <h6 class="title">Store Statistics</h6>
+                            </div>
+                        </div>
+                        <ul class="nk-store-statistics">
+                            <li class="item">
+                                <div class="info">
+                                    <div class="title">Orders</div>
+                                    <div class="count">@ViewBag.allOrdersCount</div>
+                                </div>
+                                <em class="icon bg-primary-dim ni ni-bag"></em>
+                            </li>
+                            <li class="item">
+                                <div class="info">
+                                    <div class="title">Customers</div>
+                                    <div class="count">@ViewBag.allCustomerCount</div>
+                                </div>
+                                <em class="icon bg-info-dim ni ni-users"></em>
+                            </li>
+
+                            <li class="item">
+                                <div class="info">
+                                    <div class="title">Sellers</div>
+                                    <div class="count">@ViewBag.allSellerCount</div>
+                                </div>
+                                <em class="icon bg-info-dim ni ni-users"></em>
+                            </li>
+
+                            <li class="item">
+                                <div class="info">
+                                    <div class="title">Products</div>
+                                    <div class="count">@ViewBag.allProductsCount</div>
+                                </div>
+                                <em class="icon bg-pink-dim ni ni-box"></em>
+                            </li>
+                            <li class="item">
+                                <div class="info">
+                                    <div class="title">Categories</div>
+                                    <div class="count">@ViewBag.allCategoiesCount</div>
+                                </div>
+                                <em class="icon bg-purple-dim ni ni-server"></em>
+                            </li>
+                        </ul>
+                    </div><!-- .card-inner -->
+                </div><!-- .card -->
+            </div><!-- .col -->
+            @*<div class="col-xxl-4 col-md-8 col-lg-6">
+                <div class="card h-100">
+                <div class="card-inner">
+                <div class="card-title-group mb-2">
+                <div class="card-title">
+                <h6 class="title">Top products</h6>
+                </div>
+                <div class="card-tools">
+                <div class="dropdown">
+                <a href="#" class="dropdown-toggle link link-light link-sm dropdown-indicator" data-bs-toggle="dropdown">Weekly</a>
+                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-end">
+                <ul class="link-list-opt no-bdr">
+                <li><a href="#"><span>Daily</span></a></li>
+                <li><a href="#" class="active"><span>Weekly</span></a></li>
+                <li><a href="#"><span>Monthly</span></a></li>
+                </ul>
+                </div>
+                </div>
+                </div>
+                </div>
+                <ul class="nk-top-products">
+                <li class="item">
+                <div class="thumb">
+                <img src="./images/product/a.png" alt="">
+                </div>
+                <div class="info">
+                <div class="title">Pink Fitness Tracker</div>
+                <div class="price">$99.00</div>
+                </div>
+                <div class="total">
+                <div class="amount">$990.00</div>
+                <div class="count">10 Sold</div>
+                </div>
+                </li>
+                <li class="item">
+                <div class="thumb">
+                <img src="./images/product/b.png" alt="">
+                </div>
+                <div class="info">
+                <div class="title">Purple Smartwatch</div>
+                <div class="price">$99.00</div>
+                </div>
+                <div class="total">
+                <div class="amount">$990.00</div>
+                <div class="count">10 Sold</div>
+                </div>
+                </li>
+                <li class="item">
+                <div class="thumb">
+                <img src="./images/product/c.png" alt="">
+                </div>
+                <div class="info">
+                <div class="title">Black Mi Band Smartwatch</div>
+                <div class="price">$99.00</div>
+                </div>
+                <div class="total">
+                <div class="amount">$990.00</div>
+                <div class="count">10 Sold</div>
+                </div>
+                </li>
+                <li class="item">
+                <div class="thumb">
+                <img src="./images/product/d.png" alt="">
+                </div>
+                <div class="info">
+                <div class="title">Black Headphones</div>
+                <div class="price">$99.00</div>
+                </div>
+                <div class="total">
+                <div class="amount">$990.00</div>
+                <div class="count">10 Sold</div>
+                </div>
+                </li>
+                <li class="item">
+                <div class="thumb">
+                <img src="./images/product/e.png" alt="">
+                </div>
+                <div class="info">
+                <div class="title">iPhone 7 Headphones</div>
+                <div class="price">$99.00</div>
+                </div>
+                <div class="total">
+                <div class="amount">$990.00</div>
+                <div class="count">10 Sold</div>
+                </div>
+                </li>
+                </ul>
+                </div><!-- .card-inner -->
+                </div><!-- .card -->
+                </div><!-- .col -->*@
+
+        </div><!-- .row -->
+    </div><!-- .nk-block -->
 </div>

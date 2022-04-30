@@ -15,9 +15,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using NoonAdminMvcCore.Models;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using BL.AppPolicy;
 
 namespace NoonAdminMvcCore.Controllers
 {
+    [Authorize(Roles = AuthorizeRoles.Admin)]
     public class ProductController : Controller
     {
         #region Intitilazition Repo
