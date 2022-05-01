@@ -63,12 +63,7 @@ namespace NoonAdminMvcCore.Controllers
         }
 
 
-        public IActionResult CustomerOrders(string id)
-        {
-            var orders = _orderRepo.FindAll(orders => orders.CustomerID == id);
 
-            return RedirectToAction("Index");
-        }
 
 
         public IActionResult Edit(int id)
