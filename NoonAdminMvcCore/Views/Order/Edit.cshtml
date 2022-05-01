@@ -1,0 +1,33 @@
+﻿@model OrderViewModel
+
+<form  method="post" asp-action="Edit">
+
+    <div class="form-group">
+        <label asp-for="@Model.Id" class="text-muted"></label>
+        <input disabled asp-for="@Model.Id" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label class="text-muted" asp-for="@Model.DeliveryStatus"></label>
+        <select class="form-control" asp-for="@Model.DeliveryStatus">
+            <option value="@EFModel.Enums.DeliveryStatus.Processing" class="text-primary">  Processing </option>
+            <option value="@EFModel.Enums.DeliveryStatus.Shipped" class="text-info">  Shipped </option>
+            <option value="@EFModel.Enums.DeliveryStatus.Delivered" class="text-success">  Delivered </option>
+            <option value="@EFModel.Enums.DeliveryStatus.Returned" class="text-warning">  Returned </option>
+            <option value="@EFModel.Enums.DeliveryStatus.Cancelled" class="text-danger">  Cancelled </option>
+        </select>
+        <span asp-validation-for="@Model.DeliveryStatus" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@Model.DeliveryStatusDescription" class="text-muted"></label>
+        <input asp-for="@Model.DeliveryStatusDescription" class="form-control" />
+    </div>
+
+
+    <button class="btn btn-primary">
+        UPDATE
+    </button>
+
+
+</form>
