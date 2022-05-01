@@ -62,10 +62,6 @@ namespace NoonAdminMvcCore.Controllers
             return View(items);
         }
 
-
-
-
-
         public IActionResult Edit(int id)
         {
 
