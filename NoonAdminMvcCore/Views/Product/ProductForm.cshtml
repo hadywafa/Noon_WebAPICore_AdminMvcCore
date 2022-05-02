@@ -18,7 +18,7 @@
 
                         @*For security*@
                         @Html.AntiForgeryToken()
-
+                        @Html.HiddenFor(m => m.Id)
 
                         <div class="col-xxl-3 col-md-4">
                             <div class="form-group">

@@ -1,4 +1,4 @@
-﻿@model IQueryable<EFModel.Models.EFModels.Product>
+﻿@model IList<EFModel.Models.EFModels.Product>
 @{
     <div class="nk-tb-item nk-tb-head">
         <div class="nk-tb-col nk-tb-col-check">
@@ -122,7 +122,7 @@
     </div>
 
     <div class="nk-tb-col tb-col-lg">
-        @Html.ActionLink("Edit", "Edit", "Produc", new { product.Id }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Edit", "Edit", "Product", new { product.Id }, new { @class = "btn btn-primary" })
     </div>
     <div class="nk-tb-col tb-col-lg">
         @Html.ActionLink("Delete", "Delete", "Product", new { product.Id }, new { @class = "btn btn-warning" })

@@ -1,4 +1,4 @@
-﻿@model IQueryable<EFModel.Models.EFModels.Product>
+﻿@model EFModel.Models.PaginatedList<EFModel.Models.EFModels.Product>
 @*<div id="table">
         @Html.Partial("_CusPartial")
     </div>*@
@@ -61,29 +61,6 @@
             <div class="card-inner-group">
                 <div class="card-inner position-relative card-tools-toggle">
                     <div class="card-title-group">
-                        <div class="card-tools">
-                            <div class="form-inline flex-nowrap gx-3">
-                                <div class="form-wrap w-150px">
-                                    <select class="form-select js-select2" data-search="off" data-placeholder="Bulk Action">
-                                        <option value="">Bulk Action</option>
-                                        <option value="email">Send Email</option>
-                                        <option value="group">Change Group</option>
-                                        <option value="suspend">Suspend User</option>
-                                        <option value="delete">Delete User</option>
-                                    </select>
-                                </div>
-                                <div class="btn-wrap">
-                                    <span class="d-none d-md-block">
-                                        <button class="btn btn-dim btn-outline-light disabled">Apply</button>
-                                    </span>
-                                    <span class="d-md-none">
-                                        <button class="btn btn-dim btn-outline-light btn-icon disabled">
-                                            <em class="icon ni ni-arrow-right"></em>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div><!-- .form-inline -->
-                        </div><!-- .card-tools -->
                         <div class="card-tools me-n1">
                             <ul class="btn-toolbar gx-1">
                                 <li>
@@ -168,130 +145,135 @@
                                                     </div><!-- .dropdown -->
                                                 </li><!-- li -->
                                                 <li>
+                                               </ul>
+                                           </div>
                                                     <div class="dropdown">
-                                                        <a href="#" class="btn btn-trigger btn-icon dropdown-toggle" data-bs-toggle="dropdown">
-                                                            <em class="icon ni ni-setting"></em>
-                                                        </a>
-                                                        <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end">
-                                                            <ul class="link-check">
-                                                                <li>
-                                                                    <span>Show</span>
-                                                                </li>
-                                                                <li class="active">
-                                                                    <a href="#">10</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">20</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">50</a>
-                                                                </li>
-                                                            </ul>
-                                                            <ul class="link-check">
-                                                                <li>
-                                                                    <span>Order</span>
-                                                                </li>
-                                                                <li class="active">
-                                                                    <a href="#">DESC</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">ASC</a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div><!-- .dropdown -->
-                                                </li><!-- li -->
-                                            </ul><!-- .btn-toolbar -->
-                                        </div><!-- .toggle-content -->
-                                    </div><!-- .toggle-wrap -->
+                                                    <a href="#" class="btn btn-trigger btn-icon dropdown-toggle" data-bs-toggle="dropdown">
+                                                        <em class="icon ni ni-setting"></em>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end">
+                                                        <ul class="link-check">
+                                                            <li>
+                                                                <span>Show</span>
+                                                            </li>
+                                                            <li class="@(@ViewBag.rowsPerPage == 10 ? "active" : "hide")">
+                                                                <a asp-action="Index"
+                                                                   asp-route-currentFilter=@ViewBag.Search
+                                                                   asp-route-role=@ViewBag.Role
+                                                                   asp-route-pageSize="2">
+                                                                    2
+                                                                </a>
+                                                            </li>
+                                                            <li class="@(@ViewBag.rowsPerPage == 20 ? "active" : "hide")">
+                                                                <a asp-action="Index"
+                                                                   asp-route-currentFilter=@ViewBag.Search
+                                                                   asp-route-role=@ViewBag.Role
+                                                                   asp-route-pageSize="4">
+                                                                    4
+                                                                </a>
+                                                            </li>
+                                                            <li class="@(@ViewBag.rowsPerPage == 50 ? "active" : "hide")">
+                                                                <a asp-action="Index"
+                                                                   asp-route-currentFilter=@ViewBag.Search
+                                                                   asp-route-role=@ViewBag.Role
+                                                                   asp-route-pageSize="6">
+                                                                    6
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                        </div><!-- .dropdown -->
+                                     </div>
                                 </li><!-- li -->
                             </ul><!-- .btn-toolbar -->
-                        </div><!-- .card-tools -->
-                    </div><!-- .card-title-group -->
-                    <div class="card-search search-wrap" data-search="search">
-                        <div class="card-body">
-                            <div class="search-content">
-                                <a href="#" class="search-back btn btn-icon toggle-search" data-target="search">
-                                    <em class="icon ni ni-arrow-left"></em>
-                                </a>
-                                <input type="text" class="form-control border-transparent form-focus-none" placeholder="Search by user or email">
-                                <button class="search-submit btn btn-icon">
-                                    <em class="icon ni ni-search"></em>
+                        </div><!-- .toggle-content -->
+                    </div><!-- .toggle-wrap -->
+                   
+                </div><!-- .card-tools -->
+                <div class="card-search search-wrap" data-search="search">
+                    <div class="card-body">
+                        <div class="search-content">
+                            <a href="#" class="search-back btn btn-icon toggle-search" data-target="search">
+                                <em class="icon ni ni-arrow-left"></em>
+                            </a>
+
+
+                            <form asp-controller="Product" asp-action="Index" asp-route-role=@ViewBag.Role method="get">
+
+                                <input type="text" class="form-control border-transparent form-focus-none"
+                                       placeholder="Search by name or email"
+                                       name="SearchString"
+                                       value="@ViewData["CurrentFilter"]">
+
+                                <input name="role" value=@ViewBag.Role type="hidden" />
+
+                                <button class="search-submit btn btn-icon" type="submit" value="Search">
+                                    <em class="icon ni ni-search">
+
+                                    </em>
                                 </button>
-                            </div>
+                            </form>
+
                         </div>
-                    </div><!-- .card-search -->
+                    </div>
+                </div><!-- .card-search -->
+            </div><!-- .card-title-group -->
+                  
                 </div><!-- .card-inner -->
-                <div class="card-inner p-0">
-                    <div class="nk-tb-list nk-tb-ulist" id="ajax">
-
-                        @* Render Partial To Use Ajax *@
-
-                        @await Html.PartialAsync("_ProductPartial")
-
-                    </div><!-- .nk-tb-list -->
-                </div><!-- .card-inner -->
+               
                 <div class="card-inner">
-                    <div class="nk-block-between-md g-3">
-                        <div class="g">
-                            <ul class="pagination justify-content-center justify-content-md-start">
-                                <li class="page-item">
-                                    <a class="page-link" href="#">Prev</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2</a>
-                                </li>
-                                <li class="page-item">
-                                    <span class="page-link">
-                                        <em class="icon ni ni-more-h"></em>
-                                    </span>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">6</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">7</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">Next</a>
-                                </li>
-                            </ul><!-- .pagination -->
-                        </div>
-                        <div class="g">
-                            <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
-                                <div>Page</div>
-                                <div>
-                                    <select class="form-select js-select2" data-search="on" data-dropdown="xs center">
-                                        <option value="page-1">1</option>
-                                        <option value="page-2">2</option>
-                                        <option value="page-4">4</option>
-                                        <option value="page-5">5</option>
-                                        <option value="page-6">6</option>
-                                        <option value="page-7">7</option>
-                                        <option value="page-8">8</option>
-                                        <option value="page-9">9</option>
-                                        <option value="page-10">10</option>
-                                        <option value="page-11">11</option>
-                                        <option value="page-12">12</option>
-                                        <option value="page-13">13</option>
-                                        <option value="page-14">14</option>
-                                        <option value="page-15">15</option>
-                                        <option value="page-16">16</option>
-                                        <option value="page-17">17</option>
-                                        <option value="page-18">18</option>
-                                        <option value="page-19">19</option>
-                                        <option value="page-20">20</option>
-                                    </select>
-                                </div>
-                                <div>OF 102</div>
-                            </div>
-                        </div><!-- .pagination-goto -->
-                    </div><!-- .nk-block-between -->
+                    
+                    <div class="card-inner p-0">
+                        <div class="nk-tb-list nk-tb-ulist" id="ajax">
+
+                            @* Render Partial To Use Ajax *@
+
+                            @await Html.PartialAsync("_ProductPartial")
+
+                            @{
+                                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                            }
+                        </div><!-- .nk-tb-list -->
+                    </div><!-- .card-inner -->
                 </div><!-- .card-inner -->
             </div><!-- .card-inner-group -->
         </div><!-- .card -->
-    </div><!-- .nk-block -->
-</div>
+
+        <div class="container d-flex flex-direction-row justify-content-center align-content-center align-items-center">
+            <a asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-currentFilter=@ViewBag.Search
+               asp-route-role=@ViewBag.Role
+               asp-route-pageSize=@ViewBag.rowsPerPage
+               class="btn @prevDisabled"
+               style="text-decoration: none;
+                            color: white;
+                            background: #0FAC81;
+                            padding: 7px 10px;
+                            border-radius: 2px;
+                            margin: 7px 3px;
+                            font-size: 15px;"
+               onMouseOver="this.style.backgroundColor='rgb(15 172 129 / 85%)'"
+               onmouseout="this.style.backgroundColor='#0FAC81'">
+                &laquo; Previous
+            </a>
+            <a asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-currentFilter=@ViewBag.Search
+               asp-route-role=@ViewBag.Role
+               asp-route-pageSize=@ViewBag.rowsPerPage
+               class="btn @nextDisabled"
+               style="text-decoration: none;
+                            color: white;
+                            background: #0FAC81;
+                            padding: 7px 10px;
+                            border-radius: 2px;
+                            margin: 7px 3px;
+                            font-size: 15px;"
+               onMouseOver="this.style.backgroundColor='rgb(15 172 129 / 85%)'"
+               onmouseout="this.style.backgroundColor='#0FAC81'">
+                Next &raquo;
+            </a>
+        </div>
+   
