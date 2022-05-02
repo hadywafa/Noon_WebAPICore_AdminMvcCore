@@ -1,18 +1,215 @@
 ﻿
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Order List";
 }
-
-@*@model IList<EFModel.Models.User>*@
 @model IQueryable<EFModel.Models.EFModels.Order>
 
 
-    <table>
-        <tr>
-            <td></td>
-        </tr>
-    </table>
+
+
+
+<div class="container">
+
+
+    <div class="mb-5 ">
+        <select action="Index" class="form-control">
+            <option value="@EFModel.Enums.DeliveryStatus.Processing" class="text-primary"  >  Processing </option>
+            <option value="@EFModel.Enums.DeliveryStatus.Shipped" class="text-info">  Shipped </option>
+            <option value="@EFModel.Enums.DeliveryStatus.Delivered" class="text-success">  Delivered </option>
+            <option value="@EFModel.Enums.DeliveryStatus.Returned" class="text-danger">  Returned </option>
+            <option value="@EFModel.Enums.DeliveryStatus.Cancelled" class="text-warning">  Cancelled </option>
+        </select>
+    </div>
+
+    <div>
+
+        <table class="table table-striped ">
+
+            <thead>
+            <th>Order Id</th>
+            <th>Order Date</th>
+            <th>Total Price</th>
+            <th>Is Paid</th>
+            <th>Discount</th>
+            <th>Delivery State</th>
+            <th>Product List</th>
+            <th>Edit</th>
+            </thead>
+
+            <tbody>
+
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.OrderDate</td>
+                        <td>@order.TotalPrice</td>
+                        <td>@order.IsPaid</td>
+                        <td>@order.Discount</td>
+                        @{ var color = "secondary";
+                            switch (order.DeliveryStatus)
+                            {
+
+                                case EFModel.Enums.DeliveryStatus.Processing:
+                                    color = "primary";
+                                    break;
+                                case EFModel.Enums.DeliveryStatus.Shipped:
+                                    color = "info";
+                                    break;
+                                case EFModel.Enums.DeliveryStatus.Delivered:
+                                    color = "success";
+                                    break;
+                                case EFModel.Enums.DeliveryStatus.Cancelled:
+                                    color = "warning";
+                                    break;
+                                case EFModel.Enums.DeliveryStatus.Returned:
+                                    color = "danger";
+                                    break;
+                                default:
+                                    color = "info";
+                                    break;
+
+                            }
+
+                            <td class="text-@color ">@order.DeliveryStatus</td>
+
+
+                        }
+
+
+                        <td>
+                            <a asp-action="OrderProducts" asp-route-id="@order.Id" class="btn btn-info">Product List</a>
+                        </td>
+
+                        <td>
+
+                            <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-success">Edit</a>
+
+                        </td>
+
+                    </tr>
+
+
+
+                }
+
+
+
+
+            </tbody>
+
+
+        </table>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+@*@foreach (var order in Model)
+                              {
+        <div class="nk-tb-item">
+            <div class="nk-tb-col">
+                <span class="tb-lead"><a href="#">#@order.Id</a></span>
+            </div>
+            <div class="nk-tb-col tb-col-sm">
+                <div class="user-card">
+                        <div class="user-avatar sm bg-purple-dim">
+                            <span>@order.User.FirstName[0]@order.User.LastName[0]</span>
+                        </div>
+                        <div class="user-name">
+                            <span class="tb-lead">@order.User.FirstName @order.User.LastName</span>
+                        </div>
+                    </div>
+            </div>
+            <div class="nk-tb-col tb-col-md">
+                <span class="tb-sub">@order.OrderDate.ToShortDateString()</span>
+            </div>
+            <div class="nk-tb-col">
+                <span class="tb-sub tb-amount">@order.TotalPrice <span>EGP</span></span>
+            </div>
+
+            <div class="nk-tb-col">
+                <span class="tb-sub tb-amount">@(@order.IsPaid ? "Card" : "Cash")</span>
+            </div>
+
+            @{
+                var deliveryStatus = @order.DeliveryStatus;
+
+                switch (deliveryStatus)
+                {
+                    case EFModel.Enums.DeliveryStatus.Processing:
+                        <text>
+                            <div class="nk-tb-col">
+                                <span class="badge badge-dot badge-dot-xs bg-primary">
+                                    Processing
+                                </span>
+                            </div>
+                        </text>
+                        break;
+
+                    case EFModel.Enums.DeliveryStatus.Shipped:
+                        <text>
+                            <div class="nk-tb-col">
+                                <span class="badge badge-dot badge-dot-xs bg-info">
+                                    Shipped
+                                </span>
+                            </div>
+                        </text>
+                        break;
+
+                    case EFModel.Enums.DeliveryStatus.Delivered:
+                        <text>
+                            <div class="nk-tb-col">
+                                <span class="badge badge-dot badge-dot-xs bg-success">
+                                    Delivered
+                                </span>
+                            </div>
+                        </text>
+                        break;
+
+                    case EFModel.Enums.DeliveryStatus.Cancelled:
+                        <text>
+                            <div class="nk-tb-col">
+                                <span class="badge badge-dot badge-dot-xs bg-warning">
+                                    Cancelled
+                                </span>
+                            </div>
+                        </text>
+                        break;
+
+                    case EFModel.Enums.DeliveryStatus.Returned:
+                        <text>
+                            <div class="nk-tb-col">
+                                <span class="badge badge-dot badge-dot-xs bg-danger">
+                                    Returned
+                                </span>
+                            </div>
+                        </text>
+                        break;
+
+                    default:
+                        <text>
+                            <div class="nk-tb-col">
+                                <span class="badge badge-dot badge-dot-xs bg-secondary">
+                                    Not Known
+                                </span>
+                            </div>
+                        </text>
+                        break;
+
+                          }
+                      }
+
+        </div>
+    }*@
 
 
 

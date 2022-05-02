@@ -7,7 +7,8 @@ namespace EFModel.Models.EFModels
     public class Order : Base
     {
         // Each Order is made by one Customer
-        //public int CustoemerId { get; set; } 
+
+        public string CustomerID { get; set; }
         public Customer Customer { get; set; }
         public User User { get; set; }
 
@@ -23,6 +24,11 @@ namespace EFModel.Models.EFModels
         public decimal Discount { get; set; }
 
         public DeliveryStatus DeliveryStatus { get; set; }
+
+
+        //DeliveryStatusDescription---Mohamed
+
+        public string DeliveryStatusDescription { get; set; }
 
         // Each Order has a collection of Items
         public ICollection<OrderItem> OrderItems { get; set; }
