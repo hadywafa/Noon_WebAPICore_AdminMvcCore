@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Order List";
 }
-@model IQueryable<EFModel.Models.EFModels.Order>
+@model EFModel.Models.PaginatedList<EFModel.Models.EFModels.Order>
 
 
 
@@ -12,15 +12,15 @@
 <div class="container">
 
 
-    <div class="mb-5 ">
+    @*<div class="mb-5 ">
         <select action="Index" class="form-control">
-            <option value="@EFModel.Enums.DeliveryStatus.Processing" class="text-primary"  >  Processing </option>
+            <option value="@EFModel.Enums.DeliveryStatus.Processing" class="text-primary">  Processing </option>
             <option value="@EFModel.Enums.DeliveryStatus.Shipped" class="text-info">  Shipped </option>
             <option value="@EFModel.Enums.DeliveryStatus.Delivered" class="text-success">  Delivered </option>
             <option value="@EFModel.Enums.DeliveryStatus.Returned" class="text-danger">  Returned </option>
             <option value="@EFModel.Enums.DeliveryStatus.Cancelled" class="text-warning">  Cancelled </option>
         </select>
-    </div>
+    </div>*@
 
     <div>
 
@@ -30,7 +30,7 @@
             <th>Order Id</th>
             <th>Order Date</th>
             <th>Total Price</th>
-            <th>Is Paid</th>
+            <th>Payment</th>
             <th>Discount</th>
             <th>Delivery State</th>
             <th>Product List</th>
@@ -45,7 +45,7 @@
                         <td>@order.Id</td>
                         <td>@order.OrderDate</td>
                         <td>@order.TotalPrice</td>
-                        <td>@order.IsPaid</td>
+                        <td>@(order.IsPaid?"Card":"Cash")</td>
                         <td>@order.Discount</td>
                         @{ var color = "secondary";
                             switch (order.DeliveryStatus)
@@ -103,6 +103,71 @@
         </table>
 
     </div>
+
+    <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end">
+        <ul class="link-check">
+            <li>
+                <span>Show</span>
+            </li>
+            <li class="@(@ViewBag.rowsPerPage == 10 ? "active" : "hide")">
+                <a asp-action="Index"
+                   asp-route-pageSize="2">
+                    2
+                </a>
+            </li>
+            <li class="@(@ViewBag.rowsPerPage == 20 ? "active" : "hide")">
+                <a asp-action="Index"
+                   asp-route-pageSize="4">
+                    4
+                </a>
+            </li>
+            <li class="@(@ViewBag.rowsPerPage == 50 ? "active" : "hide")">
+                <a asp-action="Index"
+                   asp-route-pageSize="6">
+                    6
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    }
+
+    <div class="container d-flex flex-direction-row justify-content-center align-content-center align-items-center">
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-pageSize=@ViewBag.rowsPerPage
+           class="btn @prevDisabled"
+           style="text-decoration: none;
+                            color: white;
+                            background: #0FAC81;
+                            padding: 7px 10px;
+                            border-radius: 2px;
+                            margin: 7px 3px;
+                            font-size: 15px;"
+           onMouseOver="this.style.backgroundColor='rgb(15 172 129 / 85%)'"
+           onmouseout="this.style.backgroundColor='#0FAC81'">
+            &laquo; Previous
+        </a>
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-pageSize=@ViewBag.rowsPerPage
+           class="btn @nextDisabled"
+           style="text-decoration: none;
+                            color: white;
+                            background: #0FAC81;
+                            padding: 7px 10px;
+                            border-radius: 2px;
+                            margin: 7px 3px;
+                            font-size: 15px;"
+           onMouseOver="this.style.backgroundColor='rgb(15 172 129 / 85%)'"
+           onmouseout="this.style.backgroundColor='#0FAC81'">
+            Next &raquo;
+        </a>
+    </div>
+
 </div>
 
 
