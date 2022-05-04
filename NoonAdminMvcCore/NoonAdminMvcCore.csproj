@@ -28,6 +28,7 @@
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.12" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="MicrosoftMvcAjax.Mvc5" Version="5.0.0" />
+    <PackageReference Include="NToastNotify" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

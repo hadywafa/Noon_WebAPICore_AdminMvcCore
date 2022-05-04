@@ -153,7 +153,7 @@
                                 </a>
                                 <ul class="nk-menu-sub">
                                     <li class="nk-menu-item">
-                                        <a href="html/hospital/doctor-nurse-add.html" class="nk-menu-link">
+                                        <a href="@Url.Action("Create", "Product")" class="nk-menu-link">
                                             <span class="nk-menu-text">Add Product</span>
                                         </a>
                                     </li>
@@ -168,13 +168,13 @@
                                 </a>
                                 <ul class="nk-menu-sub">
                                     <li class="nk-menu-item">
-                                        <a href="html/hospital/income-list.html" class="nk-menu-link">
+                                        <a href="@Url.Action("Create", "Category")" class="nk-menu-link">
                                             <span class="nk-menu-text">Add Category</span>
                                         </a>
                                     </li>
                                 </ul><!-- .nk-menu-sub -->
                             </li><!-- .nk-menu-item -->
-                            <li class="nk-menu-item has-sub">
+                            <!--<li class="nk-menu-item has-sub">
                                 <a href="#" class="nk-menu-link nk-menu-toggle">
                                     <span class="nk-menu-icon">
                                         <em class="icon ni ni-cart-fill"></em>
@@ -187,8 +187,8 @@
                                             <span class="nk-menu-text">Add Order</span>
                                         </a>
                                     </li>
-                                </ul><!-- .nk-menu-sub -->
-                            </li><!-- .nk-menu-item -->
+                                </ul>--><!-- .nk-menu-sub -->
+                            <!--</li>--><!-- .nk-menu-item -->
                         </ul><!-- .nk-menu -->
                     </div>
 
@@ -278,7 +278,7 @@
 
 
                             <li class="nk-menu-item">
-                                <a href="html/gallery.html" class="nk-menu-link">
+                                <a asp-controller="Product" asp-action="Index" class="nk-menu-link">
                                     <span class="nk-menu-icon">
                                         <em class="icon ni ni-list-fill"></em>
                                     </span>
@@ -286,7 +286,7 @@
                                 </a>
                             </li><!-- .nk-menu-item -->
                             <li class="nk-menu-item">
-                                <a href="html/_blank.html" class="nk-menu-link">
+                                <a asp-controller="Category" asp-action="Index" class="nk-menu-link">
                                     <span class="nk-menu-icon">
                                         <em class="icon ni ni-view-col-fill"></em>
                                     </span>
@@ -294,7 +294,7 @@
                                 </a>
                             </li>
                             <li class="nk-menu-item">
-                                <a href="html/pages/faqs.html" class="nk-menu-link">
+                                <a asp-controller="Order" asp-action="Index"  class="nk-menu-link">
                                     <span class="nk-menu-icon">
                                         <em class="icon ni ni-cart-fill"></em>
                                     </span>

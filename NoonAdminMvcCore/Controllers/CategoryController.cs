@@ -18,7 +18,7 @@ using BL.AppPolicy;
 
 namespace NoonAdminMvcCore.Controllers
 {
-    [Authorize(Roles = AuthorizeRoles.Admin)]
+    //[Authorize(Roles = AuthorizeRoles.Admin)]
     public class CategoryController : Controller
     {
 
@@ -39,16 +39,74 @@ namespace NoonAdminMvcCore.Controllers
         }
 
         // GET: Category
-        public IActionResult Index()
+        public IActionResult Index(string currentFilter, string searchString, int? pageNumber, int? pageSize)
+        
         {
-            var cat= _categoryRepository.GetAll().Include(c=>c.Image);
-            if (cat.Any())
-            {
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["PageSize"] = pageSize;
 
-                return View("Index",cat);
+
+            var cats = new List<Category>();
+            var categories = _categoryRepository.GetAll().Include(i => i.Image).ToList();
+                
+            if (!(String.IsNullOrEmpty(searchString) && string.IsNullOrEmpty(currentFilter)))
+            {
+                // Case: first search but not first page => second, third ...etc
+                if (string.IsNullOrEmpty(searchString))
+                {
+                    searchString = currentFilter;
+                    ViewData["CurrentFilter"] = searchString;
+                }
+                else
+                {
+                    // Case: Search changed
+                    //If the search string is changed during paging, the page has to be reset to 1
+                    pageNumber = 1;
+                }
+
+                foreach (var cat in categories)
+                {
+                    var _cat = _categoryRepository.Find(c => c.Id == cat.Id
+
+                        && (c.Name.Contains(searchString) || c.NameArabic.Contains(searchString)
+                       || c.Parent.Name.Contains(searchString) || c.Parent.NameArabic.Contains(searchString)));
+
+                    if (_cat != null)
+                        cats.Add(_cat);
+                }
+            } // B- No search => Get All
+            else
+            {
+                cats = _categoryRepository.GetAll().Include(i => i.Image).ToList();
+              
             }
 
-            return NotFound();
+            if (categories.Any())
+            {
+                // send role, users count, and the current page number to the view page
+                // we will need to get them later in suspend and activate actions below
+
+                ViewBag.Count = categories.Count();
+                ViewBag.Page = pageNumber;
+
+                if (searchString != null)
+                {
+                    ViewBag.Search = searchString;
+                }
+
+                // Sepcifiy number of users you want to display in one page
+                int rowsPerPage = pageSize ?? 3;
+                ViewBag.rowsPerPage = rowsPerPage;
+
+
+                //return View(users);
+                return View(EFModel.Models.PaginatedList<Category>.CreateAsync(cats, pageNumber ?? 1, rowsPerPage));
+            }
+            else
+            {
+                // else no users are found
+                return NotFound();
+            }
         }
 
         
@@ -106,7 +164,7 @@ namespace NoonAdminMvcCore.Controllers
                         _unitOfWork.Save();
 
                     }
-                    return View("Index", _categoryRepository.GetAll().Include(c => c.Image));
+                    return RedirectToAction("Index");
 
                 }
                 else
@@ -145,7 +203,7 @@ namespace NoonAdminMvcCore.Controllers
 
 
                     }
-                    return View("Index", _categoryRepository.GetAll().Include(c => c.Image));
+                    return RedirectToAction("Index");
                 }
 
                 
@@ -196,7 +254,7 @@ namespace NoonAdminMvcCore.Controllers
             _unitOfWork.Save();
 
            
-            return View("Index",_categoryRepository.GetAll().Include(c => c.Image));
+            return RedirectToAction("Index");
         }
 
         private void deleteFilefromRoot(string  img)

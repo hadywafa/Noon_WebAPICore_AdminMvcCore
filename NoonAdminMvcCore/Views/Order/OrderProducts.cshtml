@@ -1,0 +1,43 @@
+﻿@model IEnumerable<EFModel.Models.EFModels.OrderItem>
+
+<div class="container">
+
+    <table class="table table-striped">
+        <thead>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+        </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Product.Name </td>
+                        <td>@item.Quantity </td>
+                        <td>@item.Price </td>
+                        
+                    </tr>
+                }
+
+                <tr>
+                    <td>Order Total Price</td>
+                    <td> @ViewBag.TotalPrice</td>
+                </tr>
+
+            </tbody>
+
+      
+    </table>
+
+
+
+</div>
+
+
+
+
+
+
+
+

@@ -10,7 +10,7 @@ namespace NoonAdminMvcCore.Models
 {
     public class ProductViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required(ErrorMessage = "Name of product is required"), MinLength(3), MaxLength(50)]
         public string Name { get; set; }

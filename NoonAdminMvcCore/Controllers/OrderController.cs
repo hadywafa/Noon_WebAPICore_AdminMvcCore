@@ -1,9 +1,12 @@
 ﻿using BL.AppPolicy;
+using EFModel.Enums;
 using EFModel.Models;
 using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NoonAdminMvcCore.Models;
+using NToastNotify;
 using Repository.GenericRepository;
 using Repository.UnitWork;
 using System;
@@ -21,23 +24,78 @@ namespace NoonAdminMvcCore.Controllers
         private readonly IGenericRepo<Order> _orderRepo;
         readonly IGenericRepo<User> _userRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IToastNotification _toast;
+        private readonly IGenericRepo<OrderItem> _orderItems;
 
 
 
-        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager)
+        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager,IToastNotification toast )
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _orderRepo = unitOfWork.Orders;
+            _orderItems = unitOfWork.OrderItems;
+            this._toast = toast;
+        }
+        //DeliveryStatus state
+        public IActionResult Index(string? id, int? pageNumber, int? pageSize)
+        {
+            ViewData["PageSize"] = pageSize;
+
+            int rowsPerPage = pageSize ?? 10;
+            ViewBag.rowsPerPage = rowsPerPage;
+
+            List<Order> orders;
+
+            if (id != null)
+                   orders = _orderRepo.FindAll(orders => orders.CustomerID == id).ToList();
+            else
+               orders = _orderRepo.GetAll().ToList();
+
+            return View(EFModel.Models.PaginatedList<Order>.CreateAsync(orders, pageNumber ?? 1, rowsPerPage));
         }
 
-        public IActionResult Index()
+
+        public IActionResult OrderProducts(int id)
+        {
+            
+            var order = _orderRepo.Find(o => o.Id == id);
+            var items=_orderItems.FindAll(item => item.OrderId == id,p=>p.Product);
+            ViewBag.TotalPrice = order.TotalPrice;
+            
+            return View(items);
+        }
+
+        public IActionResult Edit(int id)
         {
 
-            IQueryable<Order> orders;
-            orders=_orderRepo.GetAll();
+            var order=_orderRepo.Find(o => o.Id == id);
 
-            return View(orders);
+            OrderViewModel model = new OrderViewModel {
+                Id = order.Id,
+                DeliveryStatus = order.DeliveryStatus,
+                DeliveryStatusDescription = order.DeliveryStatusDescription
+            };
+            
+            return View(model);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public IActionResult Edit(OrderViewModel model)
+        {
+            var order = _orderRepo.Find(o=>o.Id==model.Id);
+
+            order.DeliveryStatus = model.DeliveryStatus;
+            order.DeliveryStatusDescription = model.DeliveryStatusDescription;
+            _unitOfWork.Save();
+
+            _toast.AddSuccessToastMessage("Order Status Updated Successfully");
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

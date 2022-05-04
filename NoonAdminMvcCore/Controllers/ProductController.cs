@@ -20,7 +20,7 @@ using BL.AppPolicy;
 
 namespace NoonAdminMvcCore.Controllers
 {
-    [Authorize(Roles = AuthorizeRoles.Admin)]
+    
     public class ProductController : Controller
     {
         #region Intitilazition Repo
@@ -49,15 +49,76 @@ namespace NoonAdminMvcCore.Controllers
         }
 
         // GET: Product
-        public IActionResult Index()
+        public IActionResult Index(string currentFilter, string searchString, int? pageNumber, int? pageSize)
         {
-            var product = _productRepository.GetAll().Include(i=>i.Images).Include(c=>c.Category).Include(s=>s.Seller.User);
-            if (product !=null)
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["PageSize"] = pageSize;
+
+
+            var prods = new List<Product>();
+            var products = _productRepository.GetAll().Include(i => i.Images)
+                .Include(c=>c.Category).Include(s=>s.Seller.User).ToList();
+            if (!(String.IsNullOrEmpty(searchString) && string.IsNullOrEmpty(currentFilter)))
             {
-                return View(product);
+                // Case: first search but not first page => second, third ...etc
+                if (string.IsNullOrEmpty(searchString))
+                {
+                    searchString = currentFilter;
+                    ViewData["CurrentFilter"] = searchString;
+                }
+                else
+                {
+                    // Case: Search changed
+                    //If the search string is changed during paging, the page has to be reset to 1
+                    pageNumber = 1;
+                }
+
+                foreach (var prod in products)
+                {
+                    
+                    var _prod = _productRepository.Find(p => p.Id == prod.Id
+
+                        && (p.Name.Contains(searchString)
+                        || p.NameArabic.Contains(searchString) || p.Quantity.ToString().Contains(searchString)
+                        || p.Seller.User.FirstName.Contains(searchString) || p.Seller.User.LastName.Contains(searchString)
+                        || p.Category.Name.Contains(searchString)|| p.Category.NameArabic.Contains(searchString)));
+
+                    if (_prod != null)
+                        prods.Add(_prod);
+                }
+            } // B- No search => Get All
+            else
+            {
+                prods = _productRepository.GetAll().Include(i => i.Images)
+               .Include(c => c.Category).Include(s => s.Seller.User).ToList();
             }
 
-            return NotFound();
+            if (products.Any())
+            {
+                // send role, users count, and the current page number to the view page
+                // we will need to get them later in suspend and activate actions below
+           
+                ViewBag.Count = products.Count();
+                ViewBag.Page = pageNumber;
+
+                if (searchString != null)
+                {
+                    ViewBag.Search = searchString;
+                }
+
+                // Sepcifiy number of users you want to display in one page
+                int rowsPerPage = pageSize ?? 3;
+                ViewBag.rowsPerPage = rowsPerPage;
+
+                 
+                //return View(users);
+                return View(EFModel.Models.PaginatedList<Product>.CreateAsync(prods, pageNumber ?? 1, rowsPerPage));
+            }
+            else
+            {
+                // else no users are found
+                return NotFound();
+            }
         }
 
 
@@ -83,7 +144,7 @@ namespace NoonAdminMvcCore.Controllers
             if (ModelState.IsValid)
             {
 
-                if (_productRepository.GetById(productVM.Id) == null)
+                if (productVM.Id == null)
                 {
 
                     #region addproduct
@@ -116,7 +177,7 @@ namespace NoonAdminMvcCore.Controllers
                             string filepath = Path.Combine(imgsave, (item.FileName));
                             var straem = new FileStream(filepath, FileMode.Create);
                             item.CopyTo(straem);
-
+                            straem.Close();
                             Images img = new Images()
                             {
                                 ProductId = prod.Id,
@@ -134,13 +195,14 @@ namespace NoonAdminMvcCore.Controllers
                     #endregion
 
 
-                    return View("Index", _productRepository.GetAll().Include(i => i.Images).Include(c => c.Category).Include(s => s.Seller.User));
+                    return RedirectToAction("Index");
                 }
                 else
                 { //if productVm is not null  for Updtening
 
                     #region Update product
-                    var prod = _productRepository.Find(u => u.Id == productVM.Id);
+                    int targtedId = int.Parse(productVM.Id);
+                    var prod = _productRepository.GetById(targtedId);
 
                     if (prod == null)
                     {
@@ -164,13 +226,14 @@ namespace NoonAdminMvcCore.Controllers
                     {
                         foreach (var item in files)
                         {
-                            var imgsave = Path.Combine(iweb.WebRootPath, "Images", (item.FileName));
+                            var imgsave = Path.Combine(iweb.WebRootPath, "Images");
                             string filepath = Path.Combine(imgsave, item.FileName);
                             var straem = new FileStream(filepath, FileMode.Create);
+                            
                             item.CopyTo(straem);
-
+                            straem.Close();
                             Images img = _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefault();
-                            deleteFilefromRoot(img.Image);
+                          
                             img.Image = item.FileName;
                             _imageRepository.Update(img);
                             _unitOfWork.Save();
@@ -180,7 +243,7 @@ namespace NoonAdminMvcCore.Controllers
 
                     #endregion
 
-                    return View("Index", _productRepository.GetAll().Include(i => i.Images).Include(c => c.Category).Include(s => s.Seller.User));
+                    return RedirectToAction("Index");
                 }
 
                
@@ -233,27 +296,51 @@ namespace NoonAdminMvcCore.Controllers
                 return NotFound();
             }
 
-            var product = _productRepository.GetById(id);
-            var img = _imageRepository.GetAll().Where(i => i.ProductId == id);
+            var product = _productRepository.Find(p=>p.Id==id);
 
-            if (img.Count() > 0)
-            {
-                foreach (var item in img)
-                {
-                    deleteFilefromRoot(item.Image);
-                }
-            }
+            
             _productRepository.Remove(product);
-
+            _unitOfWork.Save();
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View("Index", _productRepository.GetAll().Include(i => i.Images).Include(c => c.Category).Include(s => s.Seller.User));
+            return RedirectToAction("Index");
         }
 
+        public ActionResult Suspend(int id, string currentFilter, int? pageNumber)
+        {
+            // get the product
+            var prod = _productRepository.GetById(id);
 
+            //suspend the product
+            prod.IsActive = false;
+
+            //update database
+            _productRepository.Update(prod);
+
+            // save updates
+            _unitOfWork.Save();
+
+            return RedirectToAction("Index", new {currentFilter = currentFilter, pageNumber = pageNumber });
+        }
+        public ActionResult Activate(int id, string currentFilter, int? pageNumber)
+        {
+            // get the product
+            var prod= _productRepository.GetById(id);
+
+            // suspend the product
+            prod.IsActive = true;
+
+            // update database
+            _productRepository.Update(prod);
+
+            // save updates
+            _unitOfWork.Save();
+
+            return RedirectToAction("Index", new {  currentFilter = currentFilter, pageNumber = pageNumber });
+        }
         private void deleteFilefromRoot(string img)
         {
             img = Path.Combine(iweb.WebRootPath, "Images", img);

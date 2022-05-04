@@ -18,7 +18,7 @@
 
                         @*For security*@
                         @Html.AntiForgeryToken()
-
+                        @Html.HiddenFor(m => m.Id)
 
                         <div class="col-xxl-3 col-md-4">
                             <div class="form-group">
@@ -122,11 +122,11 @@
                             <div class="form-group">
                                 @Html.LabelFor(m => m.IsActive, "Status", new { @class = "form-label" })
                                 <div class="form-control-wrap">
-                                    @Html.DropDownListFor(m => m.IsActive, new List<SelectListItem>
-                                        {
-                                        new SelectListItem { Text = "Active", Value = "true"},
-                                        new SelectListItem { Text = "Suspended", Value = "false"}
-                                        }, new { @class = "orm-select js-select2" })
+                                    <select asp-for="IsActive" class = "orm-select js-select2">
+                                        <option value="true">Active</option>
+                                        <option value="false">Suspended</option>
+                                    </select>
+                                   
                                 </div>
                             </div>
                         </div>
