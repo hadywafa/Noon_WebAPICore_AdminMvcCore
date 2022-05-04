@@ -23,11 +23,17 @@
             <span class="sub-text">Category Perant</span>
         </div>
         
-        <div class="nk-tb-col tb-col-lg">
-                 <span>Edit</span>
-        </div>
-        <div class="nk-tb-col tb-col-lg">
-           <span>Delete</span>
+        <div class="nk-tb-col nk-tb-col-tools">
+            <ul class="nk-tb-actions gx-1 my-n1">
+                <li>
+                    <div class="drodown">
+                        <a href="#" class="dropdown-toggle btn btn-icon btn-trigger me-n1" data-bs-toggle="dropdown">
+                            <em class="icon ni ni-more-h"></em>
+                        </a>
+
+                    </div>
+                </li>
+            </ul>
         </div>
 
     </div>
@@ -91,12 +97,38 @@
         }
 
     }
-    
-    <div class="nk-tb-col tb-col-lg">
-        @Html.ActionLink("Edit", "Edit", "Category", new { Category.Id }, new { @class = "btn btn-primary" })
-    </div>
-    <div class="nk-tb-col tb-col-lg">
-        @Html.ActionLink("Delete", "Delete", "Category", new { Category.Id }, new { @class = "btn btn-warning" })
+
+    <div class="nk-tb-col nk-tb-col-tools">
+        <ul class="nk-tb-actions gx-1">
+            <li class="nk-tb-action-hidden">
+                <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Send Email">
+                    <em class="icon ni ni-mail-fill"></em>
+                </a>
+            </li>
+            <li class="nk-tb-action-hidden">
+                <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Suspend">
+                    <em class="icon ni ni-user-cross-fill"></em>
+                </a>
+            </li>
+            <li>
+                <div class="drodown">
+                    <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown">
+                        <em class="icon ni ni-more-h"></em>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <ul class="link-list-opt no-bdr">
+
+                            <li>
+                                @Html.ActionLink("Edit", "Edit", "Category", new { id = Category.Id })
+                            </li>
+                            <li>
+                                @Html.ActionLink("Delete", "Delete", "Category", new { id = Category.Id })
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 
 

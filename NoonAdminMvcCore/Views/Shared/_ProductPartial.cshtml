@@ -38,12 +38,19 @@
         <div class="nk-tb-col tb-col-md">
             <span class="sub-text">Status</span>
         </div>
-        <div class="nk-tb-col tb-col-lg">
-            <span>Edit</span>
+        <div class="nk-tb-col nk-tb-col-tools">
+            <ul class="nk-tb-actions gx-1 my-n1">
+                <li>
+                    <div class="drodown">
+                        <a href="#" class="dropdown-toggle btn btn-icon btn-trigger me-n1" data-bs-toggle="dropdown">
+                            <em class="icon ni ni-more-h"></em>
+                        </a>
+                      
+                    </div>
+                </li>
+            </ul>
         </div>
-        <div class="nk-tb-col tb-col-lg">
-            <span>Delete</span>
-        </div>
+        
 
     </div>
     <!-- .nk-tb-item -->
@@ -60,11 +67,13 @@
         <a href="html/user-details-regular.html">
             <div class="user-card">
                 <div class="user-avatar bg-primary">
-                    @foreach(var img in product.Images)
-                {
-                    <span><img src="~/Images/@img.Image" /></span>
-                }
-                    
+                    @foreach (var img in product.Images.Take(1))
+                    {
+
+                        <span><img src="~/Images/@img.Image" /></span>
+
+                    }
+
                 </div>
                 <div class="user-info">
                     <span class="tb-lead">
@@ -120,13 +129,63 @@
         }
 
     </div>
+    <div class="nk-tb-col nk-tb-col-tools">
+        <ul class="nk-tb-actions gx-1">
+            <li class="nk-tb-action-hidden">
+                <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Send Email">
+                    <em class="icon ni ni-mail-fill"></em>
+                </a>
+            </li>
+            <li class="nk-tb-action-hidden">
+                <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Suspend">
+                    <em class="icon ni ni-user-cross-fill"></em>
+                </a>
+            </li>
+            <li>
+                <div class="drodown">
+                    <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown">
+                        <em class="icon ni ni-more-h"></em>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <ul class="link-list-opt no-bdr">
 
-    <div class="nk-tb-col tb-col-lg">
-        @Html.ActionLink("Edit", "Edit", "Product", new { product.Id }, new { @class = "btn btn-primary" })
+                            <li class="divider"></li>
+
+                            <li>
+                                @Html.ActionLink("Suspend", "Suspend", "Product",
+                                new
+                                     {
+                                         @id = product.Id,
+
+                                    @currentFilter = @ViewBag.Search,
+                                    @pageNumber = @ViewBag.Page,
+                                    })
+                            </li>
+
+                            <li>
+                                @Html.ActionLink("Activate", "Activate", "Product",
+                                new
+                                     {
+                                         @id = product.Id,
+                                    @currentFilter = @ViewBag.Search,
+                                    @searchString = @ViewBag.Search,
+                                    @pageNumber = @ViewBag.Page,
+                                    })
+                            </li>
+
+                            <li>
+                                @Html.ActionLink("Edit", "Edit", "Product", new { id = product.Id })
+                            </li>
+                            <li>
+                                @Html.ActionLink("Delete", "Delete", "Product", new { id = product.Id })
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
-    <div class="nk-tb-col tb-col-lg">
-        @Html.ActionLink("Delete", "Delete", "Product", new { product.Id }, new { @class = "btn btn-warning" })
-    </div>
+
 
 </div>
     }
