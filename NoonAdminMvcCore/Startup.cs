@@ -17,6 +17,7 @@ using Repository.CustomRepository.AuthRepo;
 using Repository.GenericRepository;
 using Repository.UnitWork;
 using SqlServerDBContext;
+using NToastNotify;
 
 namespace NoonAdminMvcCore
 {
@@ -49,6 +50,22 @@ namespace NoonAdminMvcCore
             #region Register IdentityUser to my DB Context
             services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<SqlContext>().AddDefaultUI().AddDefaultTokenProviders();
+            #endregion
+
+            #region Toaster Notification
+
+            services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
+            {
+
+                ProgressBar = true,
+                PositionClass = ToastPositions.TopRight,
+                PreventDuplicates = true,
+                CloseButton = true
+
+
+            });
+
+
             #endregion
 
             services.AddDatabaseDeveloperPageExceptionFilter();
