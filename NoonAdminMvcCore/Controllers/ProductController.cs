@@ -177,7 +177,7 @@ namespace NoonAdminMvcCore.Controllers
                             string filepath = Path.Combine(imgsave, (item.FileName));
                             var straem = new FileStream(filepath, FileMode.Create);
                             item.CopyTo(straem);
-
+                            straem.Close();
                             Images img = new Images()
                             {
                                 ProductId = prod.Id,
@@ -229,8 +229,9 @@ namespace NoonAdminMvcCore.Controllers
                             var imgsave = Path.Combine(iweb.WebRootPath, "Images");
                             string filepath = Path.Combine(imgsave, item.FileName);
                             var straem = new FileStream(filepath, FileMode.Create);
+                            
                             item.CopyTo(straem);
-
+                            straem.Close();
                             Images img = _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefault();
                           
                             img.Image = item.FileName;
@@ -295,7 +296,7 @@ namespace NoonAdminMvcCore.Controllers
                 return NotFound();
             }
 
-            var product = _productRepository.GetById(id);
+            var product = _productRepository.Find(p=>p.Id==id);
 
             
             _productRepository.Remove(product);
@@ -308,7 +309,38 @@ namespace NoonAdminMvcCore.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult Suspend(int id, string currentFilter, int? pageNumber)
+        {
+            // get the product
+            var prod = _productRepository.GetById(id);
 
+            //suspend the product
+            prod.IsActive = false;
+
+            //update database
+            _productRepository.Update(prod);
+
+            // save updates
+            _unitOfWork.Save();
+
+            return RedirectToAction("Index", new {currentFilter = currentFilter, pageNumber = pageNumber });
+        }
+        public ActionResult Activate(int id, string currentFilter, int? pageNumber)
+        {
+            // get the product
+            var prod= _productRepository.GetById(id);
+
+            // suspend the product
+            prod.IsActive = true;
+
+            // update database
+            _productRepository.Update(prod);
+
+            // save updates
+            _unitOfWork.Save();
+
+            return RedirectToAction("Index", new {  currentFilter = currentFilter, pageNumber = pageNumber });
+        }
         private void deleteFilefromRoot(string img)
         {
             img = Path.Combine(iweb.WebRootPath, "Images", img);
