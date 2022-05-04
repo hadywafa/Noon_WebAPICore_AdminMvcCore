@@ -306,7 +306,7 @@ namespace NoonAdminMvcCore.Controllers
             return "there are an Error or dummy Products are Existed";
         }
 
-        public async string HwAddOrder()
+        public async Task<string> HwAddOrder()
         {
             bool isInserted = _orderRepo.GetAll().Any(c => c.Discount == (decimal)0.5);
             if (!isInserted)
@@ -315,6 +315,7 @@ namespace NoonAdminMvcCore.Controllers
 
                 var orderMo1 = new Order()
                 {
+                    User = await _userManager.FindByEmailAsync("MoCustomer@gmail.com"),
                     Customer = _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
                     Shipper = _shipperRepo.Find(s => s.User.Email == "MoShipper@gmail.com"),
                     Discount = (decimal)0.5,
@@ -350,6 +351,7 @@ namespace NoonAdminMvcCore.Controllers
 
                 var orderMo2 = new Order()
                 {
+                    User = await _userManager.FindByEmailAsync("MoCustomer@gmail.com"),
                     Customer = _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
                     Shipper = _shipperRepo.Find(s => s.User.Email == "MoShipper@gmail.com"),
                     Discount = (decimal)0.5,
