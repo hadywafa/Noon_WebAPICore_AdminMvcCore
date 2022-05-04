@@ -155,24 +155,24 @@
                                                                     <a asp-action="Index"
                                                                        asp-route-currentFilter=@ViewBag.Search
                                                                        asp-route-role=@ViewBag.Role
-                                                                       asp-route-pageSize="2">
-                                                                        2
+                                                                       asp-route-pageSize="10">
+                                                                        10
                                                                     </a>
                                                                 </li>
                                                                 <li class="@(@ViewBag.rowsPerPage == 20 ? "active" : "hide")">
                                                                     <a asp-action="Index"
                                                                        asp-route-currentFilter=@ViewBag.Search
                                                                        asp-route-role=@ViewBag.Role
-                                                                       asp-route-pageSize="4">
-                                                                        4
+                                                                       asp-route-pageSize="20">
+                                                                        20
                                                                     </a>
                                                                 </li>
                                                                 <li class="@(@ViewBag.rowsPerPage == 50 ? "active" : "hide")">
                                                                     <a asp-action="Index"
                                                                        asp-route-currentFilter=@ViewBag.Search
                                                                        asp-route-role=@ViewBag.Role
-                                                                       asp-route-pageSize="6">
-                                                                        6
+                                                                       asp-route-pageSize="50">
+                                                                       50
                                                                     </a>
                                                                 </li>
                                                             </ul>

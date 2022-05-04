@@ -95,7 +95,7 @@ namespace NoonAdminMvcCore.Controllers
                 }
 
                 // Sepcifiy number of users you want to display in one page
-                int rowsPerPage = pageSize ?? 3;
+                int rowsPerPage = pageSize ?? 10;
                 ViewBag.rowsPerPage = rowsPerPage;
 
 
