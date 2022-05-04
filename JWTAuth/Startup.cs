@@ -82,7 +82,7 @@ namespace JWTAuth
             }).AddJwtBearer(extraOptions =>
             {
                 extraOptions.RequireHttpsMetadata = false;
-                extraOptions.SaveToken = false;
+                extraOptions.SaveToken = true;
                 extraOptions.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
