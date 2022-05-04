@@ -227,6 +227,9 @@ namespace SqlServerDBContext.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CustomerID")
                         .HasColumnType("nvarchar(450)");
 
@@ -251,10 +254,17 @@ namespace SqlServerDBContext.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("TotalRevenue")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
 
                     b.HasIndex("CustomerID");
 
@@ -300,6 +310,9 @@ namespace SqlServerDBContext.Migrations
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("BuyingPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -327,14 +340,17 @@ namespace SqlServerDBContext.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Revenue")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("SellerId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("SellingPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Weight")
                         .HasColumnType("nvarchar(max)");
@@ -752,6 +768,10 @@ namespace SqlServerDBContext.Migrations
 
             modelBuilder.Entity("EFModel.Models.EFModels.Order", b =>
                 {
+                    b.HasOne("EFModel.Models.EFModels.Address", "CustomerAddress")
+                        .WithOne("Order")
+                        .HasForeignKey("EFModel.Models.EFModels.Order", "AddressId");
+
                     b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerID");
@@ -765,6 +785,8 @@ namespace SqlServerDBContext.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("CustomerAddress");
 
                     b.Navigation("Shipper");
 
@@ -912,6 +934,11 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("EFModel.Models.EFModels.Address", b =>
+                {
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Category", b =>

@@ -854,7 +854,7 @@ $file-desc-sap:           $ni-dot !default;
     }
 }
 
-@include media-breakpoint-up(xxl){
+@include media-breakpoint-up(xl){
     .nk-files-view{
         &-grid {
             .nk-file{

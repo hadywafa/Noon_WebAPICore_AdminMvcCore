@@ -163,34 +163,34 @@ $shady_shadow: 0 0 25px -12px rgba($dark, .15);
     .nk-fmg-body,
     .nk-msg-aside,.nk-msg-body,
     .nk-chat-aside,.note-editor.note-frame,.tox-tinymce{
-        border-radius: $border-radius-xxl;
+        border-radius: $border-radius-xl;
     }
     .card > .list-group:first-child,
     .card-header:first-child,
     .card-img, 
     .card-img-top,.ql-toolbar ,.note-toolbar{
-        border-top-left-radius: ($border-radius-xxl - 1);
-        border-top-right-radius: ($border-radius-xxl - 1);
+        border-top-left-radius: ($border-radius-xl - 1);
+        border-top-right-radius: ($border-radius-xl - 1);
     }
     .card > .list-group:last-child,.card-footer:last-child,.ql-container {
-        border-bottom-right-radius: ($border-radius-xxl - 1);
-        border-bottom-left-radius: ($border-radius-xxl - 1);
+        border-bottom-right-radius: ($border-radius-xl - 1);
+        border-bottom-left-radius: ($border-radius-xl - 1);
     }
     .card .table tr:first-child th:first-child {
-        border-top-left-radius: ($border-radius-xxl - 1);
+        border-top-left-radius: ($border-radius-xl - 1);
     }
     .card .table tr:first-child th:last-child {
-        border-top-right-radius: ($border-radius-xxl - 1);
+        border-top-right-radius: ($border-radius-xl - 1);
     }
 }
 
 @media (min-width: 860px){
     .nk-chat-body{
-        border-radius: $border-radius-xxl;
+        border-radius: $border-radius-xl;
     }
 }
 @include media-breakpoint-up(lg){
     .nk-ibx-aside,.nk-fmg-aside{
-        border-radius: $border-radius-xxl;
+        border-radius: $border-radius-xl;
     }
 }

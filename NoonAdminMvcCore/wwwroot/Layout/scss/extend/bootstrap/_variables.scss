@@ -386,7 +386,7 @@ $grid-breakpoints: (
   md: 768px,
   lg: 992px,
   xl: 1200px,
-  xxl: 1540px
+  xl: 1540px
 );
 // scss-docs-end grid-breakpoints
 
@@ -404,7 +404,7 @@ $container-max-widths: (
   md: 720px,
   lg: 960px,
   xl: 1140px,
-  xxl: 1440px
+  xl: 1440px
 );
 // scss-docs-end container-max-widths
 
@@ -447,7 +447,7 @@ $border-radius:               4px;
 $border-radius-sm:            3px;
 $border-radius-lg:            5px;
 $border-radius-xl:            8px;
-$border-radius-xxl:           12px;
+$border-radius-xl:           12px;
 $border-radius-pill:          50rem !default;
 // scss-docs-end border-radius-variables
 

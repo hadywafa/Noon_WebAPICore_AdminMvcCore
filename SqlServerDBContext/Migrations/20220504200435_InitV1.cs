@@ -3,10 +3,33 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SqlServerDBContext.Migrations
 {
-    public partial class EmadV1 : Migration
+    public partial class InitV1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    NameArabic = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    DescriptionArabic = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ParentID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Categories_Categories_ParentID",
+                        column: x => x.ParentID,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -70,7 +93,7 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,7 +123,8 @@ namespace SqlServerDBContext.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Permission = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Permission = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,7 +134,7 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.Id,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,7 +164,8 @@ namespace SqlServerDBContext.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -150,14 +175,15 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.Id,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Sellers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -167,7 +193,7 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.Id,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -184,7 +210,7 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.Id,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -205,7 +231,7 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -225,7 +251,7 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -243,13 +269,13 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -269,38 +295,7 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ShipperId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
-                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DeliveryStatus = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Orders_Shippers_ShipperId",
-                        column: x => x.ShipperId,
-                        principalTable: "Shippers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -313,22 +308,77 @@ namespace SqlServerDBContext.Migrations
                     NameArabic = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     DescriptionArabic = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BuyingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SellingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Revenue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Weight = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discount = table.Column<float>(type: "real", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SellersId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SellerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Sellers_SellersId",
-                        column: x => x.SellersId,
+                        name: "FK_Products_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Products_Sellers_SellerId",
+                        column: x => x.SellerId,
                         principalTable: "Sellers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ShipperId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalRevenue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
+                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DeliveryStatus = table.Column<int>(type: "int", nullable: false),
+                    DeliveryStatusDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AddressId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerID",
+                        column: x => x.CustomerID,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Shippers_ShipperId",
+                        column: x => x.ShipperId,
+                        principalTable: "Shippers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -351,7 +401,7 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Carts_Products_ProductId",
                         column: x => x.ProductId,
@@ -367,12 +417,18 @@ namespace SqlServerDBContext.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Images_Products_ProductId",
                         column: x => x.ProductId,
@@ -398,40 +454,13 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Likes_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -453,13 +482,13 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.CustomerId1,
                         principalTable: "Customers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reviews_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -489,33 +518,30 @@ namespace SqlServerDBContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categories",
+                name: "OrderItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    NameArabic = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    DescriptionArabic = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    ImageId = table.Column<int>(type: "int", nullable: false),
-                    ParentID = table.Column<int>(type: "int", nullable: true)
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Categories_Categories_ParentID",
-                        column: x => x.ParentID,
-                        principalTable: "Categories",
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Categories_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
+                        name: "FK_OrderItems_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -539,15 +565,16 @@ namespace SqlServerDBContext.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_ImageId",
-                table: "Categories",
-                column: "ImageId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Categories_ParentID",
                 table: "Categories",
                 column: "ParentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_CategoryId",
+                table: "Images",
+                column: "CategoryId",
+                unique: true,
+                filter: "[CategoryId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Images_ProductId",
@@ -575,9 +602,15 @@ namespace SqlServerDBContext.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_CustomerId",
+                name: "IX_Orders_AddressId",
                 table: "Orders",
-                column: "CustomerId");
+                column: "AddressId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_CustomerID",
+                table: "Orders",
+                column: "CustomerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ShipperId",
@@ -585,14 +618,19 @@ namespace SqlServerDBContext.Migrations
                 column: "ShipperId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_SellersId",
+                name: "IX_Products_SellerId",
                 table: "Products",
-                column: "SellersId");
+                column: "SellerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_CustomerId1",
@@ -652,29 +690,10 @@ namespace SqlServerDBContext.Migrations
                 name: "IX_Wishlists_ProductId",
                 table: "Wishlists",
                 column: "ProductId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Products_Categories_CategoryId",
-                table: "Products",
-                column: "CategoryId",
-                principalTable: "Categories",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Sellers_Users_Id",
-                table: "Sellers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Images_Products_ProductId",
-                table: "Images");
-
-            migrationBuilder.DropTable(
-                name: "Addresses");
-
             migrationBuilder.DropTable(
                 name: "Admins");
 
@@ -683,6 +702,9 @@ namespace SqlServerDBContext.Migrations
 
             migrationBuilder.DropTable(
                 name: "Carts");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "Likes");
@@ -718,16 +740,16 @@ namespace SqlServerDBContext.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Shippers");
-
-            migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -736,7 +758,7 @@ namespace SqlServerDBContext.Migrations
                 name: "Sellers");
 
             migrationBuilder.DropTable(
-                name: "Images");
+                name: "Users");
         }
     }
 }

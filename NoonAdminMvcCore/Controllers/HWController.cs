@@ -189,7 +189,9 @@ namespace NoonAdminMvcCore.Controllers
                         Description = "HHHHHHHHHHH",
                         DescriptionArabic = "هههههههههههههههه",
                         Category = _catRepo.Find(c => c.Name == "Category 1"),
-                        Price = 50 * (i + 1),
+                        BuyingPrice = 50 * (i + 1),
+                        SellingPrice = 100 * (i + 1),
+                        Revenue = (100 * (i + 1)) - (50 * (i + 1)),
                         Quantity = 2 * (i + 1),
                         Discount = 0.2f,
                         IsActive = true,
@@ -217,7 +219,9 @@ namespace NoonAdminMvcCore.Controllers
                         Description = "HHHHHHHHHHH",
                         DescriptionArabic = "هههههههههههههههه",
                         Category = _catRepo.Find(c => c.Name == "Category 1"),
-                        Price = 50 * (i + 1),
+                        BuyingPrice = 50 * (i + 1),
+                        SellingPrice = 100 * (i + 1),
+                        Revenue = (100 * (i + 1)) - (50 * (i + 1)),
                         Quantity = 2 * (i + 1),
                         Discount = 0.2f,
                         IsActive = true,
@@ -245,7 +249,9 @@ namespace NoonAdminMvcCore.Controllers
                         Description = "HHHHHHHHHHH",
                         DescriptionArabic = "هههههههههههههههه",
                         Category = _catRepo.Find(c => c.Name == "Category 1"),
-                        Price = 50 * (i + 1),
+                        BuyingPrice = 50 * (i + 1),
+                        SellingPrice = 100 * (i + 1),
+                        Revenue = (100 * (i + 1)) - (50 * (i + 1)),
                         Quantity = 2 * (i + 1),
                         Discount = 0.2f,
                         IsActive = true,
@@ -273,7 +279,9 @@ namespace NoonAdminMvcCore.Controllers
                         Description = "HHHHHHHHHHH",
                         DescriptionArabic = "هههههههههههههههه",
                         Category = _catRepo.Find(c => c.Name == "Category 1"),
-                        Price = 50 * (i + 1),
+                        BuyingPrice = 50 * (i + 1),
+                        SellingPrice = 50 * (i + 1),
+                        Revenue = (100 * (i + 1)) - (50 * (i + 1)),
                         Quantity = 2 * (i + 1),
                         Discount = 0.2f,
                         IsActive = true,
@@ -298,7 +306,7 @@ namespace NoonAdminMvcCore.Controllers
             return "there are an Error or dummy Products are Existed";
         }
 
-        public string HwAddOrder()
+        public async string HwAddOrder()
         {
             bool isInserted = _orderRepo.GetAll().Any(c => c.Discount == (decimal)0.5);
             if (!isInserted)
@@ -382,6 +390,7 @@ namespace NoonAdminMvcCore.Controllers
 
                 var orderKero1 = new Order()
                 {
+                    User = await _userManager.FindByEmailAsync("KeroCustomer@gmail.com"),
                     Customer = _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
                     Shipper = _shipperRepo.Find(s => s.User.Email == "KeroShipper@gmail.com"),
                     Discount = (decimal)0.5,
@@ -416,7 +425,7 @@ namespace NoonAdminMvcCore.Controllers
                 _orderRepo.Add(orderKero1);
 
                 var orderKero2 = new Order()
-                {
+                {   User = await _userManager.FindByEmailAsync("KeroCustomer@gmail.com"),
                     Customer = _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
                     Shipper = _shipperRepo.Find(s => s.User.Email == "KeroShipper@gmail.com"),
                     Discount = (decimal)0.5,
@@ -456,6 +465,7 @@ namespace NoonAdminMvcCore.Controllers
 
                 var orderEmad1 = new Order()
                 {
+                    User = await _userManager.FindByEmailAsync("EmadCustomer@gmail.com"),
                     Customer = _customerRepo.Find(c => c.User.Email == "EmadCustomer@gmail.com"),
                     Shipper = _shipperRepo.Find(s => s.User.Email == "EmadShipper@gmail.com"),
                     Discount = (decimal)0.5,
@@ -491,6 +501,7 @@ namespace NoonAdminMvcCore.Controllers
 
                 var orderEmad2 = new Order()
                 {
+                    User = await _userManager.FindByEmailAsync("EmadCustomer@gmail.com"),
                     Customer = _customerRepo.Find(c => c.User.Email == "EmadCustomer@gmail.com"),
                     Shipper = _shipperRepo.Find(s => s.User.Email == "EmadShipper@gmail.com"),
                     Discount = (decimal)0.5,
@@ -530,6 +541,7 @@ namespace NoonAdminMvcCore.Controllers
 
                 var orderHady1 = new Order()
                 {
+                    User = await _userManager.FindByEmailAsync("HadyCustomer@gmail.com"),
                     Customer = _customerRepo.Find(c => c.User.Email == "HadyCustomer@gmail.com"),
                     Shipper = _shipperRepo.Find(s => s.User.Email == "HadyShipper@gmail.com"),
                     Discount = (decimal)0.5,
@@ -565,6 +577,7 @@ namespace NoonAdminMvcCore.Controllers
 
                 var orderHady2 = new Order()
                 {
+                    User = await _userManager.FindByEmailAsync("HadyCustomer@gmail.com"),
                     Customer = _customerRepo.Find(c => c.User.Email == "HadyCustomer@gmail.com"),
                     Shipper = _shipperRepo.Find(s => s.User.Email == "HadyShipper@gmail.com"),
                     Discount = (decimal)0.5,
@@ -606,6 +619,48 @@ namespace NoonAdminMvcCore.Controllers
             }
 
             return "there are an Error or dummy Orders are Existed";
+        }
+
+        public async Task<string> newOrder()
+        {
+            var orderMo5 = new Order()
+            {
+                Customer = _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
+                User = await _userManager.FindByEmailAsync("MoCustomer@gmail.com"),
+                Shipper = _shipperRepo.Find(s => s.User.Email == "MoShipper@gmail.com"),
+                Discount = (decimal)0.5,
+                IsPaid = false,
+                OrderItems = new Collection<OrderItem>()
+                    {
+                        new OrderItem()
+                        {
+                            Quantity = 15, Product = _productRepo.Find(p => p.Name == "Product 1")
+                        },
+                        new OrderItem()
+                        {
+                            Quantity = 42, Product = _productRepo.Find(p => p.Name == "Product 2")
+                        },
+                        new OrderItem()
+                        {
+                            Quantity = 14, Product = _productRepo.Find(p => p.Name == "Product 3")
+                        },
+                        new OrderItem()
+                        {
+                            Quantity = 32, Product = _productRepo.Find(p => p.Name == "Product 4")
+                        },
+                        new OrderItem()
+                        {
+                            Quantity = 33, Product = _productRepo.Find(p => p.Name == "Product 5")
+                        },
+                    }
+            };
+
+            orderMo5.CalcTotalPrice();
+            _orderRepo.Add(orderMo5);
+
+            _unitOfWork.Save();
+
+            return "dummy Orders have been Added Successfully";
         }
     }
 }

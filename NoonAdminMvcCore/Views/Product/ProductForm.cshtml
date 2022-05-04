@@ -5,7 +5,7 @@
         <div class="nk-block-between">
             <div class="nk-block-head-content">
                 <h3 class="nk-block-title page-title">
-                    @(Model ==null? "Add New Product" : "Edit Product")*
+                    @(Model.Id == null? "Add New Product" : "Edit Product")
                 </h3>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
@@ -20,7 +20,7 @@
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(m => m.Id)
 
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Name, "Name", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -30,7 +30,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.NameArabic, "NameArabic", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Description, "Description", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -50,7 +50,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.DescriptionArabic, "DescriptionArabic", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -59,17 +59,28 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
-                                @Html.LabelFor(m => m.Price, "Price", new { @class = "form-label" })
+                                @Html.LabelFor(m => m.BuyingPrice, "Buying Price", new { @class = "form-label" })
                                 <div class="form-control-wrap">
-                                    @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(m => m.Price, null, new { @class = "tex-danger" })
+                                    @Html.TextBoxFor(m => m.BuyingPrice, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.BuyingPrice, null, new { @class = "tex-danger" })
                                 </div>
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+
+                        <div class="col-xl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.SellingPrice, "Selling Price", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.SellingPrice, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.SellingPrice, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Quantity, "Quantity", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -80,7 +91,7 @@
                         </div>
                         <!--col-->
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Weight, "Weight", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -90,7 +101,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Discount, "Discount", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -100,7 +111,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.SellerId, "Seller", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -109,7 +120,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.CategoryId, "Category", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -118,7 +129,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.IsActive, "Status", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -131,7 +142,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Images, "Image", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -145,7 +156,7 @@
 
                         <div class="col-12">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary">@( Model ==null ? "Add Product" : "Edit Product") </button>
+                                <button type="submit" class="btn btn-primary">@( Model.Id ==null ? "Add Product" : "Edit Product") </button>
                             </div>
                         </div>
                         <!--col-->

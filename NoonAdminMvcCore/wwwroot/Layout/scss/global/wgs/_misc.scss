@@ -53,7 +53,7 @@
         }
     }
 }
-@include media-breakpoint-up(xxl) {
+@include media-breakpoint-up(xl) {
 	.nk-order-ovwg{
 		&-ck{
 			height: 260px;
@@ -157,7 +157,7 @@
 	}
 }
 
-@include media-breakpoint-between(lg,xxl){
+@include media-breakpoint-between(lg,xl){
 	.nk-sales-ck{
 		&.sales-revenue{
 			height: 164px;

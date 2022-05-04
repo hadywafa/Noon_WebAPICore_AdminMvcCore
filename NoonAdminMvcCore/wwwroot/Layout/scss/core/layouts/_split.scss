@@ -52,8 +52,8 @@
             flex-wrap: wrap;
         }
     }
-    &-xxl{
-        @include media-breakpoint-down(xxl){
+    &-xl{
+        @include media-breakpoint-down(xl){
             flex-wrap: wrap;
         }
     }

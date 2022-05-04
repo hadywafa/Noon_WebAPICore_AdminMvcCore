@@ -12,12 +12,13 @@ namespace EFModel.Models.EFModels
         public Customer Customer { get; set; }
         public User User { get; set; }
 
-        //public int ShipperId { get; set; }
+        public string ShipperId { get; set; }
         public Shipper Shipper { get; set; }
 
         public DateTime OrderDate { get; set; }
 
         public decimal TotalPrice { get; set; }
+        public decimal TotalRevenue { get; set; }
 
         public bool IsPaid { get; set; }
 
@@ -33,13 +34,13 @@ namespace EFModel.Models.EFModels
         // Each Order has a collection of Items
         public ICollection<OrderItem> OrderItems { get; set; }
 
+        public int? AddressId { get; set; }
+        public virtual Address CustomerAddress { get; set; }
+
         public Order()
         {
             OrderDate = DateTime.Now;
-                //foreach (var order in OrderItems)
-                //{
-                //    TotalPrice += order.Price;
-                //}
+            DeliveryStatus = DeliveryStatus.Processing;
         }
 
         public void CalcTotalPrice()
@@ -47,6 +48,7 @@ namespace EFModel.Models.EFModels
             foreach (var order in OrderItems)
             {
                 TotalPrice += order.Price;
+                TotalRevenue += order.Revenue;
             }
         }
     }

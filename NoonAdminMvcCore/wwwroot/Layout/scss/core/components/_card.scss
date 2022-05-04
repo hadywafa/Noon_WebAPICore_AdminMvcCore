@@ -122,8 +122,8 @@
     }
 }
 
-@include media-breakpoint-down(xxl){
-    .toggle-break-xxl.card-aside{
+@include media-breakpoint-down(xl){
+    .toggle-break-xl.card-aside{
         .card-inner-group{
             max-height: calc(100vh - #{$header-height});
             margin-top:$header-height;
@@ -138,7 +138,7 @@
         display: block;
     }
 }
-@include media-breakpoint-up(xxl){
+@include media-breakpoint-up(xl){
     .card-aside{
         width: 380px;
     }

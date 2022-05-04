@@ -379,7 +379,7 @@ $msg-body-gap-x-dsk :2.5rem;
         }
     }
 }
-@include media-breakpoint-up(xxl){
+@include media-breakpoint-up(xl){
     .nk-msg{
         &-aside{
             width: 380px;
@@ -387,7 +387,7 @@ $msg-body-gap-x-dsk :2.5rem;
     }
 }
 
-@include media-breakpoint-down(xxl){
+@include media-breakpoint-down(xl){
     .profile-shown{
         .nk-msg-profile-toggle{
             right: 262px;
@@ -406,7 +406,7 @@ $msg-body-gap-x-dsk :2.5rem;
         }
     }
 }
-@include media-breakpoint-up(xxl){
+@include media-breakpoint-up(xl){
     .nk-msg-body{
         &.profile-shown{
             padding-right: 280px;

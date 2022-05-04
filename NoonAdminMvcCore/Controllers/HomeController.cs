@@ -51,7 +51,7 @@ namespace NoonAdminMvcCore.Controllers
 
         public IActionResult Index()
         {
-            // Orders Section
+            // Orders Section >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             var todayOrders = _orderRepo.FindAll(
                 o => o.OrderDate.Year == DateTime.Now.Year
                 && o.OrderDate.Month == DateTime.Now.Month
@@ -66,10 +66,10 @@ namespace NoonAdminMvcCore.Controllers
             decimal todayRevenue = default;
             foreach (var order in todayOrders)
             {
-                todayRevenue += order.TotalPrice;
+                todayRevenue += order.TotalRevenue;
             }
 
-            // Customers Section
+            // Customers Section >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             var todayCustomers = _customerRepo.FindAll(
                 c => c.createdAt.Year == DateTime.Now.Year
                 && c.createdAt.Month == DateTime.Now.Month
@@ -84,7 +84,7 @@ namespace NoonAdminMvcCore.Controllers
             // Category Section
             string allCategoiesCount = _categoryRepository.GetAll().Count().ToString() ?? "0";
 
-            // Seller Section
+            // Seller Section >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             var todaySellers = _sellerRepo.FindAll(
                 s => s.createdAt.Year == DateTime.Now.Year
                 && s.createdAt.Month == DateTime.Now.Month
@@ -94,7 +94,7 @@ namespace NoonAdminMvcCore.Controllers
 
             string allSellerCount = _sellerRepo.GetAll().Count().ToString() ?? "0";
 
-            // Send data by ViewBag
+            // Send data by ViewBag >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             ViewBag.todayOrdersCount = todayOrdersCount;
             ViewBag.allOrdersCount = allOrdersCount;
             ViewBag.recentOrders = recentOrders;

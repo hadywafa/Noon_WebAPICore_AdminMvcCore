@@ -25,7 +25,8 @@ namespace NoonAdminMvcCore.Models
         public string DescriptionArabic { get; set; }
 
         [Required(ErrorMessage = "price of product is required")]
-        public decimal Price { get; set; }
+        public decimal BuyingPrice { get; set; }
+        public decimal SellingPrice { get; set; }
 
         [Required(ErrorMessage = "price of product is required")]
         public int Quantity { get; set; }
@@ -36,14 +37,13 @@ namespace NoonAdminMvcCore.Models
 
         public bool IsActive { get; set; }
 
+
         // Each Product has a collection of Images
         [Required]
         public IFormFile[] Images { get; set; }
 
         // Each Product is sold by a collection of Sellers
         public string SellerId { get; set; }
-
-
         public int CategoryId { get; set; }
         public DateTime AddedOn { get; set; }
     }

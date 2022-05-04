@@ -101,7 +101,7 @@
     </div>
     <div class="nk-tb-col tb-col-mb">
         <span class="tb-amount">
-            @product.Price
+            @product.SellingPrice
         </span>
     </div>
     <div class="nk-tb-col tb-col-mb">
@@ -121,11 +121,11 @@
     <div class="nk-tb-col tb-col-md">
         @if (product.IsActive)
         {
-            <span class="tb-status text-success">@product.IsActive</span>
+            <span class="tb-status text-success">Available</span>
         }
         else
         {
-            <span class="tb-status text-danger">@product.IsActive</span>
+            <span class="tb-status text-danger">Not Available</span>
         }
 
     </div>
@@ -148,8 +148,6 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <ul class="link-list-opt no-bdr">
-
-                            <li class="divider"></li>
 
                             <li>
                                 @Html.ActionLink("Suspend", "Suspend", "Product",
@@ -175,9 +173,6 @@
 
                             <li>
                                 @Html.ActionLink("Edit", "Edit", "Product", new { id = product.Id })
-                            </li>
-                            <li>
-                                @Html.ActionLink("Delete", "Delete", "Product", new { id = product.Id })
                             </li>
                         </ul>
                     </div>

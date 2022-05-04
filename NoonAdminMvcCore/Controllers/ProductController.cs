@@ -107,7 +107,7 @@ namespace NoonAdminMvcCore.Controllers
                 }
 
                 // Sepcifiy number of users you want to display in one page
-                int rowsPerPage = pageSize ?? 3;
+                int rowsPerPage = pageSize ?? 10;
                 ViewBag.rowsPerPage = rowsPerPage;
 
                  
@@ -127,8 +127,9 @@ namespace NoonAdminMvcCore.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Seller = new SelectList(await _userManager.GetUsersInRoleAsync("Seller"), "Id", "FirstName");
-            ViewBag.Category = new SelectList(_categoryRepository.GetAll().ToList(), "Id", "Name");
-            return View("productForm");
+            ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID != null).ToList(), "Id", "Name");
+            var productViewModel = new ProductViewModel { IsActive = true };
+            return View("productForm", productViewModel);
         }
 
         // POST: Product/Create
@@ -154,13 +155,14 @@ namespace NoonAdminMvcCore.Controllers
                         NameArabic = productVM.NameArabic,
                         Description = productVM.Description,
                         DescriptionArabic = productVM.DescriptionArabic,
-                        Price = productVM.Price,
+                        BuyingPrice = productVM.BuyingPrice,
+                        SellingPrice = productVM.SellingPrice,
                         Quantity = productVM.Quantity,
                         Weight = productVM.Weight,
                         SellerId = productVM.SellerId,
                         CategoryId = productVM.CategoryId,
-                        
-
+                        IsActive = productVM.IsActive,
+                        Revenue = (productVM.SellingPrice - productVM.BuyingPrice)
                     };
                     _productRepository.Add(prod);
                     _unitOfWork.Save();
@@ -211,11 +213,13 @@ namespace NoonAdminMvcCore.Controllers
 
                     prod.Name = productVM.Name;
                     prod.NameArabic = productVM.NameArabic;
-                    prod.Price = productVM.Price;
+                    prod.BuyingPrice = productVM.BuyingPrice;
+                    prod.SellingPrice = productVM.SellingPrice;
                     prod.Quantity = productVM.Quantity;
                     prod.Description = productVM.Description;
                     prod.DescriptionArabic = productVM.DescriptionArabic;
                     prod.Weight = productVM.Weight;
+                    prod.Revenue = productVM.SellingPrice - productVM.BuyingPrice;
                     _productRepository.Update(prod);
                     _unitOfWork.Save();
                     #endregion
@@ -268,11 +272,13 @@ namespace NoonAdminMvcCore.Controllers
 
             var productViewmodel = new ProductViewModel
             {
+                Id = productVM.Id.ToString(),
                 Name = productVM.Name,
                 NameArabic = productVM.NameArabic,
                 Description = productVM.Description,
                 DescriptionArabic = productVM.DescriptionArabic,
-                Price = productVM.Price,
+                BuyingPrice = productVM.BuyingPrice,
+                SellingPrice = productVM.SellingPrice,
                 Quantity = productVM.Quantity,
                 Weight = productVM.Weight,
 
@@ -285,29 +291,6 @@ namespace NoonAdminMvcCore.Controllers
             return View("ProductForm", productViewmodel);
         }
 
-
-
-        [HttpGet]
-       
-        public IActionResult Delete(int id)
-        {
-            if (id.Equals(null))
-            {
-                return NotFound();
-            }
-
-            var product = _productRepository.Find(p=>p.Id==id);
-
-            
-            _productRepository.Remove(product);
-            _unitOfWork.Save();
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return RedirectToAction("Index");
-        }
 
         public ActionResult Suspend(int id, string currentFilter, int? pageNumber)
         {

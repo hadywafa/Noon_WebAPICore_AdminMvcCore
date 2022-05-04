@@ -22,7 +22,7 @@
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(m => m.Id)
 
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.FirstName, "First Name", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.LastName, "Last Name", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Email, "Email", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -52,17 +52,17 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Password, "Password", new { @class = "form-label" })
                                 <div class="form-control-wrap">
-                                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control" })
+                                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @type = "password"})
                                     @Html.ValidationMessageFor(m => m.Password, null, new { @class = "text-danger" })
                                 </div>
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.PhoneNumber, "Phone", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -73,7 +73,7 @@
                         </div>
                         <!--col-->
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Street, "Street", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -83,7 +83,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.City, "City", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Role, "Role", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -107,7 +107,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Balance, "Balance", new { @class = "form-label" })
                                 <div class="form-control-wrap">
@@ -116,7 +116,7 @@
                             </div>
                         </div>
                         <!--col-->
-                        <div class="col-xxl-3 col-md-4">
+                        <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.IsActive, "Status", new { @class = "form-label" })
                                 <div class="form-control-wrap">

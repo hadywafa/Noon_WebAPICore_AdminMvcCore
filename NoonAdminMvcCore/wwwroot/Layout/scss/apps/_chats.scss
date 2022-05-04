@@ -974,7 +974,7 @@ $chat-meta-sap: $ni-dot !default;
         }
     }
 }
-@include media-breakpoint-up(xxl){
+@include media-breakpoint-up(xl){
     .nk-chat{
         &-aside{
             width: $chat-aside-width-xl;

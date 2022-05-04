@@ -11,7 +11,7 @@
         $msg_item       = $('.nk-msg-item'),
         $msg_hide       = $('.nk-msg-hide'),
         flat_break      = breaks.lg,
-        info_break      = ($body.hasClass('has-apps-sidebar')) ? 1280 : breaks.xxl,
+        info_break      = ($body.hasClass('has-apps-sidebar')) ? 1280 : breaks.xl,
         olay_profile    = 'nk-msg-profile-overlay',
         shown_profile   = 'profile-shown',
         hide_aside      = 'hide-aside',

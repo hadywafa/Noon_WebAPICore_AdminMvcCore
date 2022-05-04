@@ -21,7 +21,11 @@ namespace EFModel.Models.EFModels
         public string DescriptionArabic { get; set; }
 
         [Required]
-        public decimal Price { get; set; }
+        public decimal BuyingPrice { get; set; }
+        
+        public decimal SellingPrice { get; set; }
+
+        public decimal Revenue { get; set; }
 
         [Required]
         public int Quantity { get; set; }

@@ -116,7 +116,7 @@ namespace NoonAdminMvcCore.Controllers
                 }
 
                 // Sepcifiy number of users you want to display in one page
-                int rowsPerPage = pageSize ?? 3;
+                int rowsPerPage = pageSize ?? 10;
                 ViewBag.rowsPerPage = rowsPerPage;
 
 
@@ -221,13 +221,47 @@ namespace NoonAdminMvcCore.Controllers
                     gotUser.Addresses.FirstOrDefault()!.Street = model.Street;
 
                     // Get current Role
-                    var role = await _userManager.GetRolesAsync(gotUser);
+                    var role = _userManager.GetRolesAsync(gotUser).Result.FirstOrDefault();
 
                     // Remove Current Role
-                    await _userManager.RemoveFromRoleAsync(gotUser, role.FirstOrDefault());
+                    await _userManager.RemoveFromRoleAsync(gotUser, role);
 
                     //Add new Role
                     await _userManager.AddToRoleAsync(gotUser, model.Role);
+
+                    // Add the new user to his role table
+                    switch (model.Role)
+                    {
+                        case "Admin":
+                            _adminRepo.Add(new Admin() { User = user });
+                            break;
+                        case "Customer":
+                            _customerRepo.Add(new Customer() { User = user });
+                            break;
+                        case "Seller":
+                            _sellerRepo.Add(new Seller() { User = user });
+                            break;
+                        case "Shipper":
+                            _shipperRepo.Add(new Shipper() { User = user });
+                            break;
+                    }
+
+                    // Remove the previous role table
+                    switch (role)
+                    {
+                        case "Admin":
+                            _adminRepo.RemoveById(user.Id);
+                            break;
+                        case "Customer":
+                            _customerRepo.RemoveById(user.Id);
+                            break;
+                        case "Seller":
+                            _sellerRepo.RemoveById(user.Id);
+                            break;
+                        case "Shipper":
+                            _shipperRepo.RemoveById(user.Id);
+                            break;
+                    }
 
                     _unitOfWork.Save();
                 }

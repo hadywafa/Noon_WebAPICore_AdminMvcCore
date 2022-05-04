@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NoonAdminMvcCore.Models;
-using NToastNotify;
 using Repository.GenericRepository;
 using Repository.UnitWork;
 using System;
@@ -24,18 +23,16 @@ namespace NoonAdminMvcCore.Controllers
         private readonly IGenericRepo<Order> _orderRepo;
         readonly IGenericRepo<User> _userRepository;
         private readonly UserManager<User> _userManager;
-        private readonly IToastNotification _toast;
         private readonly IGenericRepo<OrderItem> _orderItems;
 
 
 
-        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager,IToastNotification toast )
+        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager )
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _orderRepo = unitOfWork.Orders;
             _orderItems = unitOfWork.OrderItems;
-            this._toast = toast;
         }
         //DeliveryStatus state
         public IActionResult Index(string? id, int? pageNumber, int? pageSize)
@@ -74,7 +71,9 @@ namespace NoonAdminMvcCore.Controllers
             OrderViewModel model = new OrderViewModel {
                 Id = order.Id,
                 DeliveryStatus = order.DeliveryStatus,
-                DeliveryStatusDescription = order.DeliveryStatusDescription
+                DeliveryStatusDescription = order.DeliveryStatusDescription,
+                Shippers = _userManager.GetUsersInRoleAsync(AuthorizeRoles.Shipper).Result.ToList(),
+                ShipperId = order.ShipperId,
             };
             
             return View(model);
@@ -90,10 +89,8 @@ namespace NoonAdminMvcCore.Controllers
 
             order.DeliveryStatus = model.DeliveryStatus;
             order.DeliveryStatusDescription = model.DeliveryStatusDescription;
+            order.ShipperId = model.ShipperId;
             _unitOfWork.Save();
-
-            _toast.AddSuccessToastMessage("Order Status Updated Successfully");
-
             return RedirectToAction("Index");
         }
 

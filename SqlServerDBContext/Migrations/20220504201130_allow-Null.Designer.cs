@@ -10,8 +10,8 @@ using SqlServerDBContext;
 namespace SqlServerDBContext.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220429144324_addCreatedAtColumn")]
-    partial class addCreatedAtColumn
+    [Migration("20220504201130_allow-Null")]
+    partial class allowNull
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -229,11 +229,17 @@ namespace SqlServerDBContext.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CustomerId")
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CustomerID")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("DeliveryStatus")
                         .HasColumnType("int");
+
+                    b.Property<string>("DeliveryStatusDescription")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
@@ -250,11 +256,23 @@ namespace SqlServerDBContext.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("TotalRevenue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("AddressId")
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
+
+                    b.HasIndex("CustomerID");
 
                     b.HasIndex("ShipperId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -294,6 +312,9 @@ namespace SqlServerDBContext.Migrations
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("BuyingPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -321,14 +342,17 @@ namespace SqlServerDBContext.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Revenue")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("SellerId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("SellingPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Weight")
                         .HasColumnType("nvarchar(max)");
@@ -746,17 +770,29 @@ namespace SqlServerDBContext.Migrations
 
             modelBuilder.Entity("EFModel.Models.EFModels.Order", b =>
                 {
+                    b.HasOne("EFModel.Models.EFModels.Address", "CustomerAddress")
+                        .WithOne("Order")
+                        .HasForeignKey("EFModel.Models.EFModels.Order", "AddressId");
+
                     b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerID");
 
                     b.HasOne("EFModel.Models.EFModels.Shipper", "Shipper")
                         .WithMany("Orders")
                         .HasForeignKey("ShipperId");
 
+                    b.HasOne("EFModel.Models.User", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Customer");
 
+                    b.Navigation("CustomerAddress");
+
                     b.Navigation("Shipper");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.OrderItem", b =>
@@ -902,6 +938,11 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("EFModel.Models.EFModels.Address", b =>
+                {
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("EFModel.Models.EFModels.Category", b =>
                 {
                     b.Navigation("Image");
@@ -961,6 +1002,8 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("Cards");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Orders");
 
                     b.Navigation("Seller");
 

@@ -20,6 +20,8 @@ namespace EFModel.Models.EFModels
         // Each address is belonged to one User
         public User User { get; set; }
 
+        public Order Order { get; set; }
+
         #endregion
 
     }

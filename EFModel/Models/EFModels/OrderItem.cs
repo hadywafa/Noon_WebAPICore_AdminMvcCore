@@ -16,7 +16,9 @@ namespace EFModel.Models.EFModels
 
         public int Quantity { get; set; }
 
-        public decimal Price => Product.Price * Quantity;
+        public decimal Price => Product.SellingPrice * Quantity;
+
+        public decimal Revenue => Product.Revenue * Quantity;
 
         //public OrderItem()
         //{

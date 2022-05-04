@@ -576,7 +576,7 @@ $ibx-aside-width :      230px;
         }
     }
 }
-@include media-breakpoint-up(xxl){
+@include media-breakpoint-up(xl){
     .nk-ibx{
         &-item{
             &-user{

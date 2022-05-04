@@ -30,7 +30,7 @@
         }
     }
 }
-@include media-breakpoint-up(xxl){
+@include media-breakpoint-up(xl){
     .nk-auth{
         &-body,&-footer{
             .nk-split & {
