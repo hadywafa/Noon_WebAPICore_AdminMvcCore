@@ -17,6 +17,7 @@ using NoonAdminMvcCore.Models;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using BL.AppPolicy;
+using Microsoft.Extensions.Configuration;
 
 namespace NoonAdminMvcCore.Controllers
 {
@@ -31,16 +32,18 @@ namespace NoonAdminMvcCore.Controllers
         readonly IGenericRepo<User> _userRepository;
         readonly IGenericRepo<Product> _productRepository;
         readonly IGenericRepo<Images> _imageRepository;
+        private readonly IConfiguration Configuration;
        
         readonly IGenericRepo<Category> _categoryRepository;
         #endregion
 
 
         private readonly IWebHostEnvironment iweb;
-        public ProductController(IUnitOfWork unitOfWork, UserManager<User> userManager, IWebHostEnvironment _iwab)
+        public ProductController(IUnitOfWork unitOfWork, UserManager<User> userManager, IWebHostEnvironment _iwab , IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            Configuration = configuration;
             _userRepository = _unitOfWork.Users;
             _productRepository = _unitOfWork.Products;
             _imageRepository = _unitOfWork.Images;
@@ -127,7 +130,7 @@ namespace NoonAdminMvcCore.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Seller = new SelectList(await _userManager.GetUsersInRoleAsync("Seller"), "Id", "FirstName");
-            ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID != null).ToList(), "Id", "Name");
+            ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID == null).ToList(), "Id", "Name");
             var productViewModel = new ProductViewModel { IsActive = true };
             return View("productForm", productViewModel);
         }
@@ -175,7 +178,8 @@ namespace NoonAdminMvcCore.Controllers
 
                         foreach (var item in files)
                         {
-                            var imgsave = Path.Combine(iweb.WebRootPath, "Images");
+                            
+                            var imgsave = Configuration["imagesApi"]+"/images";
                             string filepath = Path.Combine(imgsave, (item.FileName));
                             var straem = new FileStream(filepath, FileMode.Create);
                             item.CopyTo(straem);
@@ -230,7 +234,7 @@ namespace NoonAdminMvcCore.Controllers
                     {
                         foreach (var item in files)
                         {
-                            var imgsave = Path.Combine(iweb.WebRootPath, "Images");
+                            var imgsave = Configuration["imagesApi"]+"/images";
                             string filepath = Path.Combine(imgsave, item.FileName);
                             var straem = new FileStream(filepath, FileMode.Create);
                             
@@ -288,6 +292,7 @@ namespace NoonAdminMvcCore.Controllers
             ViewBag.Category = new SelectList(_categoryRepository.GetAll().ToList(), "Id", "Name");
 
             #endregion
+
             return View("ProductForm", productViewmodel);
         }
 
@@ -308,6 +313,7 @@ namespace NoonAdminMvcCore.Controllers
 
             return RedirectToAction("Index", new {currentFilter = currentFilter, pageNumber = pageNumber });
         }
+
         public ActionResult Activate(int id, string currentFilter, int? pageNumber)
         {
             // get the product
@@ -324,9 +330,10 @@ namespace NoonAdminMvcCore.Controllers
 
             return RedirectToAction("Index", new {  currentFilter = currentFilter, pageNumber = pageNumber });
         }
+
         private void deleteFilefromRoot(string img)
         {
-            img = Path.Combine(iweb.WebRootPath, "Images", img);
+            img = Path.Combine(Configuration["imagesApi"]+"/images", img);
             FileInfo fileinfo = new FileInfo(img);
             if (fileinfo != null)
             {
@@ -335,4 +342,5 @@ namespace NoonAdminMvcCore.Controllers
             }
         }
     }
+
 }

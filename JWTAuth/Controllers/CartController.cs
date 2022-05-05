@@ -61,27 +61,45 @@ namespace JWTAuth.Controllers
 
         public async Task<List<Product>> GetAll()
         {
-            var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            var customer = _customerRepo.GetById(userId);
             // get user from request
-            // get user cart
+            var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
+            // get Customer include its cart
+            var cart = _cartRepo.Find(x => x.Customer.Id == userId, w => w.Products) ?? new Cart() { Customer = _customerRepo.GetById(userId) };
+            var products = cart.Products;
             // get products from cart
-            return new List<Product>();
+            return products.ToList();
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
-        [HttpGet("Add")]
+        [HttpPost("Add")]
         public  async Task<IActionResult> AddToCart(int proId)
         {
+            if (proId ==0)
+            {
+                proId = 1;
+            }
             // get user from request
-            // get user cart
+            var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
+            // get Customer include its cart
+            var cart = _cartRepo.Find(x => x.Customer.Id == userId, w => w.Products);
+            if (cart is null)
+            {
+                 cart = new Cart() { Customer = _customerRepo.GetById(userId) };
+                 cart.Customer = _customerRepo.GetById(userId);
+                 cart.Products = new List<Product>();
+                 _unitOfWork.Save();
+            }
+            //get product by id
+            var product = _productRepo.GetById(proId);
             // add product from cart by product id
+            cart.Products.Add(product);
+            _unitOfWork.Save();
             // update cart
-            return Ok();
+            return Ok(cart.Products.ToList());
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
-        [HttpGet("Remove")]
+        [HttpPost("Remove")]
         public  async Task<IActionResult> RemoveFromCart(int proId)
         {
             // get user from request

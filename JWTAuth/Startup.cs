@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text;
 using BL.Helper;
 using EFModel.Models;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -118,6 +120,7 @@ namespace JWTAuth
 
             #endregion
 
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication(); //1
             app.UseAuthorization(); //2

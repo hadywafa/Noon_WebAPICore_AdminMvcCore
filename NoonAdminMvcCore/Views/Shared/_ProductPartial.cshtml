@@ -1,4 +1,6 @@
 ﻿@model IList<EFModel.Models.EFModels.Product>
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @{
     <div class="nk-tb-item nk-tb-head">
         <div class="nk-tb-col nk-tb-col-check">
@@ -45,143 +47,143 @@
                         <a href="#" class="dropdown-toggle btn btn-icon btn-trigger me-n1" data-bs-toggle="dropdown">
                             <em class="icon ni ni-more-h"></em>
                         </a>
-                      
+
                     </div>
                 </li>
             </ul>
         </div>
-        
+
 
     </div>
     <!-- .nk-tb-item -->
     foreach (var product in Model)
     {
-<div class="nk-tb-item">
-    <div class="nk-tb-col nk-tb-col-check">
-        <div class="custom-control custom-control-sm custom-checkbox notext">
-            <input type="checkbox" class="custom-control-input" id="uid1">
-            <label class="custom-control-label" for="uid1"></label>
-        </div>
-    </div>
-    <div class="nk-tb-col">
-        <a href="html/user-details-regular.html">
-            <div class="user-card">
-                <div class="user-avatar bg-primary">
-                    @foreach (var img in product.Images.Take(1))
-                    {
-
-                        <span><img src="~/Images/@img.Image" /></span>
-
-                    }
-
-                </div>
-                <div class="user-info">
-                    <span class="tb-lead">
-                        @product.Name <span class="dot dot-success d-md-none ms-1"></span>
-                    </span>
-
+        <div class="nk-tb-item">
+            <div class="nk-tb-col nk-tb-col-check">
+                <div class="custom-control custom-control-sm custom-checkbox notext">
+                    <input type="checkbox" class="custom-control-input" id="uid1">
+                    <label class="custom-control-label" for="uid1"></label>
                 </div>
             </div>
-        </a>
-    </div>
-    <div class="nk-tb-col tb-col-mb">
-        <span class="tb-amount">
-            @product.NameArabic
-        </span>
-    </div>
-    <div class="nk-tb-col tb-col-mb">
-        <span class="tb-amount">
-            @product.Description
-        </span>
-    </div>
-    <div class="nk-tb-col tb-col-mb">
-        <span class="tb-amount">
-            @product.DescriptionArabic
-        </span>
-    </div>
-    <div class="nk-tb-col tb-col-mb">
-        <span class="tb-amount">
-            @product.SellingPrice
-        </span>
-    </div>
-    <div class="nk-tb-col tb-col-mb">
-        <span class="tb-amount">
-            @product.Quantity
-        </span>
-    </div>
-    <div class="nk-tb-col tb-col-md">
-        <span>@product.Category.Name</span>
-    </div>
-    <div class="nk-tb-col tb-col-lg">
-        <span>@product.Seller.User.FirstName</span>
-    </div>
-    <div class="nk-tb-col tb-col-lg">
-        <span>@product.AddedOn.ToShortDateString()</span>
-    </div>
-    <div class="nk-tb-col tb-col-md">
-        @if (product.IsActive)
-        {
-            <span class="tb-status text-success">Available</span>
-        }
-        else
-        {
-            <span class="tb-status text-danger">Not Available</span>
-        }
+            <div class="nk-tb-col">
+                <a href="html/user-details-regular.html">
+                    <div class="user-card">
+                        <div class="user-avatar bg-primary">
+                            @foreach (var img in product.Images.Take(1))
+                            {
 
-    </div>
-    <div class="nk-tb-col nk-tb-col-tools">
-        <ul class="nk-tb-actions gx-1">
-            <li class="nk-tb-action-hidden">
-                <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Send Email">
-                    <em class="icon ni ni-mail-fill"></em>
-                </a>
-            </li>
-            <li class="nk-tb-action-hidden">
-                <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Suspend">
-                    <em class="icon ni ni-user-cross-fill"></em>
-                </a>
-            </li>
-            <li>
-                <div class="drodown">
-                    <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown">
-                        <em class="icon ni ni-more-h"></em>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <ul class="link-list-opt no-bdr">
+                                <span><img src="@Configuration["imagesApi"]/images/@img.Image" /></span>
 
-                            <li>
-                                @Html.ActionLink("Suspend", "Suspend", "Product",
-                                new
-                                     {
-                                         @id = product.Id,
+                            }
 
-                                    @currentFilter = @ViewBag.Search,
-                                    @pageNumber = @ViewBag.Page,
-                                    })
-                            </li>
+                        </div>
+                        <div class="user-info">
+                            <span class="tb-lead">
+                                @product.Name <span class="dot dot-success d-md-none ms-1"></span>
+                            </span>
 
-                            <li>
-                                @Html.ActionLink("Activate", "Activate", "Product",
-                                new
-                                     {
-                                         @id = product.Id,
-                                    @currentFilter = @ViewBag.Search,
-                                    @searchString = @ViewBag.Search,
-                                    @pageNumber = @ViewBag.Page,
-                                    })
-                            </li>
-
-                            <li>
-                                @Html.ActionLink("Edit", "Edit", "Product", new { id = product.Id })
-                            </li>
-                        </ul>
+                        </div>
                     </div>
-                </div>
-            </li>
-        </ul>
-    </div>
+                </a>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.NameArabic
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.Description
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.DescriptionArabic
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.SellingPrice
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount">
+                    @product.Quantity
+                </span>
+            </div>
+            <div class="nk-tb-col tb-col-md">
+                <span>@product.Category.Name</span>
+            </div>
+            <div class="nk-tb-col tb-col-lg">
+                <span>@product.Seller.User.FirstName</span>
+            </div>
+            <div class="nk-tb-col tb-col-lg">
+                <span>@product.AddedOn.ToShortDateString()</span>
+            </div>
+            <div class="nk-tb-col tb-col-md">
+                @if (product.IsActive)
+                {
+                    <span class="tb-status text-success">Available</span>
+                }
+                else
+                {
+                    <span class="tb-status text-danger">Not Available</span>
+                }
+
+            </div>
+            <div class="nk-tb-col nk-tb-col-tools">
+                <ul class="nk-tb-actions gx-1">
+                    <li class="nk-tb-action-hidden">
+                        <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Send Email">
+                            <em class="icon ni ni-mail-fill"></em>
+                        </a>
+                    </li>
+                    <li class="nk-tb-action-hidden">
+                        <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Suspend">
+                            <em class="icon ni ni-user-cross-fill"></em>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="drodown">
+                            <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown">
+                                <em class="icon ni ni-more-h"></em>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <ul class="link-list-opt no-bdr">
+
+                                    <li>
+                                        @Html.ActionLink("Suspend", "Suspend", "Product",
+                                        new
+                                             {
+                                                 @id = product.Id,
+
+                                            @currentFilter = @ViewBag.Search,
+                                            @pageNumber = @ViewBag.Page,
+                                            })
+                                    </li>
+
+                                    <li>
+                                        @Html.ActionLink("Activate", "Activate", "Product",
+                                        new
+                                             {
+                                                 @id = product.Id,
+                                            @currentFilter = @ViewBag.Search,
+                                            @searchString = @ViewBag.Search,
+                                            @pageNumber = @ViewBag.Page,
+                                            })
+                                    </li>
+
+                                    <li>
+                                        @Html.ActionLink("Edit", "Edit", "Product", new { id = product.Id })
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
 
 
-</div>
+        </div>
     }
 }
