@@ -11,19 +11,19 @@ namespace EFModel.Models.EFModels
         [Required]
         public Customer Customer { get; set; }
 
-        // Each cart Product
-        public virtual ICollection<Product> Products { get; set;}
+        // many to many between product and cart
+        public virtual ICollection<CartProducts> CartProducts { get; set;}
 
-        public int Quantity { get; set; }
+        //public int Quantity { get; set; }
 
-        public decimal TotalPrice { get; set; }
+        //public decimal TotalPrice { get; set; }
 
-        public void CalcTotalPrice()
-        {
-            foreach (var pro in Products)
-            {
-                TotalPrice += pro.SellingPrice * Quantity;
-            }
-        }
+        //public void CalcTotalPrice()
+        //{
+        //    foreach (var pro in Products)
+        //    {
+        //        TotalPrice += pro.SellingPrice * Quantity;
+        //    }
+        //}
     }
 }

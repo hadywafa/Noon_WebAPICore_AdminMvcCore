@@ -26,6 +26,7 @@ namespace SqlServerDBContext
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<Wishlist> Wishlists { get; set; }
+        public virtual DbSet<CartProducts> CartProducts { get; set; }
 
         public SqlContext(DbContextOptions options):base(options)
         {

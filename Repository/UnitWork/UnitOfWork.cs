@@ -29,6 +29,7 @@ namespace Repository.UnitWork
         public IGenericRepo<Customer> Customers { get; }
         public IGenericRepo<Seller> Sellers { get; }
         public IGenericRepo<Shipper> Shippers { get; }
+        public IGenericRepo<CartProducts> CartProducts { get; }
 
         // Constructor
         public UnitOfWork(SqlContext _Context, IAuthRepo authRepo)
@@ -50,9 +51,11 @@ namespace Repository.UnitWork
             Customers = new GenericRepo<Customer>(Context);
             Sellers = new GenericRepo<Seller>(Context);
             Shippers = new GenericRepo<Shipper>(Context);
+            CartProducts = new GenericRepo<CartProducts>(Context);
             AuthRepo = authRepo;
         }
         #endregion
+
         public void Save()
         {
             Context.SaveChanges();

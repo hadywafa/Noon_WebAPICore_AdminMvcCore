@@ -60,7 +60,8 @@ namespace EFModel.Models.EFModels
         // Each Product can be in many Orders
         public virtual ICollection<OrderItem> Orders { get; set; }
 
-        public virtual ICollection<Cart> Carts { get; set; }
+        // many to many between product and cart
+        public virtual ICollection<CartProducts> CartProducts { get; set; }
 
         // Each Product is related to One Category
         [ForeignKey("Category")]

@@ -25,6 +25,7 @@ namespace Repository.UnitWork
         IGenericRepo<Customer> Customers { get; }
         IGenericRepo<Seller> Sellers { get; }
         IGenericRepo<Shipper> Shippers { get; }
+        IGenericRepo<CartProducts> CartProducts { get; }
         IAuthRepo GetAuthRepo();
         public void Save();
     }
