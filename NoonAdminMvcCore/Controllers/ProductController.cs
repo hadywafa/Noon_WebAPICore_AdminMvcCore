@@ -178,12 +178,14 @@ namespace NoonAdminMvcCore.Controllers
 
                         foreach (var item in files)
                         {
-                            
-                            var imgsave = Configuration["imagesApi"]+"/images";
-                            string filepath = Path.Combine(imgsave, (item.FileName));
+
+                            var filepath = Configuration["imagesPath"] + "/images/" + item.FileName;
+                            //var imgsave = Configuration["imagesApi"] + "/images";
+                            //string filepath = Path.Combine(imgsave, (item.FileName));
                             var straem = new FileStream(filepath, FileMode.Create);
                             item.CopyTo(straem);
                             straem.Close();
+
                             Images img = new Images()
                             {
                                 ProductId = prod.Id,
@@ -234,8 +236,9 @@ namespace NoonAdminMvcCore.Controllers
                     {
                         foreach (var item in files)
                         {
-                            var imgsave = Configuration["imagesApi"]+"/images";
-                            string filepath = Path.Combine(imgsave, item.FileName);
+                            var filepath = Configuration["imagesPath"]+"/images/"+item.FileName;
+                            //var imgsave = Configuration["imagesApi"]+"/images";
+                            //string filepath = Path.Combine(imgsave, item.FileName);
                             var straem = new FileStream(filepath, FileMode.Create);
                             
                             item.CopyTo(straem);
@@ -333,7 +336,7 @@ namespace NoonAdminMvcCore.Controllers
 
         private void deleteFilefromRoot(string img)
         {
-            img = Path.Combine(Configuration["imagesApi"]+"/images", img);
+            img = Path.Combine(Configuration["imagesPath"]+"/images/", img);
             FileInfo fileinfo = new FileInfo(img);
             if (fileinfo != null)
             {
