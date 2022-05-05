@@ -51,6 +51,14 @@ namespace JWTAuth
 
             #endregion
 
+            #region solve cycle JsonException
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
+            #endregion
+
             #region Register DB EF codeFirst Context
 
             services.AddDbContext<SqlContext>(options =>

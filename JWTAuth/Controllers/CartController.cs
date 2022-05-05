@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.EntityFrameworkCore;
 using Repository.GenericRepository;
 using Repository.UnitWork;
 
@@ -56,20 +57,20 @@ namespace JWTAuth.Controllers
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
             return $"{userName}  \n   {useEmail}  \n {userId}";
         }
-        
 
-        //[Authorize(Roles = AuthorizeRoles.Customer)]
-        //[HttpGet("GetAll")]
 
-        //public async Task<List<Product>> GetAll()
-        //{
+        [Authorize(Roles = AuthorizeRoles.Customer)]
+        [HttpGet("GetAll")]
+        public  List<CartProducts> GetAll()
+        {
             // get user from request
-            //var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
+            var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
             // get Customer include its cart
-            //var cart = _cartRepo.Find(x => x.Customer.Id == userId) ?? new Cart() { Customer = _customerRepo.GetById(userId) };
-            // get products from cart
-            //return products.ToList();
-        //}
+            var cartItems = _cartProducts.FindAll(x => x.Cart.Customer.Id == userId, y => y.Products, z => z.Cart).ToList();
+            //sending products
+            //var cartProducts = _cartProducts.GetAll().Where(x =>  x.Cart.Id == cart.Id);
+            return cartItems;
+        }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpPost("Add")]
@@ -90,12 +91,12 @@ namespace JWTAuth.Controllers
                  cart.Customer = _customerRepo.GetById(userId);
             }
 
-            var cartProducts = _cartProducts.GetAll().FirstOrDefault(x => x.Products.Id == pro.Id);
+            var cartProducts = _cartProducts.GetAll().FirstOrDefault(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
             if (cartProducts is null)
             {
                 _cartProducts.Add(new CartProducts() {Cart = cart , Products = pro  , Quantity = count});
                 _unitOfWork.Save();
-                return Ok();
+                return Ok("item added successfully");
 
             }
 
@@ -103,23 +104,70 @@ namespace JWTAuth.Controllers
             {
                 cartProducts.Quantity = cartProducts.Products.Quantity;
                 _unitOfWork.Save();
-                return Ok();
+                return Ok("item added successfully");
             }
             cartProducts.Quantity += count;
             _unitOfWork.Save();
             // update cart
-            return Ok();
+            return Ok("item added successfully");
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
-        [HttpPost("Remove")]
-        public  async Task<IActionResult> RemoveFromCart([FromBody]int proId)
+        [HttpPost("Update")]
+        public  async Task<IActionResult> UpdateQuantity([FromQuery]int proId  ,[FromBody] int count)
         {
+            var pro = _productRepo.GetById(proId);
+            if (pro== null)
+            {
+                return BadRequest("There is no Product with that id");
+            }
             // get user from request
-            // get user cart
-            // remove product from cart by product id
+            var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
+            // get Customer include its cart
+            var cart = _cartRepo.Find(x => x.Customer.Id == userId);
+
+            var cartProducts = _cartProducts.GetAll().FirstOrDefault(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
+            if (cartProducts is null)
+            {
+                return Ok("There is no Product with that id in your cart");
+            }
+
+            if ( count > cartProducts.Products.Quantity)
+            {
+                cartProducts.Quantity = cartProducts.Products.Quantity;
+                _unitOfWork.Save();
+                return Ok("item Updated successfully");
+            }
+            cartProducts.Quantity = count;
+            _unitOfWork.Save();
             // update cart
-            return Ok();
+            return Ok("item Updated successfully");
+        }
+
+
+        [Authorize(Roles = AuthorizeRoles.Customer)]
+        [HttpDelete("Remove")]
+        public  async Task<IActionResult> RemoveFromCart([FromQuery]int proId)
+        {
+            var pro = _productRepo.GetById(proId);
+            if (pro== null)
+            {
+                return BadRequest("There is no Product with that id");
+            }
+            // get user from request
+            var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
+            // get Customer include its cart
+            var cart = _cartRepo.Find(x => x.Customer.Id == userId);
+
+            var cartProducts = _cartProducts.GetAll().FirstOrDefault(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
+            if (cartProducts is null)
+            {
+                return Ok("There is no Product with that id in your cart");
+            }
+            _cartProducts.Remove(cartProducts);
+            _unitOfWork.Save();
+            // update cart
+            return Ok("Item Removed Succeeded");
         }
 
     }
