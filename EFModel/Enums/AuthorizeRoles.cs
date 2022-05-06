@@ -1,4 +1,4 @@
-﻿namespace BL.AppPolicy
+﻿namespace EFModel.Enums
 {
     public static class AuthorizeRoles
     {

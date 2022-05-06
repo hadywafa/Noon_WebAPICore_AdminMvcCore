@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Http;
 using NoonAdminMvcCore.Models;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
-using BL.AppPolicy;
 using Microsoft.Extensions.Configuration;
 
 namespace NoonAdminMvcCore.Controllers

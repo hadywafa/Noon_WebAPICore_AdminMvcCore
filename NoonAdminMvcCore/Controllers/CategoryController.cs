@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Hosting;
 using Repository.UnitWork;
 using Repository.GenericRepository;
 using Microsoft.AspNetCore.Authorization;
-using BL.AppPolicy;
 
 namespace NoonAdminMvcCore.Controllers
 {

@@ -1,7 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using BL;
 using BL.Helper;
+using EFModel.Enums;
 using EFModel.Models;
+using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,25 +30,22 @@ namespace JWTAuth
 {
     public class Startup
     {
-        #region Inject Configuration
-
         public IConfiguration Configuration { get; }
-
-        public Startup(IConfiguration configuration)
+        private SeedData _seedData;
+        public Startup(IConfiguration configuration )
         {
             Configuration = configuration;
         }
-
-        #endregion
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             #region Register Repository
 
             services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
-            services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>)); //<===VIP
-            services.AddScoped<IAuthRepo, AuthRepo>(); //<===VIP
+            services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>)); 
+            services.AddScoped<IAuthRepo, AuthRepo>(); 
+            //Seed Initial Data to Database
+            services.AddTransient<SeedData, SeedData>(); 
 
             #endregion
 
@@ -65,7 +70,7 @@ namespace JWTAuth
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-            
+
             #endregion
 
             #region Register IdentityUser to my DB Context
@@ -108,7 +113,7 @@ namespace JWTAuth
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SeedData seedData)
         {
             if (env.IsDevelopment())
             {
@@ -132,9 +137,23 @@ namespace JWTAuth
             app.UseRouting();
             app.UseAuthentication(); //1
             app.UseAuthorization(); //2
-
+            #region HW => Seed Initial Data 
+            Seed(seedData);
+            #endregion
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
+        private void Seed(SeedData seedData)
+        {
+            var task = Task.Run(async () =>
+            {
+                await seedData.HwAddRoles();
+                await seedData.HwAddUsers();
+                seedData.HwAddCategory();
+                seedData.HwAddProducts();
+                await seedData.HwAddOrder();
+            });
+            task.Wait();
+        }
     }
 }

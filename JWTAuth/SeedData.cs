@@ -1,28 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using EFModel.Enums;
 using EFModel.Models;
 using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Repository.GenericRepository;
 using Repository.UnitWork;
 
-namespace NoonAdminMvcCore.Controllers
+namespace JWTAuth
 {
-    public class HwController : Controller
+    public class SeedData 
     {
         #region Inject Dependencies
 
         // Unit Of Work which is responsible on operations on Context
-        private readonly IUnitOfWork _unitOfWork;
+        readonly IUnitOfWork _unitOfWork;
 
         // User Repo which is responsible on operations on user
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        readonly UserManager<User> _userManager;
+        readonly RoleManager<IdentityRole> _roleManager;
         readonly IGenericRepo<User> _userRepo;
         readonly IGenericRepo<Address> _addressRepo;
         readonly IGenericRepo<Category> _catRepo;
@@ -35,7 +37,7 @@ namespace NoonAdminMvcCore.Controllers
         readonly IGenericRepo<Shipper> _shipperRepo;
 
         // Constructor
-        public HwController(IUnitOfWork unitOfWork, UserManager<User> userManager,
+        public SeedData(UserManager<User> userManager, IUnitOfWork unitOfWork,
             RoleManager<IdentityRole> roleManager)
         {
             _unitOfWork = unitOfWork;
@@ -55,38 +57,26 @@ namespace NoonAdminMvcCore.Controllers
 
         #endregion
 
-        public async Task<string> HwAddRoles()
+        public async Task HwAddRoles()
         {
-            var team4 = new List<string>() { "Mo", "Kero", "Emad", "Hady" };
-            var roles = new List<string>()
-            {
-                AuthorizeRoles.Admin, AuthorizeRoles.Customer, AuthorizeRoles.Seller, AuthorizeRoles.Shipper
-            };
-            bool isInserted = _roleManager.Roles.Any(r =>
-                r.Name == AuthorizeRoles.Admin || r.Name == AuthorizeRoles.Customer ||
-                r.Name == AuthorizeRoles.Seller || r.Name == AuthorizeRoles.Shipper);
+            bool isInserted = _roleManager.Roles.Any();
             if (!isInserted)
             {
                 await _roleManager.CreateAsync(new IdentityRole(AuthorizeRoles.Admin));
                 await _roleManager.CreateAsync(new IdentityRole(AuthorizeRoles.Customer));
                 await _roleManager.CreateAsync(new IdentityRole(AuthorizeRoles.Seller));
                 await _roleManager.CreateAsync(new IdentityRole(AuthorizeRoles.Shipper));
-                return "Seeding Roles have been Added Successfully";
             }
-
-            return "there are an Error or Seeding Roles are Existed";
         }
 
-        public async Task<string> HwAddUsers()
+        public async Task HwAddUsers()
         {
             var team4 = new List<string>() { "Mo", "Kero", "Emad", "Hady" };
             var roles = new List<string>()
             {
                 AuthorizeRoles.Admin, AuthorizeRoles.Customer, AuthorizeRoles.Seller, AuthorizeRoles.Shipper
             };
-            bool isInserted = _userRepo.GetAll()
-                .Any(u => u.FirstName == "Mo" || u.FirstName == "Kero" || u.FirstName == "Emad" ||
-                          u.FirstName == "Hady");
+            bool isInserted = _userRepo.GetAll().Any();
             if (!isInserted)
             {
                 foreach (string name in team4)
@@ -138,16 +128,12 @@ namespace NoonAdminMvcCore.Controllers
                         _unitOfWork.Save();
                     }
                 }
-
-                return "dummy Users have been Added Successfully";
             }
-
-            return "There an Error or dummy Users are existed";
         }
 
-        public string HwAddCategory()
+        public void HwAddCategory()
         {
-            bool isInserted = _catRepo.GetAll().Any(c => c.Name.StartsWith("Category"));
+            bool isInserted = _catRepo.GetAll().Any();
             if (!isInserted)
             {
                 for (int i = 0; i <= 10; i++)
@@ -158,25 +144,17 @@ namespace NoonAdminMvcCore.Controllers
                         NameArabic = $"صنف{i}",
                         Description = "HHHHHHHHHHH",
                         DescriptionArabic = "هههههههههههههههه",
-
                         Image = new Images() { Image = "12345" },
-                        
-                        
-
                     };
                     _catRepo.Add(cat);
                     _unitOfWork.Save();
                 }
-
-                return "dummy Categories have been Added Successfully";
             }
-
-            return "there are an Error or dummy Categories are Existed";
         }
 
-        public string HwAddProducts()
+        public void HwAddProducts()
         {
-            bool isInserted = _productRepo.GetAll().Any(c => c.Name.StartsWith("Product"));
+            bool isInserted = _productRepo.GetAll().Any();
             if (!isInserted)
             {
                 for (int i = 1; i <= 10; i++)
@@ -199,10 +177,10 @@ namespace NoonAdminMvcCore.Controllers
                         Seller = _sellerRepo.Find(s => s.User.Email == "MoSeller@gmail.com"),
                         Images = new List<Images>()
                         {
-                            new Images(){Image = $"Pro{i}Img{1}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{2}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{3}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{4}.jpg"},
+                            new Images() { Image = $"Pro{i}Img{1}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{2}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{3}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{4}.jpg" },
                         }
                     };
                     _productRepo.Add(pro);
@@ -229,10 +207,10 @@ namespace NoonAdminMvcCore.Controllers
                         Seller = _sellerRepo.Find(s => s.User.Email == "EmadSeller@gmail.com"),
                         Images = new List<Images>()
                         {
-                            new Images(){Image = $"Pro{i}Img{1}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{2}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{3}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{4}.jpg"},
+                            new Images() { Image = $"Pro{i}Img{1}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{2}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{3}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{4}.jpg" },
                         }
                     };
                     _productRepo.Add(pro);
@@ -259,10 +237,10 @@ namespace NoonAdminMvcCore.Controllers
                         Seller = _sellerRepo.Find(s => s.User.Email == "KeroSeller@gmail.com"),
                         Images = new List<Images>()
                         {
-                            new Images(){Image = $"Pro{i}Img{1}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{2}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{3}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{4}.jpg"},
+                            new Images() { Image = $"Pro{i}Img{1}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{2}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{3}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{4}.jpg" },
                         }
                     };
                     _productRepo.Add(pro);
@@ -286,28 +264,24 @@ namespace NoonAdminMvcCore.Controllers
                         IsActive = true,
                         AddedOn = DateTime.Now,
                         Weight = $"{5 * (i + 1)} kg",
-                        Seller= _sellerRepo.Find(s => s.User.Email == "HadySeller@gmail.com"),
+                        Seller = _sellerRepo.Find(s => s.User.Email == "HadySeller@gmail.com"),
                         Images = new List<Images>()
                         {
-                            new Images(){Image = $"Pro{i}Img{1}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{2}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{3}.jpg"},
-                            new Images(){Image = $"Pro{i}Img{4}.jpg"},
+                            new Images() { Image = $"Pro{i}Img{1}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{2}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{3}.jpg" },
+                            new Images() { Image = $"Pro{i}Img{4}.jpg" },
                         }
                     };
                     _productRepo.Add(pro);
                     _unitOfWork.Save();
                 }
-
-                return "dummy Products have been Added Successfully";
             }
-
-            return "there are an Error or dummy Products are Existed";
         }
 
-        public async Task<string> HwAddOrder()
+        public async Task HwAddOrder()
         {
-            bool isInserted = _orderRepo.GetAll().Any(c => c.Discount == (decimal)0.5);
+            bool isInserted = _orderRepo.GetAll().Any();
             if (!isInserted)
             {
                 #region Mo Orders
@@ -426,7 +400,8 @@ namespace NoonAdminMvcCore.Controllers
                 _orderRepo.Add(orderKero1);
 
                 var orderKero2 = new Order()
-                {   User = await _userManager.FindByEmailAsync("KeroCustomer@gmail.com"),
+                {
+                    User = await _userManager.FindByEmailAsync("KeroCustomer@gmail.com"),
                     Customer = _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
                     Shipper = _shipperRepo.Find(s => s.User.Email == "KeroShipper@gmail.com"),
                     Discount = (decimal)0.5,
@@ -615,53 +590,8 @@ namespace NoonAdminMvcCore.Controllers
                 #endregion
 
                 _unitOfWork.Save();
-
-                return "dummy Orders have been Added Successfully";
             }
-
-            return "there are an Error or dummy Orders are Existed";
         }
 
-        public async Task<string> newOrder()
-        {
-            var orderMo5 = new Order()
-            {
-                Customer = _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
-                User = await _userManager.FindByEmailAsync("MoCustomer@gmail.com"),
-                Shipper = _shipperRepo.Find(s => s.User.Email == "MoShipper@gmail.com"),
-                Discount = (decimal)0.5,
-                IsPaid = false,
-                OrderItems = new Collection<OrderItem>()
-                    {
-                        new OrderItem()
-                        {
-                            Quantity = 15, Product = _productRepo.Find(p => p.Name == "Product 1")
-                        },
-                        new OrderItem()
-                        {
-                            Quantity = 42, Product = _productRepo.Find(p => p.Name == "Product 2")
-                        },
-                        new OrderItem()
-                        {
-                            Quantity = 14, Product = _productRepo.Find(p => p.Name == "Product 3")
-                        },
-                        new OrderItem()
-                        {
-                            Quantity = 32, Product = _productRepo.Find(p => p.Name == "Product 4")
-                        },
-                        new OrderItem()
-                        {
-                            Quantity = 33, Product = _productRepo.Find(p => p.Name == "Product 5")
-                        },
-                    }
-            };
-
-            orderMo5.CalcTotalPrice();
-            _orderRepo.Add(orderMo5);
-
-            _unitOfWork.Save();
-
-            return "dummy Orders have been Added Successfully";
-        }
     }
 }

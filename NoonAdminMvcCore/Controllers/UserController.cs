@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
-using BL.AppPolicy;
 using EFModel.Models;
 using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +11,7 @@ using Repository.GenericRepository;
 using Repository.UnitWork;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using EFModel.Enums;
 
 namespace NoonAdminMvcCore.Controllers
 {

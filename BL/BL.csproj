@@ -8,4 +8,8 @@
     <ProjectReference Include="..\EFModel\EFModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AppPolicy\" />
+  </ItemGroup>
+
 </Project>

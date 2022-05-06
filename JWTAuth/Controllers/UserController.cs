@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using BL.AppPolicy;
+using EFModel.Enums;
 using Microsoft.AspNetCore.Authorization;
 
 namespace JWTAuth.Controllers

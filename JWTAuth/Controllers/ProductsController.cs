@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BL.AppPolicy;
+using EFModel.Enums;
 using Microsoft.AspNetCore.Mvc;
 using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Authorization;
