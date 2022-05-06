@@ -60,7 +60,7 @@ namespace NoonAdminMvcCore.Controllers
             var users = new List<User>();
 
             // 2- Get Users by role
-            var data = await _userManager.GetUsersInRoleAsync(role);
+            var data = _userManager.GetUsersInRoleAsync(role).Result.OrderByDescending(u => u.CreatedAt);
 
             // A- Get user in case of search
             if (!(String.IsNullOrEmpty(searchString) && string.IsNullOrEmpty(currentFilter)))
@@ -85,7 +85,8 @@ namespace NoonAdminMvcCore.Controllers
 
                         && (u.FirstName.Contains(searchString)
                         || u.LastName.Contains(searchString)
-                        || u.Email.Contains(searchString)), u => u.Addresses);
+                        || u.Email.Contains(searchString)
+                        || u.PhoneNumber.Contains(searchString)), u => u.Addresses);
 
                     if (_user != null)
                         users.Add(_user);

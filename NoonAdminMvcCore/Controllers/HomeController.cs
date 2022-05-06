@@ -14,6 +14,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace NoonAdminMvcCore.Controllers
 {
@@ -105,7 +107,6 @@ namespace NoonAdminMvcCore.Controllers
             ViewBag.todaySellersCount = todaySellersCount;
             ViewBag.allSellerCount = allSellerCount;
             ViewBag.DeliveryStatus = new List<DeliveryStatus>();
-
             return View(recentOrders);
         }
 
@@ -118,6 +119,18 @@ namespace NoonAdminMvcCore.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult DarkMode()
+        {
+            HttpContext.Session.Set("DarkMode", Encoding.ASCII.GetBytes("1"));
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult LightMode()
+        {
+            HttpContext.Session.Set("DarkMode", Encoding.ASCII.GetBytes("0"));
+            return RedirectToAction("Index");
         }
     }
 }

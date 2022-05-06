@@ -27,7 +27,6 @@
         <table class="table table-striped ">
 
             <thead>
-            <th>Order Id</th>
             <th>Order Date</th>
             <th>Total Price</th>
             <th>Payment</th>
@@ -42,7 +41,6 @@
                 @foreach (var order in Model)
                 {
                     <tr>
-                        <td>@order.Id</td>
                         <td>@order.OrderDate</td>
                         <td>@order.TotalPrice</td>
                         <td>@(order.IsPaid?"Card":"Cash")</td>

@@ -38,7 +38,7 @@ namespace NoonAdminMvcCore.Controllers
         }
 
         // GET: Category
-        public IActionResult Index(string currentFilter, string searchString, int? pageNumber, int? pageSize)
+        public IActionResult Display(string currentFilter, string searchString, int? pageNumber, int? pageSize)
         
         {
             ViewData["CurrentFilter"] = searchString;
@@ -99,7 +99,7 @@ namespace NoonAdminMvcCore.Controllers
 
 
                 //return View(users);
-                return View(EFModel.Models.PaginatedList<Category>.CreateAsync(cats, pageNumber ?? 1, rowsPerPage));
+                return View("Index", EFModel.Models.PaginatedList<Category>.CreateAsync(cats, pageNumber ?? 1, rowsPerPage));
             }
             else
             {
@@ -108,9 +108,6 @@ namespace NoonAdminMvcCore.Controllers
             }
         }
 
-        
-
-
         // GET: Category/Create
         public IActionResult Create()
         {
@@ -118,8 +115,6 @@ namespace NoonAdminMvcCore.Controllers
             return View("CategoryForm");
         }
 
-
-       
         // POST: Category/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -235,7 +230,6 @@ namespace NoonAdminMvcCore.Controllers
             #endregion
             return View("CategoryForm", catViewmodel);
         }
-
 
         [HttpGet]
         public IActionResult Delete(int id)

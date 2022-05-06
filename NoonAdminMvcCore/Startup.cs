@@ -17,6 +17,7 @@ using Repository.CustomRepository.AuthRepo;
 using Repository.GenericRepository;
 using Repository.UnitWork;
 using SqlServerDBContext;
+using Microsoft.AspNetCore.Http;
 
 namespace NoonAdminMvcCore
 {
@@ -54,6 +55,12 @@ namespace NoonAdminMvcCore
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddControllersWithViews();
 
+
+            services.AddMemoryCache();
+            services.AddSession();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,6 +84,8 @@ namespace NoonAdminMvcCore
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

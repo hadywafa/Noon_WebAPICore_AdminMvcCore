@@ -51,7 +51,7 @@ namespace NoonAdminMvcCore.Controllers
         }
 
         // GET: Product
-        public IActionResult Index(string currentFilter, string searchString, int? pageNumber, int? pageSize)
+        public IActionResult Display(string currentFilter, string searchString, int? pageNumber, int? pageSize)
         {
             ViewData["CurrentFilter"] = searchString;
             ViewData["PageSize"] = pageSize;
@@ -59,7 +59,7 @@ namespace NoonAdminMvcCore.Controllers
 
             var prods = new List<Product>();
             var products = _productRepository.GetAll().Include(i => i.Images)
-                .Include(c=>c.Category).Include(s=>s.Seller.User).ToList();
+                .Include(c=>c.Category).Include(s=>s.Seller.User).OrderByDescending(p => p.AddedOn).ToList();
             if (!(String.IsNullOrEmpty(searchString) && string.IsNullOrEmpty(currentFilter)))
             {
                 // Case: first search but not first page => second, third ...etc
@@ -114,7 +114,7 @@ namespace NoonAdminMvcCore.Controllers
 
                  
                 //return View(users);
-                return View(EFModel.Models.PaginatedList<Product>.CreateAsync(prods, pageNumber ?? 1, rowsPerPage));
+                return View("Index", EFModel.Models.PaginatedList<Product>.CreateAsync(prods, pageNumber ?? 1, rowsPerPage));
             }
             else
             {
