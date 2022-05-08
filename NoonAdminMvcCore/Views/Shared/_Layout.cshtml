@@ -3,6 +3,9 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 <!DOCTYPE html>
 <html lang="zxx" class="js">
 
@@ -21,7 +24,8 @@
     <link id="skin-default" href="~/Layout/assets/css/theme.css?ver=3.0.0" rel="stylesheet" type="text/css" />
 </head>
 
-<body class="nk-body ui-rounder npc-default has-sidebar">
+<body class="nk-body ui-rounder npc-default has-sidebar @(@HttpContextAccessor.HttpContext.Session.GetString("DarkMode") == "1" ? "dark-mode" : "")">
+
     <div class="nk-app-root">
         <div class="nk-sidebar" data-content="sidebarMenu">
             <div class="nk-sidebar-bar">
@@ -65,7 +69,7 @@
                                 </ul>
 
                             </div>
-                            
+
                         </div>
                         <div class="nk-sidebar-profile nk-sidebar-profile-fixed dropdown">
                             <a href="#" data-bs-toggle="dropdown" data-offset="50,-50">
@@ -87,9 +91,9 @@
                                 </div>
                                 <div class="dropdown-inner">
                                     <ul class="link-list">
-                                        
+
                                         <li><a href="@Url.Action("Edit", "User", new {Id = @UserManager.GetUserAsync(User).Result.Id})"><em class="icon ni ni-setting-alt"></em><span>Account Setting</span></a></li>
-                                        
+
                                     </ul>
                                 </div>
                                 <div class="dropdown-inner">
@@ -108,7 +112,7 @@
                 <div class="nk-sidebar-inner" data-simplebar>
                     <div class="nk-menu-content menu-active" data-content="navDashboards">
                         <h5 class="title">Dashboards</h5>
-                        <ul class="nk-menu">                 
+                        <ul class="nk-menu">
                             <li class="nk-menu-item active current-page">
                                 <a href="@Url.Action("Index", "Home")">
                                     <span class="nk-menu-icon"><em class="icon ni ni-growth-fill" style="color: #11C393;"></em></span>
@@ -166,11 +170,11 @@
                                     </li>
                                 </ul><!-- .nk-menu-sub -->
                             </li><!-- .nk-menu-item -->
-                            
+
                         </ul><!-- .nk-menu -->
                     </div>
 
-                   <div class="nk-menu-content" data-content="navPages">
+                    <div class="nk-menu-content" data-content="navPages">
                         <h5 class="title">Show Section</h5>
                         <ul class="nk-menu">
 
@@ -202,7 +206,7 @@
 
 
                             <li class="nk-menu-item">
-                                <a asp-controller="Product" asp-action="Index" class="nk-menu-link">
+                                <a asp-controller="Product" asp-action="Display" class="nk-menu-link">
                                     <span class="nk-menu-icon">
                                         <em class="icon ni ni-list-fill"></em>
                                     </span>
@@ -210,7 +214,7 @@
                                 </a>
                             </li><!-- .nk-menu-item -->
                             <li class="nk-menu-item">
-                                <a asp-controller="Category" asp-action="Index" class="nk-menu-link">
+                                <a asp-controller="Category" asp-action="Display" class="nk-menu-link">
                                     <span class="nk-menu-icon">
                                         <em class="icon ni ni-view-col-fill"></em>
                                     </span>
@@ -218,7 +222,7 @@
                                 </a>
                             </li>
                             <li class="nk-menu-item">
-                                <a asp-controller="Order" asp-action="Index"  class="nk-menu-link">
+                                <a asp-controller="Order" asp-action="Index" class="nk-menu-link">
                                     <span class="nk-menu-icon">
                                         <em class="icon ni ni-cart-fill"></em>
                                     </span>
@@ -252,18 +256,18 @@
                                     <img class="logo-dark logo-img" src="https://i.ibb.co/thTGg9q/429-4290017-noon.png" srcset="~/Layout/images/logo-dark2x.png 2x" alt="logo-dark">
                                 </a>
                             </div><!-- .nk-header-brand -->
-                            
+
                             <div class="nk-header-tools">
                                 <ul class="nk-quick-nav">
-                                    
+
 
                                     <li class="nav-item">
                                         <a href="" data-bs-toggle="modal" data-bs-target="#region" class="nk-quick-nav-icon">
                                             <em class="icon ni ni-globe"></em>
                                         </a>
                                     </li>
-                                   
-                                    
+
+
                                     <li class="dropdown language-dropdown d-none d-sm-block me-n1">
                                         <a href="#" class="dropdown-toggle nk-quick-nav-icon" data-bs-toggle="dropdown">
                                             <div class="quick-icon border border-light">
@@ -321,17 +325,25 @@
                                             </div>
                                             <div class="dropdown-inner">
                                                 <ul class="link-list">
-                                                    
+
                                                     <li>
                                                         <a href="@Url.Action("Edit", "User", new {Id = @UserManager.GetUserAsync(User).Result.Id})">
                                                             <em class="icon ni ni-setting-alt"></em><span>Account Setting</span>
                                                         </a>
                                                     </li>
-                                                    
+
                                                     <li>
-                                                        <a class="dark-switch" href="#">
-                                                            <em class="icon ni ni-moon"></em><span>Dark Mode</span>
-                                                        </a>
+                                                        @if (@HttpContextAccessor.HttpContext.Session.GetString("DarkMode") == "1")
+                                                        {
+                                                            <a class="" href="@Url.Action("LightMode", "Home")">
+                                                                <em class="icon ni ni-sun-fill"></em><span>Light Mode</span>
+                                                            </a>
+                                                        }
+                                                        else{
+                                                            <a class="" href="@Url.Action("DarkMode", "Home")">
+                                                                <em class="icon ni ni-moon"></em><span>Dark Mode</span>
+                                                            </a>
+                                                        }
                                                     </li>
                                                 </ul>
                                             </div>

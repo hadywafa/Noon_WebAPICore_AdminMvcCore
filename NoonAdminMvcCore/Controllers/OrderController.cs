@@ -17,14 +17,11 @@ namespace NoonAdminMvcCore.Controllers
     [Authorize(Roles = AuthorizeRoles.Admin)]
     public class OrderController : Controller
     {
-
         private IUnitOfWork _unitOfWork;
         private readonly IGenericRepo<Order> _orderRepo;
         readonly IGenericRepo<User> _userRepository;
         private readonly UserManager<User> _userManager;
         private readonly IGenericRepo<OrderItem> _orderItems;
-
-
 
         public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager )
         {
@@ -44,13 +41,12 @@ namespace NoonAdminMvcCore.Controllers
             List<Order> orders;
 
             if (id != null)
-                   orders = _orderRepo.FindAll(orders => orders.CustomerID == id).ToList();
+                   orders = _orderRepo.FindAll(orders => orders.CustomerID == id).OrderByDescending(order => order.OrderDate).ToList();
             else
-               orders = _orderRepo.GetAll().ToList();
+               orders = _orderRepo.GetAll().OrderByDescending(order => order.OrderDate).ToList();
 
             return View(EFModel.Models.PaginatedList<Order>.CreateAsync(orders, pageNumber ?? 1, rowsPerPage));
         }
-
 
         public IActionResult OrderProducts(int id)
         {
@@ -77,7 +73,6 @@ namespace NoonAdminMvcCore.Controllers
             
             return View(model);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

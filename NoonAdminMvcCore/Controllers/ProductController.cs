@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,7 +51,7 @@ namespace NoonAdminMvcCore.Controllers
         }
 
         // GET: Product
-        public IActionResult Index(string currentFilter, string searchString, int? pageNumber, int? pageSize)
+        public IActionResult Display(string currentFilter, string searchString, int? pageNumber, int? pageSize)
         {
             ViewData["CurrentFilter"] = searchString;
             ViewData["PageSize"] = pageSize;
@@ -114,7 +114,7 @@ namespace NoonAdminMvcCore.Controllers
 
                  
                 //return View(users);
-                return View(EFModel.Models.PaginatedList<Product>.CreateAsync(prods, pageNumber ?? 1, rowsPerPage));
+                return View("Index", EFModel.Models.PaginatedList<Product>.CreateAsync(prods, pageNumber ?? 1, rowsPerPage));
             }
             else
             {

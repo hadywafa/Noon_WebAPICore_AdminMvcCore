@@ -3,10 +3,7 @@
 
 <form method="post" asp-action="Edit">
 
-    <div class="form-group">
-        <label asp-for="@Model.Id" class="text-muted"></label>
-        <input disabled asp-for="@Model.Id" class="form-control" />
-    </div>
+    <input hidden asp-for="@Model.Id" class="form-control" />
 
     <div class="form-group">
         <label class="text-muted" asp-for="@Model.DeliveryStatus"></label>
@@ -28,13 +25,13 @@
 
     <div class="form-group">
         <label asp-for="@Model.ShipperId" class="text-muted">Shipper</label>
-        <select asp-for="@Model.ShipperId" class = "form-select js-select2">
+        <select asp-for="@Model.ShipperId" class="form-select js-select2">
 
-        
-        @foreach (var shipper in Model.Shippers)
-        {
-            <option value="@shipper.Id">@shipper.FirstName @shipper.LastName</option>
-        }
+
+            @foreach (var shipper in Model.Shippers)
+            {
+                <option value="@shipper.Id">@shipper.FirstName @shipper.LastName</option>
+            }
         </select>
 
     </div>

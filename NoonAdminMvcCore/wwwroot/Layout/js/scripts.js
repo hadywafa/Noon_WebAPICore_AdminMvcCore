@@ -1,4 +1,4 @@
-!(function (NioApp, $) {
+nk-menu-link!(function (NioApp, $) {
     "use strict";
     NioApp.Package.name = "DashLite";
     NioApp.Package.version = "2.3";
@@ -519,21 +519,6 @@
                 $(link[0]).tab('show');
             }
         });
-    }
-
-    // Dark Mode Switch @since v2.0
-    NioApp.ModeSwitch = function () {
-        var toggle = $('.dark-switch');
-        if ($body.hasClass('dark-mode')) {
-            toggle.addClass('active');
-        } else {
-            toggle.removeClass('active');
-        }
-        toggle.on('click', function (e) {
-            e.preventDefault();
-            $(this).toggleClass('active');
-            $body.toggleClass('dark-mode');
-        })
     }
 
     // Knob @v1.0
