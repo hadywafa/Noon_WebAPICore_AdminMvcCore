@@ -43,8 +43,8 @@ namespace EFModel.Models.EFModels
 
         #region Navigation Property
 
-        //public string CustomerId { get; set; }
-        //[ForeignKey("CustomerId")]
+        //public string Id { get; set; }
+        //[ForeignKey("Id")]
         //[Key, Column(Order = 2)]
         public virtual Customer Customer { get; set; }
 

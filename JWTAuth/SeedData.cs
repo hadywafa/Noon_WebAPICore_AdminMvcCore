@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using EFModel.Enums;
 using EFModel.Models;
 using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Repository.GenericRepository;
 using Repository.UnitWork;
 
@@ -105,20 +102,20 @@ namespace JWTAuth
                         switch (role)
                         {
                             case AuthorizeRoles.Admin:
-                                _adminRepo.Add(new Admin() { User = user });
+                                await _adminRepo.Add(new Admin() { User = user });
                                 break;
                             case AuthorizeRoles.Customer:
-                                _customerRepo.Add(new Customer() { User = user });
+                                await _customerRepo.Add(new Customer() { User = user });
                                 break;
                             case AuthorizeRoles.Seller:
-                                _sellerRepo.Add(new Seller() { User = user });
+                                await _sellerRepo.Add(new Seller() { User = user });
                                 break;
                             case AuthorizeRoles.Shipper:
-                                _shipperRepo.Add(new Shipper() { User = user });
+                                await _shipperRepo.Add(new Shipper() { User = user });
                                 break;
                         }
 
-                        _unitOfWork.Save();
+                        await _unitOfWork.Save();
                         var address = new Address
                         {
                             User = user,
@@ -126,8 +123,8 @@ namespace JWTAuth
                             City = $"city{user.FirstName + user.LastName}",
                             PostalCode = 1234
                         };
-                        _addressRepo.Add(address);
-                        _unitOfWork.Save();
+                        await _addressRepo.Add(address);
+                        await _unitOfWork.Save();
                     }
                 }
             }

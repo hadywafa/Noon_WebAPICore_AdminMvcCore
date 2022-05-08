@@ -21,17 +21,16 @@ namespace Repository.UnitWork
         public IGenericRepo<Order> Orders { get; }
         public IGenericRepo<OrderItem> OrderItems { get;  }
         public IGenericRepo<Product> Products { get;  }
-        public IGenericRepo<CustomerOrderItemSellerReviews> Reviews { get;  }
-        public IGenericRepo<CustomerProductWishlists> Wishlists { get;  }
-        public IGenericRepo<Cart> Carts { get;  }
         public IGenericRepo<Admin> Admins { get; }
         public IGenericRepo<Customer> Customers { get; }
         public IGenericRepo<Seller> Sellers { get; }
         public IGenericRepo<Shipper> Shippers { get; }
-        public IGenericRepo<CartProducts> CartProducts { get; }
         public IGenericRepo<Brand> Brands { get; }
         public IGenericRepo<ProductSpecifications> ProductSpecifications { get; }
         public IGenericRepo<ProductHighlights> ProductHighlights { get; }
+        public IGenericRepo<CustProWishlist> CustProWishlists { get; }
+        public IGenericRepo<CustProCart> CustProCarts { get; }
+        public IGenericRepo<CustomerOrderItemSellerReviews> Reviews { get;  }
 
         // Constructor
         public UnitOfWork(SqlContext _Context, IAuthRepo authRepo)
@@ -45,17 +44,16 @@ namespace Repository.UnitWork
             Orders = new GenericRepo<Order>(Context);
             OrderItems = new GenericRepo<OrderItem>(Context);
             Products = new GenericRepo<Product>(Context);
-            Reviews = new GenericRepo<CustomerOrderItemSellerReviews>(Context);
-            Wishlists = new GenericRepo<CustomerProductWishlists>(Context);
-            Carts = new GenericRepo<Cart>(Context);
             Admins = new GenericRepo<Admin>(Context);
             Customers = new GenericRepo<Customer>(Context);
             Sellers = new GenericRepo<Seller>(Context);
             Shippers = new GenericRepo<Shipper>(Context);
-            CartProducts = new GenericRepo<CartProducts>(Context);
             Brands = new GenericRepo<Brand>(Context);
             ProductSpecifications = new GenericRepo<ProductSpecifications>(Context);
             ProductHighlights = new GenericRepo<ProductHighlights>(Context);
+            CustProWishlists = new GenericRepo<CustProWishlist>(Context);
+            CustProCarts = new GenericRepo<CustProCart>(Context);
+            Reviews = new GenericRepo<CustomerOrderItemSellerReviews>(Context);
             AuthRepo = authRepo;
         }
         #endregion

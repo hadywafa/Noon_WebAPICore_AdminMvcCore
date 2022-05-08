@@ -73,8 +73,6 @@ namespace EFModel.Models.EFModels
         // Each Product can be in many Orders
         public virtual ICollection<OrderItem> Orders { get; set; }
 
-        // many to many between product and cart
-        public virtual ICollection<CartProducts> CartProducts { get; set; }
 
         #region new navigation props
 
@@ -84,8 +82,11 @@ namespace EFModel.Models.EFModels
         //each product have multi image gallantry
         public virtual ICollection<Image> ImagesGallery { get; set; }
 
-        // Each Customer has a collection of Favorite Products
-        public virtual ICollection<CustomerProductWishlists> Wishlists { get; set; }
+        // its not mapping its an implementation of [Customer  m => Cart <== m Product]
+        public virtual ICollection<CustProCart> CustProCart { get; set; }
+
+        // its not mapping its an implementation of [Customer  m => Wishlist <== m Product]
+        public virtual ICollection<CustProWishlist> CustProWishlist { get; set; }
         
         //each product have many highlights
         public virtual ICollection<ProductHighlights> ProductHighlights { get; set; }

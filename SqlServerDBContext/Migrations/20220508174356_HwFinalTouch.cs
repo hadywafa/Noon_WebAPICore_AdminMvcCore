@@ -342,25 +342,6 @@ namespace SqlServerDBContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Carts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Carts_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -460,52 +441,48 @@ namespace SqlServerDBContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartProducts",
+                name: "CustProCarts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductsId = table.Column<int>(type: "int", nullable: true),
-                    CartId = table.Column<int>(type: "int", nullable: true),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartProducts", x => x.Id);
+                    table.PrimaryKey("PK_CustProCarts", x => new { x.CustomerId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_CartProducts_Carts_CartId",
-                        column: x => x.CartId,
-                        principalTable: "Carts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CartProducts_Products_ProductsId",
-                        column: x => x.ProductsId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CustomerProductWishlists",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CustomerProductWishlists", x => new { x.Id, x.CustomerId, x.ProductId });
-                    table.ForeignKey(
-                        name: "FK_CustomerProductWishlists_Customers_CustomerId",
+                        name: "FK_CustProCarts_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CustomerProductWishlists_Products_ProductId",
+                        name: "FK_CustProCarts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustProWishlists",
+                columns: table => new
+                {
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustProWishlists", x => new { x.CustomerId, x.ProductId });
+                    table.ForeignKey(
+                        name: "FK_CustProWishlists_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustProWishlists_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -671,21 +648,6 @@ namespace SqlServerDBContext.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartProducts_CartId",
-                table: "CartProducts",
-                column: "CartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CartProducts_ProductsId",
-                table: "CartProducts",
-                column: "ProductsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Carts_CustomerId",
-                table: "Carts",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Categories_Code",
                 table: "Categories",
                 column: "Code",
@@ -712,13 +674,13 @@ namespace SqlServerDBContext.Migrations
                 column: "SellerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerProductWishlists_CustomerId",
-                table: "CustomerProductWishlists",
-                column: "CustomerId");
+                name: "IX_CustProCarts_ProductId",
+                table: "CustProCarts",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerProductWishlists_ProductId",
-                table: "CustomerProductWishlists",
+                name: "IX_CustProWishlists_ProductId",
+                table: "CustProWishlists",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -842,13 +804,13 @@ namespace SqlServerDBContext.Migrations
                 name: "Cards");
 
             migrationBuilder.DropTable(
-                name: "CartProducts");
-
-            migrationBuilder.DropTable(
                 name: "CustomerOrderItemSellerReviews");
 
             migrationBuilder.DropTable(
-                name: "CustomerProductWishlists");
+                name: "CustProCarts");
+
+            migrationBuilder.DropTable(
+                name: "CustProWishlists");
 
             migrationBuilder.DropTable(
                 name: "Images");
@@ -873,9 +835,6 @@ namespace SqlServerDBContext.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserTokens");
-
-            migrationBuilder.DropTable(
-                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");

@@ -1,31 +1,27 @@
-﻿using EFModel.Models;
-using EFModel.Models.EFModels;
+﻿using EFModel.Models.EFModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EFModel.Configurations
 {
-    public class CustProWishConfig : IEntityTypeConfiguration<CustomerProductWishlists>
+    public class CustProCartConfig : IEntityTypeConfiguration<CustProCart>
     {
-        public void Configure(EntityTypeBuilder<CustomerProductWishlists> cps)
+        public void Configure(EntityTypeBuilder<CustProCart> cps)
         {
-
             var fkCustomer = "CustomerId";
             var fkProduct = "ProductId";
 
-            cps.HasKey("Id", fkCustomer, fkProduct);
+            cps.HasKey( fkCustomer, fkProduct);
 
             cps
                 .HasOne(fc => fc.Customer)
-                .WithMany(x => x.Wishlists)
+                .WithMany(x => x.CustProCart)
                 .HasForeignKey(fkCustomer);
 
             cps
                 .HasOne(fp => fp.Product)
-                .WithMany(y => y.Wishlists)
+                .WithMany(y => y.CustProCart)
                 .HasForeignKey(fkProduct);
-
         }
     }
-
 }

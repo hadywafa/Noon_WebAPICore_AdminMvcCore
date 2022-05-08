@@ -154,8 +154,8 @@ namespace JWTAuth
             {
                 await seedData.HwAddRoles();
                 await seedData.HwAddUsers();
-                seedData.HwAddCategory();
-                seedData.HwAddProducts();
+                await seedData.HwAddCategory();
+                await seedData.HwAddProducts();
                 await seedData.HwAddOrder();
             });
             task.Wait();

@@ -17,17 +17,16 @@ namespace Repository.UnitWork
         IGenericRepo<Order> Orders { get; }
         IGenericRepo<OrderItem> OrderItems { get; }
         IGenericRepo<Product> Products { get; }
-        IGenericRepo<CustomerOrderItemSellerReviews> Reviews { get; }
-        IGenericRepo<CustomerProductWishlists> Wishlists { get; }
-        IGenericRepo<Cart> Carts { get; }
         IGenericRepo<Admin> Admins { get; }
         IGenericRepo<Customer> Customers { get; }
         IGenericRepo<Seller> Sellers { get; }
         IGenericRepo<Shipper> Shippers { get; }
-        IGenericRepo<CartProducts> CartProducts { get; }
         IGenericRepo<Brand> Brands { get; }
         IGenericRepo<ProductSpecifications> ProductSpecifications { get; }
         IGenericRepo<ProductHighlights> ProductHighlights { get; }
+        IGenericRepo<CustProWishlist> CustProWishlists { get; }
+        IGenericRepo<CustProCart> CustProCarts { get; }
+        IGenericRepo<CustomerOrderItemSellerReviews> Reviews { get; }
         IAuthRepo GetAuthRepo();
         public Task Save();
     }

@@ -139,49 +139,6 @@ namespace SqlServerDBContext.Migrations
                     b.ToTable("Cards");
                 });
 
-            modelBuilder.Entity("EFModel.Models.EFModels.Cart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("EFModel.Models.EFModels.CartProducts", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CartId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProductsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CartId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("CartProducts");
-                });
-
             modelBuilder.Entity("EFModel.Models.EFModels.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -219,6 +176,39 @@ namespace SqlServerDBContext.Migrations
                     b.HasIndex("ParentID");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("EFModel.Models.EFModels.CustProCart", b =>
+                {
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("CustomerId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CustProCarts");
+                });
+
+            modelBuilder.Entity("EFModel.Models.EFModels.CustProWishlist", b =>
+                {
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CustomerId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CustProWishlists");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Customer", b =>
@@ -286,28 +276,6 @@ namespace SqlServerDBContext.Migrations
                     b.HasIndex("SellerId");
 
                     b.ToTable("CustomerOrderItemSellerReviews");
-                });
-
-            modelBuilder.Entity("EFModel.Models.EFModels.CustomerProductWishlists", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id", "CustomerId", "ProductId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CustomerProductWishlists");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Image", b =>
@@ -844,32 +812,6 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EFModel.Models.EFModels.Cart", b =>
-                {
-                    b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
-                        .WithMany("Cart")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("EFModel.Models.EFModels.CartProducts", b =>
-                {
-                    b.HasOne("EFModel.Models.EFModels.Cart", "Cart")
-                        .WithMany("CartProducts")
-                        .HasForeignKey("CartId");
-
-                    b.HasOne("EFModel.Models.EFModels.Product", "Products")
-                        .WithMany("CartProducts")
-                        .HasForeignKey("ProductsId");
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("Products");
-                });
-
             modelBuilder.Entity("EFModel.Models.EFModels.Category", b =>
                 {
                     b.HasOne("EFModel.Models.EFModels.Category", "Parent")
@@ -877,6 +819,44 @@ namespace SqlServerDBContext.Migrations
                         .HasForeignKey("ParentID");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("EFModel.Models.EFModels.CustProCart", b =>
+                {
+                    b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
+                        .WithMany("CustProCart")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFModel.Models.EFModels.Product", "Product")
+                        .WithMany("CustProCart")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("EFModel.Models.EFModels.CustProWishlist", b =>
+                {
+                    b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
+                        .WithMany("CustProWishlist")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFModel.Models.EFModels.Product", "Product")
+                        .WithMany("CustProWishlist")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Customer", b =>
@@ -915,25 +895,6 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("OrderItem");
 
                     b.Navigation("Seller");
-                });
-
-            modelBuilder.Entity("EFModel.Models.EFModels.CustomerProductWishlists", b =>
-                {
-                    b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
-                        .WithMany("Wishlists")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EFModel.Models.EFModels.Product", "Product")
-                        .WithMany("Wishlists")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Image", b =>
@@ -1121,11 +1082,6 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("EFModel.Models.EFModels.Cart", b =>
-                {
-                    b.Navigation("CartProducts");
-                });
-
             modelBuilder.Entity("EFModel.Models.EFModels.Category", b =>
                 {
                     b.Navigation("Image");
@@ -1135,13 +1091,13 @@ namespace SqlServerDBContext.Migrations
 
             modelBuilder.Entity("EFModel.Models.EFModels.Customer", b =>
                 {
-                    b.Navigation("Cart");
-
                     b.Navigation("CustomerOrderItemSellerReviews");
 
-                    b.Navigation("Orders");
+                    b.Navigation("CustProCart");
 
-                    b.Navigation("Wishlists");
+                    b.Navigation("CustProWishlist");
+
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Order", b =>
@@ -1156,7 +1112,9 @@ namespace SqlServerDBContext.Migrations
 
             modelBuilder.Entity("EFModel.Models.EFModels.Product", b =>
                 {
-                    b.Navigation("CartProducts");
+                    b.Navigation("CustProCart");
+
+                    b.Navigation("CustProWishlist");
 
                     b.Navigation("ImagesGallery");
 
@@ -1165,8 +1123,6 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("ProductHighlights");
 
                     b.Navigation("Specifications");
-
-                    b.Navigation("Wishlists");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Seller", b =>

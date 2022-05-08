@@ -1,18 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using BL.Helper;
 using EFModel.Enums;
-using EFModel.Models;
 using EFModel.Models.EFModels;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Repository.GenericRepository;
 using Repository.UnitWork;
@@ -26,37 +17,20 @@ namespace JWTAuth.Controllers
         #region Inject Product Repository in Author Controller
         
         private readonly IUnitOfWork _unitOfWork;
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         readonly IGenericRepo<Customer> _customerRepo;
         private readonly IGenericRepo<Product> _productRepo;
-        private readonly IGenericRepo<Cart> _cartRepo;
-        private readonly IGenericRepo<CartProducts> _cartProducts;
+        private readonly IGenericRepo<CustProCart> _custProCartRepo;
 
-        public CartController(IUnitOfWork unitOfWork , UserManager<User> userManager , RoleManager<IdentityRole> roleManager)
+        public CartController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _cartRepo = _unitOfWork.Carts;
             _productRepo = _unitOfWork.Products;
             _customerRepo = _unitOfWork.Customers;
-            _cartProducts = _unitOfWork.CartProducts;
+            _custProCartRepo = _unitOfWork.CustProCarts;
             //
-            _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         #endregion
-
-        [Authorize(Roles = AuthorizeRoles.Customer)]
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            // Get User from Claims
-            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user Name
-            var useEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's Email
-            var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            return Ok( $"{userName}  \n   {useEmail}  \n {userId}" );
-        }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpGet("GetAll")]
@@ -64,82 +38,82 @@ namespace JWTAuth.Controllers
         {
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            // get Customer include its cart
-            var cartItems = await _cartProducts.FindAll(x => x.Cart.Customer.Id == userId, y => y.Products, z => z.Cart).ToListAsync();
-            //sending products
-            //var cartProducts = _cartProducts.GetAll().Where(x =>  x.Cart.Id == cart.Id);
-            return Ok(cartItems);
+            //it will return List of CustProCart object
+            // custId  productId  quantity 
+            //   1          1       5
+            //   1          2       3
+            //   1          3       7
+            var carts = await _custProCartRepo.GetAll().Include(x=>x.Customer).Include(x=>x.Product).ToListAsync();
+            if (carts == null)
+            {
+                return Ok("Your Cart is Empty");
+            }
+            //need to map to ICartItem[] in Angular
+            return Ok(carts);// need to serializer
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpPost("Add")]
-        public async Task<IActionResult> AddToCart([FromQuery]int proId  ,[FromBody] int count)
+        public async Task<IActionResult> AddToCart([FromQuery]int proId  ,[FromQuery] int count)
         {
             var pro = await _productRepo.GetById(proId);
-            if (pro== null)
+            if (pro== null || pro.IsAvailable == false)
             {
                 return  BadRequest("There is no Product with that id");
             }
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            // get Customer include its cart
-            var cart = await _cartRepo.Find(x => x.Customer.Id == userId);
-            if (cart is null)
+            //var customer = await _customerRepo.GetById(userId );
+            var customer = await _customerRepo.Find(x => x.Id == userId  );
+            //check if item is exist
+            var cartItem = await _custProCartRepo.Find(x => x.Customer.Id == userId && x.Product.Id == proId);
+            if (cartItem == null )
             {
-                 cart = new Cart();
-                 cart.Customer =  await _customerRepo.GetById(userId);
+                await _custProCartRepo.Add(new CustProCart() {Customer = customer , Product = pro , Quantity = count});
+                await _unitOfWork.Save();
+                return Ok("item added successfully to your Cart");
             }
-
-            var cartProducts =  await _cartProducts.GetAll().FirstOrDefaultAsync(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
-            if (cartProducts is null)
+            //update only quantity
+            if (cartItem.Quantity + count > pro.Quantity )
             {
-                _cartProducts.Add(new CartProducts() {Cart = cart , Products =  pro  , Quantity = count});
-                _unitOfWork.Save();
-                return Ok("item added successfully");
+                cartItem.Quantity = pro.Quantity;
+                await _unitOfWork.Save();
+                return Ok("item quantity updated successfully");
             }
-
-            if (cartProducts.Quantity + count > cartProducts.Products.Quantity)
-            {
-                cartProducts.Quantity = cartProducts.Products.Quantity;
-                _unitOfWork.Save();
-                return Ok("item added successfully");
-            }
-            cartProducts.Quantity += count;
-            _unitOfWork.Save();
+            cartItem.Quantity += count;
+            await _unitOfWork.Save();
             // update cart
-            return Ok("item added successfully");
+            return Ok("item added successfully to your Cart");
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
-        [HttpPost("Update")]
-        public  async Task<IActionResult> UpdateQuantity([FromQuery]int proId  ,[FromBody] int count)
+        [HttpPut("Update")]
+        public  async Task<IActionResult> UpdateQuantity([FromQuery]int proId  ,[FromQuery] int count)
         {
-            var pro = _productRepo.GetById(proId);
-            if (pro== null)
+            var pro = await _productRepo.GetById(proId);
+            if (pro== null || pro.IsAvailable == false)
             {
                 return BadRequest("There is no Product with that id");
             }
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            // get Customer include its cart
-            var cart = await _cartRepo.Find(x => x.Customer.Id == userId);
-
-            var cartProducts = await _cartProducts.GetAll().FirstOrDefaultAsync(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
-            if (cartProducts is null)
+            //check if item is exist
+            var cartItem = await _custProCartRepo.Find(x => x.Customer.User.Id == userId && x.Product.Id == proId);
+            if (cartItem == null )
             {
-                return Ok("There is no Product with that id in your cart");
+                return Ok("Item is Not Existed in your Cart");
             }
-
-            if ( count > cartProducts.Products.Quantity)
+            //update only quantity
+            if (cartItem.Quantity + count > pro.Quantity )
             {
-                cartProducts.Quantity = cartProducts.Products.Quantity;
-                _unitOfWork.Save();
-                return Ok("item Updated successfully");
+                cartItem.Quantity = pro.Quantity;
+                await _unitOfWork.Save();
+                return Ok("item quantity updated successfully");
             }
-            cartProducts.Quantity = count;
-            _unitOfWork.Save();
+            cartItem.Quantity += count;
+            await _unitOfWork.Save();
             // update cart
-            return Ok("item Updated successfully");
+            return Ok("item quantity updated successfully");
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
@@ -147,25 +121,20 @@ namespace JWTAuth.Controllers
         public  async Task<IActionResult> RemoveFromCart([FromQuery]int proId)
         {
             var pro = await _productRepo.GetById(proId);
-            if (pro== null)
+            if (pro== null || pro.IsAvailable == false)
             {
                 return BadRequest("There is no Product with that id");
             }
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            // get Customer include its cart
-            var cart = await _cartRepo.Find(x => x.Customer.Id == userId);
-
-            var cartProducts = await _cartProducts.GetAll().FirstOrDefaultAsync(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
-            if (cartProducts is null)
+            var cartItem = await _custProCartRepo.Find(x => x.Customer.User.Id == userId && x.Product.Id == proId);
+            if (cartItem == null )
             {
-                return Ok("There is no Product with that id in your cart");
+                return Ok("Item is Not Existed in your Cart");
             }
-            _cartProducts.Remove(cartProducts);
-            _unitOfWork.Save();
-            // update cart
-            return Ok("Item Removed Succeeded");
+            await _custProCartRepo.Remove(cartItem);
+            await _unitOfWork.Save();
+            return Ok("item Removed successfully from your Cart");
         }
-
     }
 }
