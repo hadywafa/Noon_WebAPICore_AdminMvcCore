@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using AutoMapper;
 using BL.ViewModels.RequestVModels;
 using EFModel.Enums;
@@ -50,9 +51,9 @@ namespace JWTAuth.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetById( int id)
+        public async Task<IActionResult> GetById( int id)
         {
-            var Product = _productRepo.Find(x => x.Id == id, x => x.ImagesGallery, x => x.Brand, x => x.Category,
+            var Product = await _productRepo.Find(x => x.Id == id, x => x.ImagesGallery, x => x.Brand, x => x.Category,
                 x => x.Seller, x => x.Seller.User, x => x.ProductHighlights, x => x.Specifications, x => x.Orders);
             var vmProduct = _mapper.Map<Product,VmProduct>(Product);
 
@@ -60,11 +61,11 @@ namespace JWTAuth.Controllers
         }
 
         [HttpPost]
-        public Product Post(Product book)
+        public async Task<IActionResult> Post(Product book)
         {
-            _productRepo.Add(book);
-            _unitOfWork.Save();
-            return book;
+            await _productRepo.Add(book);
+            await _unitOfWork.Save();
+            return Ok("Product Added Successfully");
         }
 
         [HttpGet("GetAllCategories")]

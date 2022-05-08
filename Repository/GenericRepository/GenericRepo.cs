@@ -33,7 +33,7 @@ namespace Repository.GenericRepository
             return query.Where(criteria);
         }
 
-        public T Find(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[] includes)
+        public async Task<T> Find(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _table;
 
@@ -41,10 +41,11 @@ namespace Repository.GenericRepository
                 query = includes.Aggregate(query,
                     (current, include) => current.Include(include));
 
-            return query.Where(criteria).FirstOrDefault();
+            return await query.Where(criteria).FirstOrDefaultAsync();
         }
 
         public IQueryable<T> GetAll() => _table;
+
         public IQueryable<T> GetAll(params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _table;
@@ -56,16 +57,16 @@ namespace Repository.GenericRepository
             return query;
         }
 
-        public T GetById(string id) => _table.Find(id);
+        public Task<T> GetById(string id) =>  Task.FromResult(_table.Find(id));
 
-        public T GetById(int id) => _table.Find(id);
+        public Task<T> GetById(int id) => Task.FromResult(_table.Find(id));
 
-        public void Add(T entity) => _table.Add(entity);
+        public Task  Add(T entity) => Task.FromResult(_table.Add(entity));
 
-        public void Remove(T entity) => _table.Remove(entity);
+        public Task  Remove(T entity) => Task.FromResult(_table.Remove(entity));
 
-        public void RemoveById(string id) => _table.Remove(GetById(id));
+        public async Task RemoveById(string id) => _table.Remove( await GetById(id));
 
-        public void Update(T entity) => _context.Update(entity);
+        public Task  Update(T entity) => Task.FromResult(_context.Update(entity));
     }
 }

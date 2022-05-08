@@ -51,7 +51,7 @@ namespace NoonAdminMvcCore.Controllers
         }
 
         // GET: Product
-        public IActionResult Display(string currentFilter, string searchString, int? pageNumber, int? pageSize)
+        public async Task<IActionResult> Display(string currentFilter, string searchString, int? pageNumber, int? pageSize)
         {
             ViewData["CurrentFilter"] = searchString;
             ViewData["PageSize"] = pageSize;
@@ -78,7 +78,7 @@ namespace NoonAdminMvcCore.Controllers
                 foreach (var prod in products)
                 {
                     
-                    var _prod = _productRepository.Find(p => p.Id == prod.Id
+                    var _prod = await _productRepository.Find(p => p.Id == prod.Id
 
                         && (p.Name.Contains(searchString)
                         || p.NameArabic.Contains(searchString) || p.Quantity.ToString().Contains(searchString)
@@ -142,7 +142,7 @@ namespace NoonAdminMvcCore.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProductViewModel productVM, [FromForm] IFormFile[] files)
+        public async Task <IActionResult> Create(ProductViewModel productVM, [FromForm] IFormFile[] files)
         {
             if (ModelState.IsValid)
             {
@@ -209,7 +209,7 @@ namespace NoonAdminMvcCore.Controllers
 
                     #region Update product
                     int targtedId = int.Parse(productVM.Id);
-                    var prod = _productRepository.GetById(targtedId);
+                    var prod = await _productRepository.GetById(targtedId);
 
                     if (prod == null)
                     {
@@ -268,7 +268,7 @@ namespace NoonAdminMvcCore.Controllers
         {
 
             #region fetch data for updating
-            var productVM = _productRepository.Find(u => u.Id == id);
+            var productVM = await _productRepository.Find(u => u.Id == id);
            
        
             if (productVM == null)
@@ -299,10 +299,10 @@ namespace NoonAdminMvcCore.Controllers
         }
 
 
-        public ActionResult Suspend(int id, string currentFilter, int? pageNumber)
+        public async Task<ActionResult> Suspend(int id, string currentFilter, int? pageNumber)
         {
             // get the product
-            var prod = _productRepository.GetById(id);
+            var prod = await _productRepository.GetById(id);
 
             //suspend the product
             prod.IsAvailable = false;
@@ -316,10 +316,10 @@ namespace NoonAdminMvcCore.Controllers
             return RedirectToAction("Index", new {currentFilter = currentFilter, pageNumber = pageNumber });
         }
 
-        public ActionResult Activate(int id, string currentFilter, int? pageNumber)
+        public async Task<ActionResult> Activate(int id, string currentFilter, int? pageNumber)
         {
             // get the product
-            var prod= _productRepository.GetById(id);
+            var prod= await _productRepository.GetById(id);
 
             // suspend the product
             prod.IsAvailable = true;

@@ -3,6 +3,7 @@ using EFModel.Models.EFModels;
 using Repository.CustomRepository.AuthRepo;
 using Repository.GenericRepository;
 using System;
+using System.Threading.Tasks;
 
 namespace Repository.UnitWork
 {
@@ -28,6 +29,6 @@ namespace Repository.UnitWork
         IGenericRepo<ProductSpecifications> ProductSpecifications { get; }
         IGenericRepo<ProductHighlights> ProductHighlights { get; }
         IAuthRepo GetAuthRepo();
-        public void Save();
+        public Task Save();
     }
 }

@@ -80,8 +80,7 @@ namespace NoonAdminMvcCore.Controllers
 
                 foreach (var user in data)
                 {
-                    var _user =
-                        _userRepository.Find(u => u.Id == user.Id
+                    var _user = await  _userRepository.Find(u => u.Id == user.Id
 
                         && (u.FirstName.Contains(searchString)
                         || u.LastName.Contains(searchString)
@@ -97,7 +96,7 @@ namespace NoonAdminMvcCore.Controllers
                 // Loop in users including their addresses
                 foreach (var user in data)
                 {
-                    var _user = _userRepository.Find(u => u.Id == user.Id, u => u.Addresses);
+                    var _user = await _userRepository.Find(u => u.Id == user.Id, u => u.Addresses);
                     users.Add(_user);
                 }
             }
@@ -131,11 +130,11 @@ namespace NoonAdminMvcCore.Controllers
             }
         }
 
-        // GET: User/Create
-        public ActionResult Create(string role = AuthorizeRoles.Customer)
+        // GET: User/Create//================================================>>>>>>
+        public Task<ActionResult> Create(string role = AuthorizeRoles.Customer)
         {
             var userViewModel = new UserViewModel { IsActive = true, Role = role };
-            return View("UserForm", userViewModel);
+            return Task.FromResult<ActionResult>(View("UserForm", userViewModel));
         }
 
         // POST: Customers/Save (Responsible on creating and Post updates
@@ -168,22 +167,17 @@ namespace NoonAdminMvcCore.Controllers
                     // Add the new user to his role table
                     switch (model.Role)
                     {
-                        case AuthorizeRoles.Admin:
-                            _adminRepo.Add(new Admin() { User = user });
+                        case AuthorizeRoles.Admin: await _adminRepo.Add(new Admin() { User = user });
                             break;
-                        case AuthorizeRoles.Customer:
-                            _customerRepo.Add(new Customer() { User = user });
+                        case AuthorizeRoles.Customer: await  _customerRepo.Add(new Customer() { User = user });
                             break;
-                        case AuthorizeRoles.Seller:
-                            _sellerRepo.Add(new Seller() { User = user });
+                        case AuthorizeRoles.Seller: await  _sellerRepo.Add(new Seller() { User = user });
                             break;
-                        case AuthorizeRoles.Shipper:
-                            _shipperRepo.Add(new Shipper() { User = user });
+                        case AuthorizeRoles.Shipper: await  _shipperRepo.Add(new Shipper() { User = user });
                             break;
                     }
-
                     // Save
-                    _unitOfWork.Save();
+                    await _unitOfWork.Save();
 
                     // Initialize new Address
                     var address = new Address
@@ -195,21 +189,21 @@ namespace NoonAdminMvcCore.Controllers
                     };
 
                     // Add to the Address table
-                    _addressRepository.Add(address);
-                    _unitOfWork.Save();
+                    await _addressRepository.Add(address);
+                    await _unitOfWork.Save();
 
                     return RedirectToAction("Index", new { role = model.Role });
 
                 }
                 else // updating
                 {
-                    var user = _userManager.Users.FirstOrDefault(u => u.Id == model.Id);
+                    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id);
                     if (user == null)
                     {
                         return NotFound();
                     }
 
-                    var gotUser = _userRepository.Find(u => u.Id == user.Id, u => u.Addresses);
+                    var gotUser = await  _userRepository.Find(u => u.Id == user.Id, u => u.Addresses);
 
                     // update basic info
                     gotUser.FirstName = model.FirstName;
@@ -234,16 +228,16 @@ namespace NoonAdminMvcCore.Controllers
                     switch (model.Role)
                     {
                         case "Admin":
-                            _adminRepo.Add(new Admin() { User = user });
+                            await _adminRepo.Add(new Admin() { User = user });
                             break;
                         case "Customer":
-                            _customerRepo.Add(new Customer() { User = user });
+                            await _customerRepo.Add(new Customer() { User = user });
                             break;
                         case "Seller":
-                            _sellerRepo.Add(new Seller() { User = user });
+                            await _sellerRepo.Add(new Seller() { User = user });
                             break;
                         case "Shipper":
-                            _shipperRepo.Add(new Shipper() { User = user });
+                            await _shipperRepo.Add(new Shipper() { User = user });
                             break;
                     }
 
@@ -251,20 +245,20 @@ namespace NoonAdminMvcCore.Controllers
                     switch (role)
                     {
                         case "Admin":
-                            _adminRepo.RemoveById(user.Id);
+                            await _adminRepo.RemoveById(user.Id);
                             break;
                         case "Customer":
-                            _customerRepo.RemoveById(user.Id);
+                            await _customerRepo.RemoveById(user.Id);
                             break;
                         case "Seller":
-                            _sellerRepo.RemoveById(user.Id);
+                            await _sellerRepo.RemoveById(user.Id);
                             break;
                         case "Shipper":
-                            _shipperRepo.RemoveById(user.Id);
+                            await _shipperRepo.RemoveById(user.Id);
                             break;
                     }
 
-                    _unitOfWork.Save();
+                    await _unitOfWork.Save();
                 }
             }
 
@@ -274,7 +268,7 @@ namespace NoonAdminMvcCore.Controllers
         // GET: User/Edit/5
         public async Task<ActionResult> Edit(string id)
         {
-            var user = _userRepository.Find(u => u.Id == id, u => u.Addresses);
+            var user = await _userRepository.Find(u => u.Id == id, u => u.Addresses);
 
             if (user == null)
             {
@@ -301,36 +295,36 @@ namespace NoonAdminMvcCore.Controllers
             return View("UserForm", userViewModel);
         }
 
-        public ActionResult Suspend(string id, string role, string currentFilter, int? pageNumber)
+        public async Task<ActionResult> Suspend(string id, string role, string currentFilter, int? pageNumber)
         {
             // get the user
-            var user = _userRepository.GetById(id);
+            var user = await  _userRepository.GetById(id);
 
             //suspend the user
             user.IsActive = false;
 
             //update database
-            _userRepository.Update(user);
+            await _userRepository.Update(user);
 
             // save updates
-            _unitOfWork.Save();
+            await _unitOfWork.Save();
 
             return RedirectToAction("Index", new { role = role, currentFilter = currentFilter, pageNumber = pageNumber });
         }
 
-        public ActionResult Activate (string id, string role, string currentFilter, int? pageNumber)
+        public async Task<ActionResult> Activate (string id, string role, string currentFilter, int? pageNumber)
         {
             // get the user
-            var user = _userRepository.GetById(id);
+            var user = await _userRepository.GetById(id);
 
             // suspend the user
             user.IsActive = true;
 
             // update database
-            _userRepository.Update(user);
+            await _userRepository.Update(user);
 
             // save updates
-            _unitOfWork.Save();
+            await _unitOfWork.Save();
 
             return RedirectToAction("Index", new { role = role, currentFilter = currentFilter, pageNumber = pageNumber });
         }

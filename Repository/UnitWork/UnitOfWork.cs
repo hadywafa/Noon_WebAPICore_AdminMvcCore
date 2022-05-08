@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using EFModel.Models;
 using EFModel.Models.EFModels;
 using Repository.CustomRepository.AuthRepo;
@@ -59,13 +60,13 @@ namespace Repository.UnitWork
         }
         #endregion
 
-        public void Save()
+        public async Task  Save()
         {
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
         }
-        public void Dispose()
+        public async void Dispose()
         {
-            Context.Dispose();
+           await Context.DisposeAsync();
         }
 
         public IAuthRepo GetAuthRepo()

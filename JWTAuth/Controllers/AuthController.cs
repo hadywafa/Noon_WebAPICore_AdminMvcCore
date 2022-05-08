@@ -51,7 +51,7 @@ namespace JWTAuth.Controllers
             //check successful registration process  if fails => return all error information
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
-            var user = _userRepo.Find(x => x.Email == vmSignInUser.Email);
+            var user = await _userRepo.Find(x => x.Email == vmSignInUser.Email);
             result.FirstName = user.FirstName;
             result.LastName = user.LastName;
             return Ok(result);

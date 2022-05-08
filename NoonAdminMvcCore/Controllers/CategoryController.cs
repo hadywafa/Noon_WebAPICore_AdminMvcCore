@@ -6,48 +6,48 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EFModel.Models.EFModels;
-using SqlServerDBContext;
 using System.IO;
 using NoonAdminMvcCore.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Repository.UnitWork;
 using Repository.GenericRepository;
+using EFModel.Enums;
+using EFModel.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace NoonAdminMvcCore.Controllers
 {
     //[Authorize(Roles = AuthorizeRoles.Admin)]
     public class CategoryController : Controller
     {
-
         #region intilaztion repo
-        private readonly IUnitOfWork _unitOfWork;
 
+        private readonly IUnitOfWork _unitOfWork;
         readonly IGenericRepo<Image> _imageRepository;
         readonly IGenericRepo<Category> _categoryRepository;
 
         #endregion
+
         private readonly IWebHostEnvironment iweb;
+
         public CategoryController(IUnitOfWork unitOfWork, IWebHostEnvironment _iwab)
         {
             _unitOfWork = unitOfWork;
-             iweb = _iwab;
+            iweb = _iwab;
             _imageRepository = _unitOfWork.Images;
             _categoryRepository = _unitOfWork.Categories;
         }
 
         // GET: Category
-        public IActionResult Display(string currentFilter, string searchString, int? pageNumber, int? pageSize)
-        
+        public async Task<IActionResult> Display(string currentFilter, string searchString, int? pageNumber,
+            int? pageSize)
         {
             ViewData["CurrentFilter"] = searchString;
             ViewData["PageSize"] = pageSize;
-
-
             var cats = new List<Category>();
             var categories = _categoryRepository.GetAll().Include(i => i.Image).ToList();
-                
             if (!(String.IsNullOrEmpty(searchString) && string.IsNullOrEmpty(currentFilter)))
             {
                 // Case: first search but not first page => second, third ...etc
@@ -65,29 +65,24 @@ namespace NoonAdminMvcCore.Controllers
 
                 foreach (var cat in categories)
                 {
-                    var _cat = _categoryRepository.Find(c => c.Id == cat.Id
-
-                        && (c.Name.Contains(searchString) || c.NameArabic.Contains(searchString)
-                       || c.Parent.Name.Contains(searchString) || c.Parent.NameArabic.Contains(searchString)));
-
-                    if (_cat != null)
-                        cats.Add(_cat);
+                    var _cat = await _categoryRepository.Find(c =>
+                        c.Id == cat.Id && (c.Name.Contains(searchString) || c.NameArabic.Contains(searchString) ||
+                                           c.Parent.Name.Contains(searchString) ||
+                                           c.Parent.NameArabic.Contains(searchString)));
+                    if (_cat != null) cats.Add(_cat);
                 }
             } // B- No search => Get All
             else
             {
-                cats = _categoryRepository.GetAll().Include(i => i.Image).ToList();
-              
+                cats = await _categoryRepository.GetAll().Include(i => i.Image).ToListAsync();
             }
 
             if (categories.Any())
             {
                 // send role, users count, and the current page number to the view page
                 // we will need to get them later in suspend and activate actions below
-
                 ViewBag.Count = categories.Count();
                 ViewBag.Page = pageNumber;
-
                 if (searchString != null)
                 {
                     ViewBag.Search = searchString;
@@ -97,9 +92,9 @@ namespace NoonAdminMvcCore.Controllers
                 int rowsPerPage = pageSize ?? 10;
                 ViewBag.rowsPerPage = rowsPerPage;
 
-
                 //return View(users);
-                return View("Index", EFModel.Models.PaginatedList<Category>.CreateAsync(cats, pageNumber ?? 1, rowsPerPage));
+                return View("Index",
+                    EFModel.Models.PaginatedList<Category>.CreateAsync(cats, pageNumber ?? 1, rowsPerPage));
             }
             else
             {
@@ -109,9 +104,11 @@ namespace NoonAdminMvcCore.Controllers
         }
 
         // GET: Category/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID == null).ToList(), "Id", "Name");
+            ViewBag.Category =
+                new SelectList(await _categoryRepository.GetAll().Where(c => c.ParentID == null).ToListAsync(), "Id",
+                    "Name");
             return View("CategoryForm");
         }
 
@@ -120,17 +117,15 @@ namespace NoonAdminMvcCore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CategoryViewModel categoryVM,[FromForm] IFormFile files)
+        public async Task<IActionResult> Create(CategoryViewModel categoryVM, [FromForm] IFormFile files)
         {
             if (ModelState.IsValid)
             {
-
                 if (categoryVM.Id == null)
                 {
                     files = categoryVM.image;
                     if (files != null)
                     {
-
                         Category cat = new Category()
                         {
                             Name = categoryVM.Name,
@@ -138,34 +133,24 @@ namespace NoonAdminMvcCore.Controllers
                             Description = categoryVM.Description,
                             DescriptionArabic = categoryVM.DescriptionArabic,
                             ParentID = categoryVM.ParentID == null ? null : categoryVM.ParentID,
-                                  
-
                         };
-                        _categoryRepository.Add(cat);
-                        _unitOfWork.Save();
-                        var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery" );
+                        await _categoryRepository.Add(cat);
+                        await _unitOfWork.Save();
+                        var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery");
                         string filepath = Path.Combine(imgsave, (files.FileName));
                         var straem = new FileStream(filepath, FileMode.Create);
                         files.CopyTo(straem);
-
-                        Image img = new Image()
-                        { ImageName =files.FileName,
-                            CategoryId = cat.Id
-                                                                 
-                        };
-
-                        _imageRepository.Add(img);
-                        _unitOfWork.Save();
-
+                        Image img = new Image() { ImageName = files.FileName, CategoryId = cat.Id };
+                        await _imageRepository.Add(img);
+                        await _unitOfWork.Save();
                     }
-                    return RedirectToAction("Index");
 
+                    return RedirectToAction("Index");
                 }
                 else
                 {
                     int targtedId = int.Parse(categoryVM.Id);
-                    var cat = _categoryRepository.GetById(targtedId);
-
+                    var cat = await _categoryRepository.GetById(targtedId);
                     if (cat == null)
                     {
                         return NotFound();
@@ -173,45 +158,37 @@ namespace NoonAdminMvcCore.Controllers
 
                     cat.Name = categoryVM.Name;
                     cat.NameArabic = categoryVM.NameArabic;
-
                     cat.Description = categoryVM.Description;
                     cat.DescriptionArabic = categoryVM.DescriptionArabic;
-
-                    _categoryRepository.Update(cat);
-                    _unitOfWork.Save();
+                    await _categoryRepository.Update(cat);
+                    await _unitOfWork.Save();
                     if (files != null)
                     {
-                                        
                         var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery", (files.FileName));
                         string filepath = Path.Combine(imgsave, (files.FileName));
                         var straem = new FileStream(filepath, FileMode.Create);
                         files.CopyTo(straem);
-
-                        Image img = _imageRepository.GetAll().Where(i => i.CategoryId== cat.Id).FirstOrDefault();
+                        Image img = await _imageRepository.GetAll().Where(i => i.CategoryId == cat.Id)
+                            .FirstOrDefaultAsync();
                         deleteFilefromRoot(img.ImageName);
                         img.ImageName = files.FileName;
-
-                        _imageRepository.Update(img);
-                        _unitOfWork.Save();
-                      
-
-
+                        await _imageRepository.Update(img);
+                        await _unitOfWork.Save();
                     }
+
                     return RedirectToAction("Index");
                 }
-
-                
             }
 
             return RedirectToAction();
         }
 
         // GET: Category/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             #region fetch data for Updating
-            var categoryVM = _categoryRepository.Find(u => u.Id == id);
 
+            var categoryVM = await _categoryRepository.Find(u => u.Id == id);
             if (categoryVM == null)
             {
                 return NotFound();
@@ -226,31 +203,31 @@ namespace NoonAdminMvcCore.Controllers
                 DescriptionArabic = categoryVM.DescriptionArabic,
                 ParentID = categoryVM.ParentID == null ? null : categoryVM.ParentID
             };
-            ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID == null).ToList(), "Id", "Name");
+            ViewBag.Category =
+                new SelectList(await _categoryRepository.GetAll().Where(c => c.ParentID == null).ToListAsync(), "Id",
+                    "Name");
+
             #endregion
+
             return View("CategoryForm", catViewmodel);
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (id.Equals(null))
             {
                 return NotFound();
             }
 
-            var cat = _categoryRepository.GetById(id);
-            var img = _imageRepository.GetAll().Where(i => i.CategoryId == id).FirstOrDefault();
-           
-            
-            _categoryRepository.Remove(cat);
-            _unitOfWork.Save();
-
-           
+            var cat = await _categoryRepository.GetById(id);
+            var img = await _imageRepository.GetAll().Where(i => i.CategoryId == id).FirstOrDefaultAsync();
+            await _categoryRepository.Remove(cat);
+            await _unitOfWork.Save();
             return RedirectToAction("Index");
         }
 
-        private void deleteFilefromRoot(string  img)
+        private void deleteFilefromRoot(string img)
         {
             img = Path.Combine(iweb.WebRootPath, "ImagesGallery", img);
             FileInfo fileinfo = new FileInfo(img);

@@ -49,54 +49,53 @@ namespace JWTAuth.Controllers
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpGet("test")]
-        public  string Test()
+        public IActionResult Test()
         {
             // Get User from Claims
             var userName = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user Name
             var useEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's Email
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            return $"{userName}  \n   {useEmail}  \n {userId}";
+            return Ok( $"{userName}  \n   {useEmail}  \n {userId}" );
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpGet("GetAll")]
-        public  List<CartProducts> GetAll()
+        public async Task<IActionResult> GetAll()
         {
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
             // get Customer include its cart
-            var cartItems = _cartProducts.FindAll(x => x.Cart.Customer.Id == userId, y => y.Products, z => z.Cart).ToList();
+            var cartItems = await _cartProducts.FindAll(x => x.Cart.Customer.Id == userId, y => y.Products, z => z.Cart).ToListAsync();
             //sending products
             //var cartProducts = _cartProducts.GetAll().Where(x =>  x.Cart.Id == cart.Id);
-            return cartItems;
+            return Ok(cartItems);
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpPost("Add")]
-        public  async Task<IActionResult> AddToCart([FromQuery]int proId  ,[FromBody] int count)
+        public async Task<IActionResult> AddToCart([FromQuery]int proId  ,[FromBody] int count)
         {
-            var pro = _productRepo.GetById(proId);
+            var pro = await _productRepo.GetById(proId);
             if (pro== null)
             {
-                return BadRequest("There is no Product with that id");
+                return  BadRequest("There is no Product with that id");
             }
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
             // get Customer include its cart
-            var cart = _cartRepo.Find(x => x.Customer.Id == userId);
+            var cart = await _cartRepo.Find(x => x.Customer.Id == userId);
             if (cart is null)
             {
                  cart = new Cart();
-                 cart.Customer = _customerRepo.GetById(userId);
+                 cart.Customer =  await _customerRepo.GetById(userId);
             }
 
-            var cartProducts = _cartProducts.GetAll().FirstOrDefault(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
+            var cartProducts =  await _cartProducts.GetAll().FirstOrDefaultAsync(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
             if (cartProducts is null)
             {
-                _cartProducts.Add(new CartProducts() {Cart = cart , Products = pro  , Quantity = count});
+                _cartProducts.Add(new CartProducts() {Cart = cart , Products =  pro  , Quantity = count});
                 _unitOfWork.Save();
                 return Ok("item added successfully");
-
             }
 
             if (cartProducts.Quantity + count > cartProducts.Products.Quantity)
@@ -123,9 +122,9 @@ namespace JWTAuth.Controllers
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
             // get Customer include its cart
-            var cart = _cartRepo.Find(x => x.Customer.Id == userId);
+            var cart = await _cartRepo.Find(x => x.Customer.Id == userId);
 
-            var cartProducts = _cartProducts.GetAll().FirstOrDefault(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
+            var cartProducts = await _cartProducts.GetAll().FirstOrDefaultAsync(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
             if (cartProducts is null)
             {
                 return Ok("There is no Product with that id in your cart");
@@ -147,7 +146,7 @@ namespace JWTAuth.Controllers
         [HttpDelete("Remove")]
         public  async Task<IActionResult> RemoveFromCart([FromQuery]int proId)
         {
-            var pro = _productRepo.GetById(proId);
+            var pro = await _productRepo.GetById(proId);
             if (pro== null)
             {
                 return BadRequest("There is no Product with that id");
@@ -155,9 +154,9 @@ namespace JWTAuth.Controllers
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
             // get Customer include its cart
-            var cart = _cartRepo.Find(x => x.Customer.Id == userId);
+            var cart = await _cartRepo.Find(x => x.Customer.Id == userId);
 
-            var cartProducts = _cartProducts.GetAll().FirstOrDefault(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
+            var cartProducts = await _cartProducts.GetAll().FirstOrDefaultAsync(x => x.Products.Id == pro.Id && x.Cart.Id == cart.Id);
             if (cartProducts is null)
             {
                 return Ok("There is no Product with that id in your cart");
