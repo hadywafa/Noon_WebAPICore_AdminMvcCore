@@ -14,6 +14,8 @@ using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Repository.GenericRepository;
+using Repository.UnitWork;
 
 namespace Repository.CustomRepository.AuthRepo
 {
@@ -24,7 +26,7 @@ namespace Repository.CustomRepository.AuthRepo
         private readonly UserManager<User> _userManager;
         private readonly Jwt _jwt;
 
-        public AuthRepo(UserManager<User> userManager, IOptions<Jwt> jwt)
+        public AuthRepo(UserManager<User> userManager, IOptions<Jwt> jwt )
         {
             _userManager = userManager;
             _jwt = jwt.Value;
@@ -130,7 +132,6 @@ namespace Repository.CustomRepository.AuthRepo
                 {
                     rolesList.Add(s);
                 }
-
                 authModel.IsAuthenticated = true;
                 authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
                 authModel.Email = user.Email;

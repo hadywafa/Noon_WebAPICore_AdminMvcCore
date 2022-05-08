@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AutoMapper;
+using BL.ViewModels.RequestVModels;
 using EFModel.Enums;
 using Microsoft.AspNetCore.Mvc;
 using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Repository.GenericRepository;
@@ -22,21 +25,38 @@ namespace JWTAuth.Controllers
         #region Inject Product Repository in Author Controller
 
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
         private readonly IGenericRepo<Product> _productRepo;
 
-        public ProductsController(IUnitOfWork unitOfWork)
+        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
             _productRepo = _unitOfWork.Products;
         }
 
         #endregion
 
-        [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpGet("GetAll")]
-        public List<Product> GetAll()
+        public IActionResult GetAll()
         {
-            return _productRepo.GetAll().ToList();
+            var productList = _productRepo.GetAll().Include(x=>x.ImagesGallery).Include(x => x.Brand).Include(x => x.Category)
+                .Include(x => x.Seller).Include(x => x.Seller.User).Include(x => x.ProductHighlights)
+                .Include(x => x.Specifications).Include(x => x.Orders).AsNoTracking().ToList();
+
+            var vmProductsList = _mapper.Map<IEnumerable<Product>, IEnumerable<VmProduct>>(productList);
+
+            return Ok(vmProductsList);
+        }
+
+        [HttpGet("{id:int}")]
+        public IActionResult GetById( int id)
+        {
+            var Product = _productRepo.Find(x => x.Id == id, x => x.ImagesGallery, x => x.Brand, x => x.Category,
+                x => x.Seller, x => x.Seller.User, x => x.ProductHighlights, x => x.Specifications, x => x.Orders);
+            var vmProduct = _mapper.Map<Product,VmProduct>(Product);
+
+            return Ok(vmProduct);
         }
 
         [HttpPost]
@@ -69,7 +89,7 @@ namespace JWTAuth.Controllers
                             jsonResult.Append(reader.GetValue(0).ToString());
                         }
                     }
-                    var json  = JsonConvert.DeserializeObject(jsonResult.ToString());
+                    var json = JsonConvert.DeserializeObject(jsonResult.ToString());
 
                     return json.ToString();
 
@@ -77,5 +97,6 @@ namespace JWTAuth.Controllers
 
             }
         }
+
     }
 }

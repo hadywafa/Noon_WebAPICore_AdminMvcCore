@@ -7,6 +7,11 @@ namespace EFModel.Models.EFModels
 {
     public class Seller
     {
+        public Seller()
+        {
+            createdAt = DateTime.Now;
+        }
+
         public string Id { get; set; }
 
         public DateTime createdAt { get; set; }
@@ -19,12 +24,11 @@ namespace EFModel.Models.EFModels
         //1-1 Seller is a user
         public virtual User User { get; set; }
 
+        // 3-ternary relationship Customer review product of specific seller
+        public virtual ICollection<CustomerOrderItemSellerReviews> CustomerOrderItemSellerReviews { get; set; }
         #endregion
 
-        public Seller()
-        {
-            createdAt = DateTime.Now;
-        }
+
 
     }
 }

@@ -30,7 +30,7 @@ namespace NoonAdminMvcCore.Controllers
         private readonly UserManager<User> _userManager;
         readonly IGenericRepo<User> _userRepository;
         readonly IGenericRepo<Product> _productRepository;
-        readonly IGenericRepo<Images> _imageRepository;
+        readonly IGenericRepo<Image> _imageRepository;
         private readonly IConfiguration Configuration;
        
         readonly IGenericRepo<Category> _categoryRepository;
@@ -58,7 +58,7 @@ namespace NoonAdminMvcCore.Controllers
 
 
             var prods = new List<Product>();
-            var products = _productRepository.GetAll().Include(i => i.Images)
+            var products = _productRepository.GetAll().Include(i => i.ImagesGallery)
                 .Include(c=>c.Category).Include(s=>s.Seller.User).ToList();
             if (!(String.IsNullOrEmpty(searchString) && string.IsNullOrEmpty(currentFilter)))
             {
@@ -91,7 +91,7 @@ namespace NoonAdminMvcCore.Controllers
             } // B- No search => Get All
             else
             {
-                prods = _productRepository.GetAll().Include(i => i.Images)
+                prods = _productRepository.GetAll().Include(i => i.ImagesGallery)
                .Include(c => c.Category).Include(s => s.Seller.User).ToList();
             }
 
@@ -163,7 +163,7 @@ namespace NoonAdminMvcCore.Controllers
                         Weight = productVM.Weight,
                         SellerId = productVM.SellerId,
                         CategoryId = productVM.CategoryId,
-                        IsActive = productVM.IsActive,
+                        IsAvailable = productVM.IsActive,
                         Revenue = (productVM.SellingPrice - productVM.BuyingPrice)
                     };
                     _productRepository.Add(prod);
@@ -185,10 +185,10 @@ namespace NoonAdminMvcCore.Controllers
                             item.CopyTo(straem);
                             straem.Close();
 
-                            Images img = new Images()
+                            Image img = new Image()
                             {
                                 ProductId = prod.Id,
-                                Image = item.FileName
+                                ImageName = item.FileName
 
                             };
 
@@ -229,7 +229,7 @@ namespace NoonAdminMvcCore.Controllers
                     _unitOfWork.Save();
                     #endregion
 
-                    #region update Image
+                    #region update ImageName
                     files = productVM.Images;
                     if (files != null)
                     {
@@ -242,9 +242,9 @@ namespace NoonAdminMvcCore.Controllers
                             
                             item.CopyTo(straem);
                             straem.Close();
-                            Images img = _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefault();
+                            Image img = _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefault();
                           
-                            img.Image = item.FileName;
+                            img.ImageName = item.FileName;
                             _imageRepository.Update(img);
                             _unitOfWork.Save();
                         }
@@ -305,7 +305,7 @@ namespace NoonAdminMvcCore.Controllers
             var prod = _productRepository.GetById(id);
 
             //suspend the product
-            prod.IsActive = false;
+            prod.IsAvailable = false;
 
             //update database
             _productRepository.Update(prod);
@@ -322,7 +322,7 @@ namespace NoonAdminMvcCore.Controllers
             var prod= _productRepository.GetById(id);
 
             // suspend the product
-            prod.IsActive = true;
+            prod.IsAvailable = true;
 
             // update database
             _productRepository.Update(prod);

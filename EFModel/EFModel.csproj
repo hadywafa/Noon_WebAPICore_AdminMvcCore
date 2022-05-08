@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Models\EFModels\CustomerProductSellerReviews.cs~RF2e9ffaf6.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.15">

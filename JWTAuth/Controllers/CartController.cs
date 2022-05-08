@@ -58,7 +58,6 @@ namespace JWTAuth.Controllers
             return $"{userName}  \n   {useEmail}  \n {userId}";
         }
 
-
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpGet("GetAll")]
         public  List<CartProducts> GetAll()
@@ -143,7 +142,6 @@ namespace JWTAuth.Controllers
             // update cart
             return Ok("item Updated successfully");
         }
-
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpDelete("Remove")]

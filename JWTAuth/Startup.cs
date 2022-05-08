@@ -31,8 +31,7 @@ namespace JWTAuth
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        private SeedData _seedData;
-        public Startup(IConfiguration configuration )
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -42,10 +41,10 @@ namespace JWTAuth
             #region Register Repository
 
             services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
-            services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>)); 
-            services.AddScoped<IAuthRepo, AuthRepo>(); 
+            services.AddScoped(typeof(IGenericRepo<>), typeof(GenericRepo<>));
+            services.AddScoped<IAuthRepo, AuthRepo>();
             //Seed Initial Data to Database
-            services.AddTransient<SeedData, SeedData>(); 
+            services.AddTransient<SeedData, SeedData>();
 
             #endregion
 
@@ -53,6 +52,12 @@ namespace JWTAuth
 
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "JWTAuth", Version = "v1" }); });
+
+            #endregion
+
+            #region Register AutoMapper Service
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             #endregion
 

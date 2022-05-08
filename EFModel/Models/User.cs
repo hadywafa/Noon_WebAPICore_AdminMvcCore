@@ -21,6 +21,8 @@ namespace EFModel.Models
 
         public decimal Balance { get; set; }
 
+        public string ImageProfile { get; set; }
+
         public DateTime CreatedAt { get; set; }
 
         #region Navigation Property

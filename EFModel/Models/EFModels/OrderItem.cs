@@ -1,18 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EFModel.Models.EFModels
 {
     public class OrderItem : Base
     {
-        // Each OrderItem is related to one order
-        [ForeignKey("Order")]
-        public int OrderId { get; set; }
-        public Order Order { get; set; }
-
-        // Each Order is considered as buying a one Product
-        [ForeignKey("product")]
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
 
         public int Quantity { get; set; }
 
@@ -20,14 +12,22 @@ namespace EFModel.Models.EFModels
 
         public decimal Revenue => Product.Revenue * Quantity;
 
-        //public OrderItem()
-        //{
-        //    Price = Product.Price * Quantity;
-        //}
 
-        //public void CalcPrice()
-        //{
-        //    Price = Product.Price * Quantity;
-        //}
+        #region Navigation Property
+
+        // Each OrderItem is related to one order
+        [ForeignKey("Order")]
+        public int OrderId { get; set; }
+        public virtual Order Order { get; set; }
+
+        // Each Order is considered as buying a one Product
+        [ForeignKey("product")]
+        public int ProductId { get; set; }
+        public virtual Product Product { get; set; }
+
+        // 3-ternary relationship Customer review product of specific seller
+        public virtual ICollection<CustomerOrderItemSellerReviews> CustomerOrderItemSellerReviews { get; set; }
+
+        #endregion
     }
 }

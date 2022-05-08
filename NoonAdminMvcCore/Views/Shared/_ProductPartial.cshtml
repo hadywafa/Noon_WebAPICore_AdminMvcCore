@@ -69,10 +69,10 @@
                 <a href="html/user-details-regular.html">
                     <div class="user-card">
                         <div class="user-avatar bg-primary">
-                            @foreach (var img in product.Images.Take(1))
+                            @foreach (var img in product.ImagesGallery.Take(1))
                             {
 
-                                <span><img src="@Configuration["imagesApi"]/images/@img.Image" /></span>
+                                <span><img src="@Configuration["imagesApi"]/images/@img.ImageName" /></span>
 
                             }
 
@@ -121,7 +121,7 @@
                 <span>@product.AddedOn.ToShortDateString()</span>
             </div>
             <div class="nk-tb-col tb-col-md">
-                @if (product.IsActive)
+                @if (product.IsAvailable)
                 {
                     <span class="tb-status text-success">Available</span>
                 }

@@ -1,4 +1,6 @@
 ﻿@model List<EFModel.Models.User>
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @{
     <div class="nk-tb-item nk-tb-head">
         <div class="nk-tb-col nk-tb-col-check">
@@ -75,7 +77,7 @@
                 <a href="html/user-details-regular.html">
                     <div class="user-card">
                         <div class="user-avatar bg-primary">
-                            <span>AB</span>
+                            <span><img src="@Configuration["imagesApi"]/images/@user.ImageProfile" /></span>
                         </div>
                         <div class="user-info">
                             <span class="tb-lead">
@@ -139,7 +141,9 @@
 
                                     <li>
                                         @Html.ActionLink("Suspend", "Suspend", "User",
-                                        new{@id = user.Id,
+                                        new
+                                             {
+                                                 @id = user.Id,
                                             @role = @ViewBag.Role,
                                             @currentFilter = @ViewBag.Search,
                                             @pageNumber = @ViewBag.Page,
@@ -148,14 +152,16 @@
 
                                     <li>
                                         @Html.ActionLink("Activate", "Activate", "User",
-                                        new{@id = user.Id,
+                                        new
+                                             {
+                                                 @id = user.Id,
                                             @role = @ViewBag.Role,
                                             @currentFilter = @ViewBag.Search,
                                             @searchString = @ViewBag.Search,
                                             @pageNumber = @ViewBag.Page,
                                             })
                                     </li>
-                                    
+
                                     <li>
                                         @Html.ActionLink("Edit", "Edit", new { id = user.Id })
                                     </li>

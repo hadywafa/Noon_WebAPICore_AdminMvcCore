@@ -24,7 +24,7 @@ namespace NoonAdminMvcCore.Controllers
         #region intilaztion repo
         private readonly IUnitOfWork _unitOfWork;
 
-        readonly IGenericRepo<Images> _imageRepository;
+        readonly IGenericRepo<Image> _imageRepository;
         readonly IGenericRepo<Category> _categoryRepository;
 
         #endregion
@@ -148,13 +148,13 @@ namespace NoonAdminMvcCore.Controllers
                         };
                         _categoryRepository.Add(cat);
                         _unitOfWork.Save();
-                        var imgsave = Path.Combine(iweb.WebRootPath, "Images" );
+                        var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery" );
                         string filepath = Path.Combine(imgsave, (files.FileName));
                         var straem = new FileStream(filepath, FileMode.Create);
                         files.CopyTo(straem);
 
-                        Images img = new Images()
-                        { Image =files.FileName,
+                        Image img = new Image()
+                        { ImageName =files.FileName,
                             CategoryId = cat.Id
                                                                  
                         };
@@ -187,14 +187,14 @@ namespace NoonAdminMvcCore.Controllers
                     if (files != null)
                     {
                                         
-                        var imgsave = Path.Combine(iweb.WebRootPath, "Images", (files.FileName));
+                        var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery", (files.FileName));
                         string filepath = Path.Combine(imgsave, (files.FileName));
                         var straem = new FileStream(filepath, FileMode.Create);
                         files.CopyTo(straem);
 
-                        Images img = _imageRepository.GetAll().Where(i => i.CategoryId== cat.Id).FirstOrDefault();
-                        deleteFilefromRoot(img.Image);
-                        img.Image = files.FileName;
+                        Image img = _imageRepository.GetAll().Where(i => i.CategoryId== cat.Id).FirstOrDefault();
+                        deleteFilefromRoot(img.ImageName);
+                        img.ImageName = files.FileName;
 
                         _imageRepository.Update(img);
                         _unitOfWork.Save();
@@ -258,7 +258,7 @@ namespace NoonAdminMvcCore.Controllers
 
         private void deleteFilefromRoot(string  img)
         {
-            img = Path.Combine(iweb.WebRootPath, "Images", img);
+            img = Path.Combine(iweb.WebRootPath, "ImagesGallery", img);
             FileInfo fileinfo = new FileInfo(img);
             if (fileinfo != null)
             {

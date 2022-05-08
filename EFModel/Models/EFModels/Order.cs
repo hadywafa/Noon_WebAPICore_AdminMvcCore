@@ -25,6 +25,7 @@ namespace EFModel.Models.EFModels
         public decimal Discount { get; set; }
 
         public DeliveryStatus DeliveryStatus { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
 
 
         //DeliveryStatusDescription---Mohamed
@@ -32,7 +33,7 @@ namespace EFModel.Models.EFModels
         public string DeliveryStatusDescription { get; set; }
 
         // Each Order has a collection of Items
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
 
         public int? AddressId { get; set; }
         public virtual Address CustomerAddress { get; set; }
@@ -47,7 +48,7 @@ namespace EFModel.Models.EFModels
         {
             foreach (var order in OrderItems)
             {
-                TotalPrice += order.Price;
+                TotalPrice += order.Price * Discount;
                 TotalRevenue += order.Revenue;
             }
         }

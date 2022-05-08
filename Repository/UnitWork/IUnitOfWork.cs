@@ -1,6 +1,5 @@
 ﻿using EFModel.Models;
 using EFModel.Models.EFModels;
-using Models;
 using Repository.CustomRepository.AuthRepo;
 using Repository.GenericRepository;
 using System;
@@ -13,19 +12,21 @@ namespace Repository.UnitWork
         IGenericRepo<Card> Cards { get; }
         IGenericRepo<Category> Categories { get; }
         IGenericRepo<User> Users { get; }
-        IGenericRepo<Images> Images { get; }
-        IGenericRepo<Like> Likes { get; }
+        IGenericRepo<Image> Images { get; }
         IGenericRepo<Order> Orders { get; }
         IGenericRepo<OrderItem> OrderItems { get; }
         IGenericRepo<Product> Products { get; }
-        IGenericRepo<Review> Reviews { get; }
-        IGenericRepo<Wishlist> Wishlists { get; }
+        IGenericRepo<CustomerOrderItemSellerReviews> Reviews { get; }
+        IGenericRepo<CustomerProductWishlists> Wishlists { get; }
         IGenericRepo<Cart> Carts { get; }
         IGenericRepo<Admin> Admins { get; }
         IGenericRepo<Customer> Customers { get; }
         IGenericRepo<Seller> Sellers { get; }
         IGenericRepo<Shipper> Shippers { get; }
         IGenericRepo<CartProducts> CartProducts { get; }
+        IGenericRepo<Brand> Brands { get; }
+        IGenericRepo<ProductSpecifications> ProductSpecifications { get; }
+        IGenericRepo<ProductHighlights> ProductHighlights { get; }
         IAuthRepo GetAuthRepo();
         public void Save();
     }

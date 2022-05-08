@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using BL.ViewModels.RequestVModels;
+using EFModel.Models;
 using Repository.CustomRepository.AuthRepo;
+using Repository.GenericRepository;
 using Repository.UnitWork;
 
 namespace JWTAuth.Controllers
@@ -11,11 +13,15 @@ namespace JWTAuth.Controllers
     public class AuthController : ControllerBase
     {
         #region Inject AuthRepo
-
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IAuthRepo _authRepo;
+        private readonly IGenericRepo<User> _userRepo;
+
         public AuthController(IUnitOfWork unitOfWork)
         {
-            _authRepo = unitOfWork.GetAuthRepo();
+            _unitOfWork = unitOfWork;
+            _authRepo = _unitOfWork.GetAuthRepo();
+            _userRepo = _unitOfWork.Users;
         }
 
         #endregion
@@ -42,10 +48,12 @@ namespace JWTAuth.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _authRepo.SignInAsync(vmSignInUser);
-
             //check successful registration process  if fails => return all error information
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
+            var user = _userRepo.Find(x => x.Email == vmSignInUser.Email);
+            result.FirstName = user.FirstName;
+            result.LastName = user.LastName;
             return Ok(result);
         }
     }

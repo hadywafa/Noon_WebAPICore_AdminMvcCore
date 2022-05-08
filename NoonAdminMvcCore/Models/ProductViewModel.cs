@@ -38,7 +38,7 @@ namespace NoonAdminMvcCore.Models
         public bool IsActive { get; set; }
 
 
-        // Each Product has a collection of Images
+        // Each Product has a collection of ImagesGallery
         [Required]
         public IFormFile[] Images { get; set; }
 
