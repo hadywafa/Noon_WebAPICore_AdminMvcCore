@@ -16,6 +16,8 @@ namespace EFModel.Models.EFModels
         [Range(10000, 99999)]
         public int PostalCode { get; set; }
 
+        public bool IsPrimary { get; set; }
+
         #region Navigation Property
         // Each address is belonged to one User
         public User User { get; set; }

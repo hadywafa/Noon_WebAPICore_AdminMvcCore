@@ -7,10 +7,11 @@ using EFModel.Models;
 using Repository.GenericRepository;
 using EFModel.Models.EFModels;
 using Repository.UnitWork;
+using Microsoft.EntityFrameworkCore;
 
 namespace JWTAuth.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -29,21 +30,17 @@ namespace JWTAuth.Controllers
             this._address = unitOfWork.Addresses;
 
         }
-      
-     
 
- 
 
-        //[Authorize(Roles = AuthorizeRoles.Customer)]
+        [Authorize(Roles = AuthorizeRoles.Customer)]
         [Route("Addresess")]
         [HttpGet]
         public async Task<ActionResult> GetAdresses()
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
 
-            var addresses = this._address.GetAll().Where(u => u.User.Id == userId);
-
-         
+            var addresses = await this._address.GetAll().Where(u => u.User.Id == userId)
+                .Select(a => new {City = a.City, Street = a.Street, PostalCode = a.PostalCode, Id = a.Id, IsPrimary = a.IsPrimary}).ToListAsync();
 
             return Ok(addresses);
         }
