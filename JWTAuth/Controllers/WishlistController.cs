@@ -47,7 +47,7 @@ namespace JWTAuth.Controllers
             //   1          1     
             //   1          2     
             //   1          3     
-            var wishlists = await _custProWishlistRepo.GetAll().Include(x=>x.Customer).Include(x=>x.Product).ToListAsync();
+            var wishlists = await _custProWishlistRepo.GetAll().Include(x=>x.Customer).Include(x=>x.Product).Where(p=>p.Customer.Id== userId).ToListAsync();
             if (wishlists == null)
             {
                 return Ok("Your Cart is Empty");
