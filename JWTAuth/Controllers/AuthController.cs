@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using BL.ViewModels.RequestVModels;
 using EFModel.Models;
+using Microsoft.AspNetCore.Identity;
 using Repository.CustomRepository.AuthRepo;
 using Repository.GenericRepository;
 using Repository.UnitWork;
@@ -13,12 +14,14 @@ namespace JWTAuth.Controllers
     public class AuthController : ControllerBase
     {
         #region Inject AuthRepo
+        private readonly UserManager<User> _userManager;
+        private readonly IGenericRepo<User> _userRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAuthRepo _authRepo;
-        private readonly IGenericRepo<User> _userRepo;
 
-        public AuthController(IUnitOfWork unitOfWork)
+        public AuthController(IUnitOfWork unitOfWork , UserManager<User> userManager)
         {
+            _userManager = userManager;
             _unitOfWork = unitOfWork;
             _authRepo = _unitOfWork.GetAuthRepo();
             _userRepo = _unitOfWork.Users;

@@ -318,6 +318,10 @@ namespace SqlServerDBContext.Migrations
                     b.Property<int?>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AddressPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CustomerID")
                         .HasColumnType("nvarchar(450)");
 

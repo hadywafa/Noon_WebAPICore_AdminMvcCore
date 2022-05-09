@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SqlServerDBContext.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -409,6 +409,7 @@ namespace SqlServerDBContext.Migrations
                     Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DeliveryStatus = table.Column<int>(type: "int", nullable: false),
                     PaymentMethod = table.Column<int>(type: "int", nullable: false),
+                    AddressPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryStatusDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AddressId = table.Column<int>(type: "int", nullable: true)
                 },

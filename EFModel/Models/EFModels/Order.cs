@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using EFModel.Enums;
 
 namespace EFModel.Models.EFModels
@@ -25,8 +26,11 @@ namespace EFModel.Models.EFModels
         public decimal Discount { get; set; }
 
         public DeliveryStatus DeliveryStatus { get; set; }
+
         public PaymentMethod PaymentMethod { get; set; }
 
+        [Required]
+        public string AddressPhone { get; set; }
 
         //DeliveryStatusDescription---Mohamed
 
