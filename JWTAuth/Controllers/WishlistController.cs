@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using BL.ViewModels.ResponseVModels;
 using EFModel.Enums;
 using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Authorization;
@@ -16,13 +19,15 @@ namespace JWTAuth.Controllers
     {
         #region Inject Product Repository in Author Controller
         
+        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepo<Customer> _customerRepo;
         private readonly IGenericRepo<Product> _productRepo;
         private readonly IGenericRepo<CustProWishlist> _custProWishlistRepo;
 
-        public WishlistController(IUnitOfWork unitOfWork)
+        public WishlistController(IUnitOfWork unitOfWork , IMapper mapper)
         {
+            _mapper = mapper;
             _unitOfWork = unitOfWork;
             _customerRepo = _unitOfWork.Customers;
             _productRepo = _unitOfWork.Products;
@@ -47,8 +52,10 @@ namespace JWTAuth.Controllers
             {
                 return Ok("Your Cart is Empty");
             }
+
+            var vmProducts = _mapper.Map<List<CustProWishlist>, List<VmWishlistProduct>>(wishlists);
             //need to map to IWishlistItem[] in Angular
-            return Ok(wishlists);
+            return Ok(vmProducts);
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
@@ -62,9 +69,9 @@ namespace JWTAuth.Controllers
             }
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            var customer = await _customerRepo.Find(x => x.User.Id == userId);
+            var customer = await _customerRepo.Find(x => x.Id == userId);
             // get Customer include its cart
-            var wishlistItem = await _custProWishlistRepo.Find(x => x.Customer.User.Id == userId , x=>x.Product.Id == proId);
+            var wishlistItem = await _custProWishlistRepo.Find(x => x.Customer.Id == userId && x.Product.Id == proId);
             if (wishlistItem is not null)
             {
                 return Ok("item is already in your wishlist");
@@ -86,7 +93,7 @@ namespace JWTAuth.Controllers
             }
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            var wishlistItem = await _custProWishlistRepo.Find(x => x.Customer.User.Id == userId && x.Product.Id == proId);
+            var wishlistItem = await _custProWishlistRepo.Find(x => x.Customer.Id == userId && x.Product.Id == proId);
             if (wishlistItem == null )
             {
                 return Ok("Item is Not Existed in your wishlist");
