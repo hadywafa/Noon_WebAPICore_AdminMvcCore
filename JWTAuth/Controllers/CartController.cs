@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using EFModel.Enums;
 using EFModel.Models.EFModels;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Repository.GenericRepository;
 using Repository.UnitWork;
 using BL.Helpers;
+using BL.ViewModels.ResponseVModels;
 
 namespace JWTAuth.Controllers
 {
@@ -18,16 +21,19 @@ namespace JWTAuth.Controllers
         #region Inject Product Repository in Author Controller
         
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
         readonly IGenericRepo<Customer> _customerRepo;
         private readonly IGenericRepo<Product> _productRepo;
         private readonly IGenericRepo<CustProCart> _custProCartRepo;
 
-        public CartController(IUnitOfWork unitOfWork)
+        public CartController(IUnitOfWork unitOfWork , IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
             _productRepo = _unitOfWork.Products;
             _customerRepo = _unitOfWork.Customers;
             _custProCartRepo = _unitOfWork.CustProCarts;
+            _mapper = mapper;
             //
         }
 
@@ -53,8 +59,9 @@ namespace JWTAuth.Controllers
             {
                 item.Product.ImageThumb.ToImageUrl();
             }
-            //need to map to ICartItem[] in Angular
-            return Ok(carts);// need to serializer
+            var vmCartProducts = _mapper.Map<List<CustProCart>,List<VmCartProduct>>(carts);
+
+            return Ok(vmCartProducts);
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
