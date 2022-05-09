@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Repository.GenericRepository;
 using Repository.UnitWork;
+using BL.Helpers;
 
 namespace JWTAuth.Controllers
 {
@@ -47,6 +48,10 @@ namespace JWTAuth.Controllers
             if (carts == null)
             {
                 return Ok("Your Cart is Empty");
+            }
+            foreach (var item in carts)
+            {
+                item.Product.ImageThumb.ToImageUrl();
             }
             //need to map to ICartItem[] in Angular
             return Ok(carts);// need to serializer
