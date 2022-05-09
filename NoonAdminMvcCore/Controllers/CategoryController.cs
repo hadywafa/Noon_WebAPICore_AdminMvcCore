@@ -46,7 +46,7 @@ namespace NoonAdminMvcCore.Controllers
         }
 
         // GET: Category
-        public async Task<IActionResult> Display(string currentFilter, string searchString, int? pageNumber,
+        public async Task<IActionResult> Index(string currentFilter, string searchString, int? pageNumber,
             int? pageSize)
         {
             ViewData["CurrentFilter"] = searchString;
