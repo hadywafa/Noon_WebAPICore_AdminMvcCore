@@ -137,20 +137,20 @@ namespace NoonAdminMvcCore.Controllers
                             NameArabic = categoryVM.NameArabic,
                             Description = categoryVM.Description,
                             DescriptionArabic = categoryVM.DescriptionArabic,
-                            ParentID = categoryVM.ParentId == null ? null : categoryVM.ParentId,
+                            ParentID = categoryVM.ParentId,
                             Code = categoryVM.Code,
                             IsTop = categoryVM.IsTop
                         };
                         await _categoryRepository.Add(cat);
                         await _unitOfWork.Save();
                         //
-                        //var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery");
-                        //string filepath = Path.Combine(imgsave, (files.FileName));
-                        //var straem = new FileStream(filepath, FileMode.Create);
-                        var filepath = Configuration["imagesPath"] + "/images/" + files.FileName;
-                        var straem = new FileStream(filepath, FileMode.Create);
+                        //var stream = new FileStream(filepath, FileMode.Create);
+                        //var filepath = Configuration["imagesPath"] + "/images/" + files.FileName;
+                        var imgSave = Path.Combine(iweb.WebRootPath, "Images");
+                        string filePath = Path.Combine(imgSave, (files.FileName));
+                        var stream = new FileStream(filePath, FileMode.Create);
+                        await files.CopyToAsync(stream);
                         //
-                        files.CopyTo(straem);
                         Image img = new Image() { ImageName = files.FileName, CategoryId = cat.Id };
                         await _imageRepository.Add(img);
                         await _unitOfWork.Save();
@@ -177,12 +177,12 @@ namespace NoonAdminMvcCore.Controllers
                     await _unitOfWork.Save();
                     if (files != null)
                     {
-                        //var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery", (files.FileName));
-                        //string filepath = Path.Combine(imgsave, (files.FileName));
-                        //var straem = new FileStream(filepath, FileMode.Create);
-                        var filepath = Configuration["imagesPath"] + "/images/" + files.FileName;
-                        var straem = new FileStream(filepath, FileMode.Create);
-                        files.CopyTo(straem);
+                        //var stream = new FileStream(filepath, FileMode.Create);
+                        //var filepath = Configuration["imagesPath"] + "/images/" + files.FileName;
+                        var imgSave = Path.Combine(iweb.WebRootPath, "Images");
+                        string filePath = Path.Combine(imgSave, (files.FileName));
+                        var stream = new FileStream(filePath, FileMode.Create);
+                        await files.CopyToAsync(stream);
                         Image img = await _imageRepository.GetAll().Where(i => i.CategoryId == cat.Id)
                             .FirstOrDefaultAsync();
                         deleteFilefromRoot(img.ImageName);
@@ -216,7 +216,7 @@ namespace NoonAdminMvcCore.Controllers
                 NameArabic = categoryVM.NameArabic,
                 Description = categoryVM.Description,
                 DescriptionArabic = categoryVM.DescriptionArabic,
-                ParentId = categoryVM.ParentID == null ? null : categoryVM.ParentID,
+                ParentId = categoryVM.ParentID,
                 Code = categoryVM.Code,
                 IsTop = categoryVM.IsTop
             };
@@ -246,9 +246,9 @@ namespace NoonAdminMvcCore.Controllers
 
         private void deleteFilefromRoot(string img)
         {
-            img = Path.Combine(iweb.WebRootPath, "ImagesGallery", img);
-            FileInfo fileinfo = new FileInfo(img);
-            if (fileinfo != null)
+            img = Path.Combine(iweb.WebRootPath, "Images", img);
+            FileInfo fileInfo = new FileInfo(img);
+            if (fileInfo != null)
             {
                 System.IO.File.SetAttributes(img, FileAttributes.Normal);
                 System.IO.File.Delete(img);

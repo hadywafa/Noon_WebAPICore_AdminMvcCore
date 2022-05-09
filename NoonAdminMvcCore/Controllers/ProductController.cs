@@ -174,33 +174,28 @@ namespace NoonAdminMvcCore.Controllers
                     files = productVM.Images;
                     if (files != null)
                     {
-
                         foreach (var item in files)
                         {
-
-                            var filepath = Configuration["imagesPath"] + "/images/" + item.FileName;
-                            //var imgsave = Configuration["imagesApi"] + "/images";
-                            //string filepath = Path.Combine(imgsave, (item.FileName));
-                            var straem = new FileStream(filepath, FileMode.Create);
-                            item.CopyTo(straem);
-                            straem.Close();
-
+                            //============
+                            //var filepath = Configuration["imagesPath"] + "/images/" + item.FileName;
+                            //var stream = new FileStream(filepath, FileMode.Create);
+                            //item.CopyTo(stream);
+                            //============
+                            var imgSave = Path.Combine(iweb.WebRootPath, "Images");
+                            string filePath = Path.Combine(imgSave, (item.FileName));
+                            var stream = new FileStream(filePath, FileMode.Create);
+                            await item.CopyToAsync(stream);
+                            stream.Close();
                             Image img = new Image()
                             {
                                 ProductId = prod.Id,
                                 ImageName = item.FileName
-
                             };
-
                             await _imageRepository.Add(img);
                             await _unitOfWork.Save();
-
-                           
                         }
-
                     }
                     #endregion
-
 
                     return RedirectToAction("Index");
                 }
@@ -235,14 +230,12 @@ namespace NoonAdminMvcCore.Controllers
                     {
                         foreach (var item in files)
                         {
-                            var filepath = Configuration["imagesPath"]+"/images/"+item.FileName;
-                            //var imgsave = Configuration["imagesApi"]+"/images";
-                            //string filepath = Path.Combine(imgsave, item.FileName);
-                            var straem = new FileStream(filepath, FileMode.Create);
-                            
-                            item.CopyTo(straem);
-                            straem.Close();
-                            Image img = _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefault();
+                            var imgSave = Path.Combine(iweb.WebRootPath, "Images");
+                            string filePath = Path.Combine(imgSave, (item.FileName));
+                            var stream = new FileStream(filePath, FileMode.Create);
+                            await item.CopyToAsync(stream);
+                            stream.Close();
+                            Image img = await _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefaultAsync();
                           
                             img.ImageName = item.FileName;
                             await _imageRepository.Update(img);
@@ -255,9 +248,6 @@ namespace NoonAdminMvcCore.Controllers
 
                     return RedirectToAction("Index");
                 }
-
-               
-              
             }
 
             return RedirectToAction();
@@ -297,7 +287,6 @@ namespace NoonAdminMvcCore.Controllers
 
             return View("ProductForm", productViewmodel);
         }
-
 
         public async Task<ActionResult> Suspend(int id, string currentFilter, int? pageNumber)
         {

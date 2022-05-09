@@ -1,6 +1,5 @@
 ﻿@model List<EFModel.Models.User>
-@using Microsoft.Extensions.Configuration
-@inject IConfiguration Configuration
+
 @{
     <div class="nk-tb-item nk-tb-head">
         <div class="nk-tb-col">
@@ -35,7 +34,7 @@
                 <a href="html/user-details-regular.html">
                     <div class="user-card">
                         <div class="user-avatar bg-primary">
-                            <span><img src="@Configuration["imagesApi"]/images/@user.ImageProfile" /></span>
+                            <span><img src="~/Images/@user.ImageProfile" /></span>
                         </div>
                         <div class="user-info">
                             <span class="tb-lead">

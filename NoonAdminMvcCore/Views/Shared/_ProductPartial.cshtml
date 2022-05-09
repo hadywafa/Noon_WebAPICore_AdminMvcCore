@@ -1,6 +1,5 @@
 ﻿@model IList<EFModel.Models.EFModels.Product>
-@using Microsoft.Extensions.Configuration
-@inject IConfiguration Configuration
+
 @{
     <div class="nk-tb-item nk-tb-head">
 
@@ -47,8 +46,6 @@
                 </li>
             </ul>
         </div>
-
-
     </div>
     <!-- .nk-tb-item -->
     foreach (var product in Model)
@@ -59,13 +56,7 @@
                 <a href="html/user-details-regular.html">
                     <div class="user-card">
                         <div class="user-avatar bg-primary">
-                            @foreach (var img in product.ImagesGallery.Take(1))
-                            {
-
-                                <span><img src="@Configuration["imagesApi"]/images/@img.ImageName" /></span>
-
-                            }
-
+                                <span><img src="~/Images/@product.ImageThumb" /></span>
                         </div>
                         <div class="user-info">
                             <span class="tb-lead">
