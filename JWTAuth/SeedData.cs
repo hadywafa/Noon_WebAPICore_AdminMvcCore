@@ -121,9 +121,21 @@ namespace JWTAuth
                             User = user,
                             Street = "Fun",
                             City = $"city{user.FirstName + user.LastName}",
-                            PostalCode = 1234
+                            PostalCode = 1234,
+                            IsPrimary = true,
                         };
+
+                        var addressTwo = new Address
+                        {
+                            User = user,
+                            Street = "Fun",
+                            City = $"city{user.FirstName + user.LastName}",
+                            PostalCode = 1234,
+                            IsPrimary = false,
+                        };
+
                         await _addressRepo.Add(address);
+                        await _addressRepo.Add(addressTwo);
                         await _unitOfWork.Save();
                     }
                 }

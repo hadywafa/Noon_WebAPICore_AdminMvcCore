@@ -10,15 +10,15 @@ using SqlServerDBContext;
 namespace SqlServerDBContext.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220508174356_HwFinalTouch")]
-    partial class HwFinalTouch
+    [Migration("20220509124059_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.15")
+                .HasAnnotation("ProductVersion", "5.0.16")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BrandCategory", b =>
@@ -46,6 +46,9 @@ namespace SqlServerDBContext.Migrations
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
 
                     b.Property<int>("PostalCode")
                         .HasColumnType("int");
