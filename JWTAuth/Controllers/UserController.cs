@@ -2,61 +2,69 @@
 using System.Threading.Tasks;
 using EFModel.Enums;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using EFModel.Models;
+using Repository.GenericRepository;
+using EFModel.Models.EFModels;
+using Repository.UnitWork;
 
 namespace JWTAuth.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        [Authorize(Roles = AuthorizeRoles.Customer)]
-        [Route("CreateOrder")]
-        [HttpGet]
-        public async Task<ActionResult> CreateOrder()
+
+
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IGenericRepo<Address> _address;
+
+
+
+        public UserController(IUnitOfWork unitOfWork)
         {
 
-            return Accepted("Order Added Successfully");
+            this._unitOfWork = unitOfWork;
+            this._address = unitOfWork.Addresses;
+
+        }
+      
+     
+
+ 
+
+        //[Authorize(Roles = AuthorizeRoles.Customer)]
+        [Route("Addresess")]
+        [HttpGet]
+        public async Task<ActionResult> GetAdresses()
+        {
+            var userId = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
+
+            var addresses = this._address.GetAll().Where(u => u.User.Id == userId);
+
+         
+
+            return Ok(addresses);
         }
 
-        [Authorize( Roles = AuthorizeRoles.Admin + "," + AuthorizeRoles.Seller)]
-        [Route("AddProduct")]
-        [HttpGet]
-        public async Task<ActionResult> AddProduct()
+
+
+        [HttpPost]
+
+        public async Task<ActionResult> AddAddress(Address address)
         {
-            return Accepted("Product Added Successfully");
+            var userId = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
+
+            var addresses = this._address.Add(address);
+
+
+
+            return Ok(addresses);
+
         }
 
-        [Authorize(Roles = AuthorizeRoles.Admin + "," + AuthorizeRoles.Seller + "," + AuthorizeRoles.Shipper)]
-        [Route("AddAddress")]
-        [HttpGet]
-        public async Task<ActionResult> AddAddress()
-        {
-            return Accepted("Address Added Successfully");
-        }
 
-        [Authorize(Roles = AuthorizeRoles.Customer)]
-        [Route("AddToCart")]
-        [HttpGet]
-        public async Task<ActionResult> AddToCart()
-        {
-            return Accepted("Product Added Successfully");
-        }
 
-        [Authorize(Roles = AuthorizeRoles.Customer)]
-        [Route("RemoveFromCart")]
-        [HttpGet]
-        public async Task<ActionResult> RemoveFromCart()
-        {
-            return Accepted("Product Removed Successfully");
-        }
-
-        [Authorize(Roles = AuthorizeRoles.Shipper)]
-        [Route("GetOrderbyShipperId")]
-        [HttpGet]
-        public async Task<ActionResult> GetOrderbyShipperId()
-        {
-            return Accepted("Here is ");
-        }
     }
 }

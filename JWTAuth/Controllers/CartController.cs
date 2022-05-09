@@ -43,7 +43,7 @@ namespace JWTAuth.Controllers
             //   1          1       5
             //   1          2       3
             //   1          3       7
-            var carts = await _custProCartRepo.GetAll().Include(x=>x.Customer).Include(x=>x.Product).ToListAsync();
+            var carts = await _custProCartRepo.GetAll().Include(x=>x.Product).ToListAsync();
             if (carts == null)
             {
                 return Ok("Your Cart is Empty");
