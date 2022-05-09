@@ -166,8 +166,8 @@ namespace NoonAdminMvcCore.Controllers
                         IsAvailable = productVM.IsActive,
                         Revenue = (productVM.SellingPrice - productVM.BuyingPrice)
                     };
-                    _productRepository.Add(prod);
-                    _unitOfWork.Save();
+                    await _productRepository.Add(prod);
+                    await _unitOfWork.Save();
                     #endregion
 
                     #region Fileimage
@@ -192,8 +192,8 @@ namespace NoonAdminMvcCore.Controllers
 
                             };
 
-                            _imageRepository.Add(img);
-                            _unitOfWork.Save();
+                            await _imageRepository.Add(img);
+                            await _unitOfWork.Save();
 
                            
                         }
@@ -225,8 +225,8 @@ namespace NoonAdminMvcCore.Controllers
                     prod.DescriptionArabic = productVM.DescriptionArabic;
                     prod.Weight = productVM.Weight;
                     prod.Revenue = productVM.SellingPrice - productVM.BuyingPrice;
-                    _productRepository.Update(prod);
-                    _unitOfWork.Save();
+                    await _productRepository.Update(prod);
+                    await _unitOfWork.Save();
                     #endregion
 
                     #region update ImageName
@@ -245,8 +245,8 @@ namespace NoonAdminMvcCore.Controllers
                             Image img = _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefault();
                           
                             img.ImageName = item.FileName;
-                            _imageRepository.Update(img);
-                            _unitOfWork.Save();
+                            await _imageRepository.Update(img);
+                            await _unitOfWork.Save();
                         }
 
                     }
@@ -308,10 +308,10 @@ namespace NoonAdminMvcCore.Controllers
             prod.IsAvailable = false;
 
             //update database
-            _productRepository.Update(prod);
+            await _productRepository.Update(prod);
 
             // save updates
-            _unitOfWork.Save();
+            await _unitOfWork.Save();
 
             return RedirectToAction("Index", new {currentFilter = currentFilter, pageNumber = pageNumber });
         }
@@ -325,10 +325,10 @@ namespace NoonAdminMvcCore.Controllers
             prod.IsAvailable = true;
 
             // update database
-            _productRepository.Update(prod);
+            await _productRepository.Update(prod);
 
             // save updates
-            _unitOfWork.Save();
+            await _unitOfWork.Save();
 
             return RedirectToAction("Index", new {  currentFilter = currentFilter, pageNumber = pageNumber });
         }

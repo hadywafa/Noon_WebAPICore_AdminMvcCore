@@ -63,9 +63,9 @@
                         </div>
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
-                                @Html.LabelFor(m => m.ParentID, "Category", new { @class = "form-label" })
+                                @Html.LabelFor(m => m.ParentId, "Category", new { @class = "form-label" })
                                 <div class="form-control-wrap">
-                                    @Html.DropDownListFor(m => m.ParentID, ViewBag.category as SelectList, new { @class = "form-select js-select2" })
+                                    @Html.DropDownListFor(m => m.ParentId, ViewBag.category as SelectList, new { @class = "form-select js-select2" })
                                 </div>
                             </div>
                         </div>
@@ -74,9 +74,19 @@
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
 
-                                @Html.LabelFor(m => m.image, "ImageName", new { @class = "form-label" })
+                                @Html.LabelFor(m => m.Image, "ImageName", new { @class = "form-label" })
                                 <div class="form-control-wrap">
-                                    @Html.EditorFor(m => m.image, new { @class = "form-control" })
+                                    @Html.EditorFor(m => m.Image, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--Hw col-->
+                        <div class="col-xl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Code, "Category Code", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Code, null, new { @class = "text-danger" })
                                 </div>
                             </div>
                         </div>

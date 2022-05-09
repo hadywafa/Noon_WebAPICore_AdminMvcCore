@@ -16,6 +16,7 @@ using EFModel.Enums;
 using EFModel.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace NoonAdminMvcCore.Controllers
 {
@@ -27,17 +28,21 @@ namespace NoonAdminMvcCore.Controllers
         private readonly IUnitOfWork _unitOfWork;
         readonly IGenericRepo<Image> _imageRepository;
         readonly IGenericRepo<Category> _categoryRepository;
+        private readonly IConfiguration Configuration;
+
 
         #endregion
 
         private readonly IWebHostEnvironment iweb;
 
-        public CategoryController(IUnitOfWork unitOfWork, IWebHostEnvironment _iwab)
+        public CategoryController(IUnitOfWork unitOfWork, IWebHostEnvironment _iwab , IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             iweb = _iwab;
             _imageRepository = _unitOfWork.Images;
             _categoryRepository = _unitOfWork.Categories;
+            Configuration = configuration;
+
         }
 
         // GET: Category
@@ -123,7 +128,7 @@ namespace NoonAdminMvcCore.Controllers
             {
                 if (categoryVM.Id == null)
                 {
-                    files = categoryVM.image;
+                    files = categoryVM.Image;
                     if (files != null)
                     {
                         Category cat = new Category()
@@ -132,13 +137,19 @@ namespace NoonAdminMvcCore.Controllers
                             NameArabic = categoryVM.NameArabic,
                             Description = categoryVM.Description,
                             DescriptionArabic = categoryVM.DescriptionArabic,
-                            ParentID = categoryVM.ParentID == null ? null : categoryVM.ParentID,
+                            ParentID = categoryVM.ParentId == null ? null : categoryVM.ParentId,
+                            Code = categoryVM.Code,
+                            IsTop = categoryVM.IsTop
                         };
                         await _categoryRepository.Add(cat);
                         await _unitOfWork.Save();
-                        var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery");
-                        string filepath = Path.Combine(imgsave, (files.FileName));
+                        //
+                        //var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery");
+                        //string filepath = Path.Combine(imgsave, (files.FileName));
+                        //var straem = new FileStream(filepath, FileMode.Create);
+                        var filepath = Configuration["imagesPath"] + "/images/" + files.FileName;
                         var straem = new FileStream(filepath, FileMode.Create);
+                        //
                         files.CopyTo(straem);
                         Image img = new Image() { ImageName = files.FileName, CategoryId = cat.Id };
                         await _imageRepository.Add(img);
@@ -160,12 +171,16 @@ namespace NoonAdminMvcCore.Controllers
                     cat.NameArabic = categoryVM.NameArabic;
                     cat.Description = categoryVM.Description;
                     cat.DescriptionArabic = categoryVM.DescriptionArabic;
+                    cat.Code = categoryVM.Code;
+                    cat.IsTop = categoryVM.IsTop;
                     await _categoryRepository.Update(cat);
                     await _unitOfWork.Save();
                     if (files != null)
                     {
-                        var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery", (files.FileName));
-                        string filepath = Path.Combine(imgsave, (files.FileName));
+                        //var imgsave = Path.Combine(iweb.WebRootPath, "ImagesGallery", (files.FileName));
+                        //string filepath = Path.Combine(imgsave, (files.FileName));
+                        //var straem = new FileStream(filepath, FileMode.Create);
+                        var filepath = Configuration["imagesPath"] + "/images/" + files.FileName;
                         var straem = new FileStream(filepath, FileMode.Create);
                         files.CopyTo(straem);
                         Image img = await _imageRepository.GetAll().Where(i => i.CategoryId == cat.Id)
@@ -201,7 +216,9 @@ namespace NoonAdminMvcCore.Controllers
                 NameArabic = categoryVM.NameArabic,
                 Description = categoryVM.Description,
                 DescriptionArabic = categoryVM.DescriptionArabic,
-                ParentID = categoryVM.ParentID == null ? null : categoryVM.ParentID
+                ParentId = categoryVM.ParentID == null ? null : categoryVM.ParentID,
+                Code = categoryVM.Code,
+                IsTop = categoryVM.IsTop
             };
             ViewBag.Category =
                 new SelectList(await _categoryRepository.GetAll().Where(c => c.ParentID == null).ToListAsync(), "Id",

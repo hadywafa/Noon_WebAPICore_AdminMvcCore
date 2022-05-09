@@ -23,8 +23,15 @@ namespace NoonAdminMvcCore.Models
         [MaxLength(200)]
         public string DescriptionArabic { get; set; }
 
-        public IFormFile image { get; set; }
+        public IFormFile Image { get; set; }
 
-        public int? ParentID { get; set; }
+        public int? ParentId { get; set; }
+
+        //New Data
+        [Required, MaxLength(20)]
+        public string Code { get; set; }
+
+        public bool IsTop { get; set; }
+
     }
 }
