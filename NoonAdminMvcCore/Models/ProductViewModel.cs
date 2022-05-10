@@ -20,10 +20,10 @@ namespace NoonAdminMvcCore.Models
 
         public string ModelNumber { get; set; }
 
-        [MaxLength(1000)]
+        [MaxLength(5000)]
         public string Description { get; set; }
 
-        [MaxLength(1000)]
+        [MaxLength(5000)]
         public string DescriptionArabic { get; set; }
 
         [Required(ErrorMessage = "price of product is required")]

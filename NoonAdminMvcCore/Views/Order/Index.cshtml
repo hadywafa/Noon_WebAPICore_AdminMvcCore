@@ -1,13 +1,13 @@
 ﻿@{
     ViewData["Title"] = "Order List";
 }
-@model EFModel.Models.PaginatedList<EFModel.Models.EFModels.Order>
 
 
 
 
 
-<div class="container">
+
+<@*div class="container">*@
 
 
     @*<div class="mb-5 ">
@@ -20,7 +20,7 @@
         </select>
         </div>*@
 
-    <div>
+    @*<div>
 
         <table class="table table-striped ">
 
@@ -183,113 +183,205 @@
         </a>
     </div>
 
+</div>*@
+
+
+
+@model EFModel.Models.PaginatedList<EFModel.Models.EFModels.Order>
+
+<div class="nk-content-body">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+            <div class="nk-block-head-content">
+                <h3 class="nk-block-title page-title">Products Lists</h3>
+                <div class="nk-block-des text-soft">
+                    <p>You have total @ViewBag.Count orders.</p>
+                </div>
+
+            </div><!-- .nk-block-head-content -->
+            <div class="nk-block-head-content">
+                <div class="toggle-wrap nk-block-tools-toggle">
+                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu">
+                        <em class="icon ni ni-menu-alt-r"></em>
+                    </a>
+                    <div class="toggle-expand-content" data-content="pageMenu">
+                        <ul class="nk-block-tools g-3">
+
+                            <li class="nk-block-tools-opt">
+                                @*<div class="drodown">
+                                    <a href="#" class="dropdown-toggle btn btn-icon btn-primary" data-bs-toggle="dropdown">
+                                        <em class="icon ni ni-plus"></em>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <ul class="link-list-opt no-bdr">
+                                            <li>
+                                                <a href="@Url.Action("Create", "Product")">
+                                                    <span>Add Product</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>*@
+                            </li>
+                        </ul>
+                    </div>
+                </div><!-- .toggle-wrap -->
+            </div><!-- .nk-block-head-content -->
+        </div><!-- .nk-block-between -->
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <div class="card card-bordered card-stretch">
+            <div class="card-inner-group">
+                <div class="card-inner position-relative card-tools-toggle">
+                    <div class="card-title-group">
+                        <div class="card-tools">
+
+                        </div><!-- .card-tools -->
+                        <div class="card-tools me-n1">
+                            <ul class="btn-toolbar gx-1">
+                                <li>
+                                    <a href="#" class="btn btn-icon search-toggle toggle-search" data-target="search">
+                                        <em class="icon ni ni-search"></em>
+                                    </a>
+                                </li><!-- li -->
+                                <li class="btn-toolbar-sep"></li><!-- li -->
+                                <li>
+                                    <div class="toggle-wrap">
+                                        <a href="#" class="btn btn-icon btn-trigger toggle" data-target="cardTools">
+                                            <em class="icon ni ni-menu-right"></em>
+                                        </a>
+                                        <div class="toggle-content" data-content="cardTools">
+                                            <ul class="btn-toolbar gx-1">
+                                                <li class="toggle-close">
+                                                    <a href="#" class="btn btn-icon btn-trigger toggle" data-target="cardTools">
+                                                        <em class="icon ni ni-arrow-left"></em>
+                                                    </a>
+                                                </li><!-- li -->
+                                                <li>
+                                                </li><!-- li -->
+                                                <li>
+                                                    <div class="dropdown">
+                                                        <a href="#" class="btn btn-trigger btn-icon dropdown-toggle" data-bs-toggle="dropdown">
+                                                            <em class="icon ni ni-setting"></em>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end">
+                                                            <ul class="link-check">
+                                                                <li>
+                                                                    <span>Show</span>
+                                                                </li>
+                                                                <li class="@(@ViewBag.rowsPerPage == 10 ? "active" : "hide")">
+                                                                    <a asp-action="Index"
+                                                                       asp-route-currentFilter=@ViewBag.Search
+                                                                       asp-route-role=@ViewBag.Role
+                                                                       asp-route-pageSize="10">
+                                                                        10
+                                                                    </a>
+                                                                </li>
+                                                                <li class="@(@ViewBag.rowsPerPage == 20 ? "active" : "hide")">
+                                                                    <a asp-action="Index"
+                                                                       asp-route-currentFilter=@ViewBag.Search
+                                                                       asp-route-role=@ViewBag.Role
+                                                                       asp-route-pageSize="20">
+                                                                        20
+                                                                    </a>
+                                                                </li>
+                                                                <li class="@(@ViewBag.rowsPerPage == 50 ? "active" : "hide")">
+                                                                    <a asp-action="Index"
+                                                                       asp-route-currentFilter=@ViewBag.Search
+                                                                       asp-route-role=@ViewBag.Role
+                                                                       asp-route-pageSize="50">
+                                                                        50
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div><!-- .dropdown -->
+                                                </li><!-- li -->
+                                            </ul><!-- .btn-toolbar -->
+                                        </div><!-- .toggle-content -->
+                                    </div><!-- .toggle-wrap -->
+                                </li><!-- li -->
+                            </ul><!-- .btn-toolbar -->
+                        </div><!-- .card-tools -->
+                    </div><!-- .card-title-group -->
+                    <div class="card-search search-wrap" data-search="search">
+                        <div class="card-body">
+                            <div class="search-content">
+                                <a href="#" class="search-back btn btn-icon toggle-search" data-target="search">
+                                    <em class="icon ni ni-arrow-left"></em>
+                                </a>
+
+
+                                <form asp-controller="Product" asp-action="Display" asp-route-role=@ViewBag.Role method="get">
+
+                                    <input type="text" class="form-control border-transparent form-focus-none"
+                                           placeholder="Search by product, seller name or category"
+                                           name="SearchString"
+                                           value="@ViewData["CurrentFilter"]">
+
+                                    <input name="role" value=@ViewBag.Role type="hidden" />
+
+                                    <button class="search-submit btn btn-icon" type="submit" value="Search">
+                                        <em class="icon ni ni-search">
+
+                                        </em>
+                                    </button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div><!-- .card-search -->
+                </div><!-- .card-inner -->
+                <div class="card-inner p-0">
+                    <div class="nk-tb-list nk-tb-ulist" id="ajax">
+
+                        @* Render Partial To Use Ajax *@
+
+                        @await Html.PartialAsync("_OrderPartial")
+
+                        @{
+                            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                        }
+                    </div><!-- .nk-tb-list -->
+                </div><!-- .card-inner -->
+            </div><!-- .card-inner-group -->
+        </div><!-- .card -->
+        <div class="container d-flex flex-direction-row justify-content-center align-content-center align-items-center">
+            <a asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-currentFilter=@ViewBag.Search
+               asp-route-role=@ViewBag.Role
+               asp-route-pageSize=@ViewBag.rowsPerPage
+               class="btn @prevDisabled"
+               style="text-decoration: none;
+                            color: white;
+                            background: #0FAC81;
+                            padding: 7px 10px;
+                            border-radius: 2px;
+                            margin: 7px 3px;
+                            font-size: 15px;"
+               onMouseOver="this.style.backgroundColor='rgb(15 172 129 / 85%)'"
+               onmouseout="this.style.backgroundColor='#0FAC81'">
+                &laquo; Previous
+            </a>
+            <a asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-currentFilter=@ViewBag.Search
+               asp-route-role=@ViewBag.Role
+               asp-route-pageSize=@ViewBag.rowsPerPage
+               class="btn @nextDisabled"
+               style="text-decoration: none;
+                            color: white;
+                            background: #0FAC81;
+                            padding: 7px 10px;
+                            border-radius: 2px;
+                            margin: 7px 3px;
+                            font-size: 15px;"
+               onMouseOver="this.style.backgroundColor='rgb(15 172 129 / 85%)'"
+               onmouseout="this.style.backgroundColor='#0FAC81'">
+                Next &raquo;
+            </a>
+        </div>
+    </div><!-- .nk-block -->
 </div>
-
-
-
-
-
-
-
-
-
-@*@foreach (var order in Model)
-    {
-    <div class="nk-tb-item">
-    <div class="nk-tb-col">
-    <span class="tb-lead"><a href="#">#@order.Id</a></span>
-    </div>
-    <div class="nk-tb-col tb-col-sm">
-    <div class="user-card">
-    <div class="user-avatar sm bg-purple-dim">
-    <span>@order.User.FirstName[0]@order.User.LastName[0]</span>
-    </div>
-    <div class="user-name">
-    <span class="tb-lead">@order.User.FirstName @order.User.LastName</span>
-    </div>
-    </div>
-    </div>
-    <div class="nk-tb-col tb-col-md">
-    <span class="tb-sub">@order.OrderDate.ToShortDateString()</span>
-    </div>
-    <div class="nk-tb-col">
-    <span class="tb-sub tb-amount">@order.TotalPrice <span>EGP</span></span>
-    </div>
-
-    <div class="nk-tb-col">
-    <span class="tb-sub tb-amount">@(@order.IsPaid ? "Card" : "Cash")</span>
-    </div>
-
-    @{
-    var deliveryStatus = @order.DeliveryStatus;
-
-    switch (deliveryStatus)
-    {
-    case EFModel.Enums.DeliveryStatus.Processing:
-    <text>
-    <div class="nk-tb-col">
-    <span class="badge badge-dot badge-dot-xs bg-primary">
-    Processing
-    </span>
-    </div>
-    </text>
-    break;
-
-    case EFModel.Enums.DeliveryStatus.Shipped:
-    <text>
-    <div class="nk-tb-col">
-    <span class="badge badge-dot badge-dot-xs bg-info">
-    Shipped
-    </span>
-    </div>
-    </text>
-    break;
-
-    case EFModel.Enums.DeliveryStatus.Delivered:
-    <text>
-    <div class="nk-tb-col">
-    <span class="badge badge-dot badge-dot-xs bg-success">
-    Delivered
-    </span>
-    </div>
-    </text>
-    break;
-
-    case EFModel.Enums.DeliveryStatus.Cancelled:
-    <text>
-    <div class="nk-tb-col">
-    <span class="badge badge-dot badge-dot-xs bg-warning">
-    Cancelled
-    </span>
-    </div>
-    </text>
-    break;
-
-    case EFModel.Enums.DeliveryStatus.Returned:
-    <text>
-    <div class="nk-tb-col">
-    <span class="badge badge-dot badge-dot-xs bg-danger">
-    Returned
-    </span>
-    </div>
-    </text>
-    break;
-
-    default:
-    <text>
-    <div class="nk-tb-col">
-    <span class="badge badge-dot badge-dot-xs bg-secondary">
-    Not Known
-    </span>
-    </div>
-    </text>
-    break;
-
-    }
-    }
-
-    </div>
-    }*@
-
-
-

@@ -1,0 +1,186 @@
+﻿@model IList<EFModel.Models.EFModels.Order>
+
+@{
+    <div class="nk-tb-item nk-tb-head">
+
+        <div class="nk-tb-col">
+            <span class="sub-text">Order Number</span>
+        </div>
+
+        <div class="nk-tb-col">
+            <span class="sub-text">Customer</span>
+        </div>
+
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Order Date</span>
+        </div>
+
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Total Price</span>
+        </div>
+
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Payment Method</span>
+        </div>
+
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Discount</span>
+        </div>
+
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Delivery Status</span>
+        </div>
+
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Delivery Description</span>
+        </div>
+
+        <div class="nk-tb-col nk-tb-col-tools">
+            <ul class="nk-tb-actions gx-1 my-n1">
+                <li>
+                    <div class="drodown">
+                        <a href="#" class="dropdown-toggle btn btn-icon btn-trigger me-n1" data-bs-toggle="dropdown">
+                            <em class="icon ni ni-more-h"></em>
+                        </a>
+
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- .nk-tb-item -->
+    foreach (var order in Model)
+    {
+        <div class="nk-tb-item">
+
+            <div class="nk-tb-col">
+                <a href="@Url.ActionLink("OrderProducts", "Order", new{id = order.Id})">
+                    <div class="user-card">
+                        <div class="user-info">
+                            <span class="tb-lead">
+                                @order.Id <span class="dot dot-success d-md-none ms-1"></span>
+                            </span>
+
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="nk-tb-col tb-col-mb">
+                <a href="@Url.ActionLink("OrderProducts", "Order", new{id = order.Id})">
+                    <span class="tb-amount">
+                        @order.User.FirstName @order.User.LastName
+                    </span>
+                </a>
+            </div>
+
+            <div class="nk-tb-col tb-col-mb">
+                <a href="@Url.ActionLink("OrderProducts", "Order", new{id = order.Id})">
+                    <span class="tb-amount">
+                        @order.OrderDate
+                    </span>
+                </a>
+            </div>
+
+
+            <div class="nk-tb-col tb-col-mb">
+                <a href="@Url.ActionLink("OrderProducts", "Order", new{id = order.Id})">
+                    <span class="tb-amount">
+                        @order.TotalPrice
+                    </span>
+                </a>
+            </div>
+
+            <div class="nk-tb-col tb-col-mb">
+                <a href="@Url.ActionLink("OrderProducts", "Order", new{id = order.Id})">
+                    <span class="tb-amount">
+                        @{
+                            var paymentMethod = @order.PaymentMethod;
+                            switch (paymentMethod)
+                            {
+                                case EFModel.Enums.PaymentMethod.Paypal:
+                                    <text>PayPal</text>
+                                    break;
+
+                                case EFModel.Enums.PaymentMethod.Cash:
+                                    <text>Cash</text>
+                                    break;
+
+                                case EFModel.Enums.PaymentMethod.NoonBalance:
+                                    <text>Noon Balance</text>
+                                    break;
+                            }
+                        }
+                    </span>
+                </a>
+            </div>
+
+            <div class="nk-tb-col tb-col-mb">
+                <a href="@Url.ActionLink("OrderProducts", "Order", new{id = order.Id})">
+                    <span class="tb-amount">
+                        @order.Discount
+                    </span>
+                </a>
+            </div>
+
+
+            <div class="nk-tb-col tb-col-md">
+                <a href="@Url.ActionLink("OrderProducts", "Order", new{id = order.Id})">
+                    @{
+                        var color = "secondary";
+                        switch (order.DeliveryStatus)
+                        {
+
+                            case EFModel.Enums.DeliveryStatus.Processing:
+                                color = "primary";
+                                break;
+                            case EFModel.Enums.DeliveryStatus.Shipped:
+                                color = "info";
+                                break;
+                            case EFModel.Enums.DeliveryStatus.Delivered:
+                                color = "success";
+                                break;
+                            case EFModel.Enums.DeliveryStatus.Cancelled:
+                                color = "warning";
+                                break;
+                            case EFModel.Enums.DeliveryStatus.Returned:
+                                color = "danger";
+                                break;
+                            default:
+                                color = "info";
+                                break;
+
+                        }
+                    }
+                    <span class="text-@color">@order.DeliveryStatus</span>
+                </a>
+            </div>
+
+            <div class="nk-tb-col tb-col-lg">
+                <a href="@Url.ActionLink("OrderProducts", "Order", new{id = order.Id})">
+                    <span>@order.DeliveryStatusDescription</span>
+                </a>
+            </div>
+
+            <div class="nk-tb-col nk-tb-col-tools">
+                <ul class="nk-tb-actions gx-1">
+                    <li>
+                        <div class="drodown">
+                            <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown">
+                                <em class="icon ni ni-more-h"></em>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <ul class="link-list-opt no-bdr">
+
+                                    <li>
+                                        @Html.ActionLink("Edit", "Edit", "Order", new { id = order.Id})
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
+}

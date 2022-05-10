@@ -11,10 +11,10 @@ namespace NoonAdminMvcCore.Models
     {
         public string Id { get; set; }
 
-        [Required, MaxLength(20)]
+        [Required, MaxLength(200)]
         public string Name { get; set; }
 
-        [Required, MaxLength(20)]
+        [Required, MaxLength(200)]
         public string NameArabic { get; set; }
 
         [MaxLength(200)]
@@ -28,7 +28,7 @@ namespace NoonAdminMvcCore.Models
         public int? ParentId { get; set; }
 
         //New Data
-        [Required, MaxLength(20)]
+        [Required, MaxLength(500)]
         public string Code { get; set; }
 
         public bool IsTop { get; set; }
