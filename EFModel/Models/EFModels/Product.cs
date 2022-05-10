@@ -11,26 +11,24 @@ namespace EFModel.Models.EFModels
         {
             AddedOn = DateTime.Now;
         }
-        [Required, MinLength(3)]
+        [Required, MinLength(3), MaxLength(500)]
         public string Name { get; set; }
 
-        [Required, MinLength(3)]
+        [Required, MinLength(3), MaxLength(500)]
         public string NameArabic { get; set; }
 
-        //[MaxLength(500)]
+        [MaxLength(5000)]
         public string Description { get; set; }
 
-        //[MaxLength(500)]
+        [MaxLength(5000)]
         public string DescriptionArabic { get; set; }
 
-        [Required]
         public decimal BuyingPrice { get; set; }
         
         public decimal SellingPrice { get; set; }
 
         public decimal Revenue { get; set; }
 
-        [Required]
         public int Quantity { get; set; }
 
         public string Weight { get; set; }
@@ -43,22 +41,20 @@ namespace EFModel.Models.EFModels
 
 
         #region new Props
-
-        //public string SkuId { get; set; }
-        //public string SkuString { get; set; }
+        [MaxLength(500)]
         public string ModelNumber { get; set; }
         public int WarrantyInDays { get; set; }
         public bool IsFreeDelivered { get; set; }
         public TimeSpan EstimateOrderTime { get; set; }
         public string ImageThumb { get; set; }
+
+        [Range(1, 1000)]
         public int MaxQuantityPerOrder { get; set; }
         
         #endregion
 
 
         #region Navigation Property
-
-        // Each Product has a collection of ImagesGallery
 
         // Each Product is sold by a collection of Sellers
         [ForeignKey("Sellers")]
@@ -75,7 +71,6 @@ namespace EFModel.Models.EFModels
 
 
         #region new navigation props
-
         //each product have one brand 
         public virtual Brand Brand { get; set; }
 

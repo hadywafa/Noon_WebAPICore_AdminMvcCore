@@ -175,6 +175,7 @@ namespace JWTAuth
                         new Brand() { IsTop = true, Code = "samsung", Name = "Samsung", Image = "samsung.png" },
                         new Brand() { IsTop = true, Code = "sony", Name = "Sony", Image = "sony.png" },
                         new Brand() { IsTop = true, Code = "lg", Name = "LG", Image = "lg.png" },
+                        new Brand() { IsTop = true, Code = "Xiaomi", Name = "LG", Image = "lg.png" },
                     }
                 };
                 await _catRepo.Add(cat2);

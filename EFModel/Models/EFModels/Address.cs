@@ -6,10 +6,10 @@ namespace EFModel.Models.EFModels
 {
     public class Address : Base
     {
-        [Required, MinLength(3)]
+        [Required, MinLength(3), MaxLength(100)]
         public string Street { get; set; }
 
-        [Required, MinLength(3)]
+        [Required, MinLength(3), MaxLength(100)]
         public string City { get; set; }
 
         // Egyptian postal code consists of 5 digits

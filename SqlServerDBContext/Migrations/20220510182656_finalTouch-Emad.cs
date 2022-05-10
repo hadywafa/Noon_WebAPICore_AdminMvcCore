@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SqlServerDBContext.Migrations
 {
-    public partial class finalTouch : Migration
+    public partial class finalTouchEmad : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,9 +13,9 @@ namespace SqlServerDBContext.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     IsTop = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -29,11 +29,11 @@ namespace SqlServerDBContext.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NameArabic = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DescriptionArabic = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    NameArabic = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    DescriptionArabic = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     IsTop = table.Column<bool>(type: "bit", nullable: false),
                     ParentID = table.Column<int>(type: "int", nullable: true)
                 },
@@ -145,8 +145,8 @@ namespace SqlServerDBContext.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Street = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PostalCode = table.Column<int>(type: "int", nullable: false),
                     IsPrimary = table.Column<bool>(type: "bit", nullable: false),
                     AddressPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -349,10 +349,10 @@ namespace SqlServerDBContext.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NameArabic = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DescriptionArabic = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    NameArabic = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
+                    DescriptionArabic = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
                     BuyingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SellingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Revenue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -361,7 +361,7 @@ namespace SqlServerDBContext.Migrations
                     Discount = table.Column<float>(type: "real", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModelNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModelNumber = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     WarrantyInDays = table.Column<int>(type: "int", nullable: false),
                     IsFreeDelivered = table.Column<bool>(type: "bit", nullable: false),
                     EstimateOrderTime = table.Column<TimeSpan>(type: "time", nullable: false),
@@ -523,7 +523,7 @@ namespace SqlServerDBContext.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Feature = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Feature = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     ProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -543,8 +543,8 @@ namespace SqlServerDBContext.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Key = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Key = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     ProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -599,8 +599,8 @@ namespace SqlServerDBContext.Migrations
                     ReviewDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsAsDescription = table.Column<bool>(type: "bit", nullable: false),
                     IsDeliveredOnTime = table.Column<bool>(type: "bit", nullable: false),
-                    ProductComment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SellerComment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductComment = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    SellerComment = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     IsProductCommentAnonymous = table.Column<bool>(type: "bit", nullable: false),
                     IsSellerCommentAnonymous = table.Column<bool>(type: "bit", nullable: false)
                 },
