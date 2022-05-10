@@ -819,6 +819,115 @@ namespace JWTAuth
                 };
                 await _productRepo.Add(pro6);
                 await _unitOfWork.Save();
+
+                var pro7 = new Product()
+                {
+                    Name =
+                        "11T Dual SIM Meteorite Gray 8GB RAM 256GB 5G - Global Version",
+                    NameArabic = "هاتف 11 ثنائي الشريحة بذاكرة رام 8 جيجابايت وذاكرة داخلية 256 جيجابايت ويدعم تقنية 5، بلون رمادي ميتيورايت - إصدار العالمي",
+                    Description = "HHHHHHHHHHH",
+                    DescriptionArabic = "هههههههههههههههه",
+                    Category = await _catRepo.Find(c => c.Code == "electronics-and-mobiles"),
+                    BuyingPrice = 8500,
+                    SellingPrice = 9999,
+                    Revenue = 30000 - 25000,
+                    Quantity = 20,
+                    Discount = 0.7f,
+                    IsAvailable = true,
+                    AddedOn = DateTime.Now,
+                    Weight = "500 gm",
+                    Seller = await _sellerRepo.Find(s => s.User.Email == "EmadSeller@gmail.com"),
+                    //new properties
+                    ModelNumber = "Xiaomi 11T 8/256",
+                    WarrantyInDays = 365,
+                    EstimateOrderTime = TimeSpan.FromHours(9.12),
+                    IsFreeDelivered = true,
+                    Brand = await _brandRepo.Find(b => b.Code == "Xiaomi"),
+                    ImageThumb = "p15.png",
+                    ImagesGallery =
+                        new List<Image>()
+                        {
+                            new Image() { ImageName = "p7-1.png" },
+                            new Image() { ImageName = "p7-2.png" },
+                        },
+                    MaxQuantityPerOrder = 1,
+                    ProductHighlights =
+                        new List<ProductHighlights>()
+                        {
+                            new ProductHighlights()
+                            {
+                                Feature =
+                                    "108MP pro-grade camera |Ultra-wide and Macro lenses"
+                            },
+                            new ProductHighlights()
+                            {
+                                Feature =
+                                    "Flagship Mediatek Dimensity 1200 Ultra | 6nm processor with dual 5G, up to 3.0GHz"
+                            },
+                            new ProductHighlights()
+                            {
+                                Feature =
+                                    "120GHz AdaptiveSync Amoled Display | Dual Speakers, Dolby Atmos"
+                            },
+                            new ProductHighlights()
+                            {
+                                Feature =
+                                    "67W Wired Turbo Charging"
+                            }
+                        },
+                    Specifications = new List<ProductSpecifications>()
+                    {
+                        new ProductSpecifications() { Key = "Battery Size", Name = "9720 mAh" },
+                        new ProductSpecifications()
+                        {
+                            Key = "Camera Type", Name = "Primary Camera + Secondary Camera"
+                        },
+                        new ProductSpecifications() { Key = "Charging Type", Name = "Type-C" },
+                        new ProductSpecifications() { Key = "Colour Name", Name = "Silver" },
+                        new ProductSpecifications() { Key = "Connection Type", Name = "Wifi+Cellular" },
+                        new ProductSpecifications() { Key = "Display Resolution Type", Name = "Full HD" },
+                        new ProductSpecifications() { Key = "Display Type", Name = "Retina Display" },
+                        new ProductSpecifications() { Key = "Network", Name = "5G" },
+                        new ProductSpecifications() { Key = "Feature 1", Name = "Bluetooth" },
+                        new ProductSpecifications() { Key = "Feature 2", Name = "Built-in Speaker" },
+                        new ProductSpecifications() { Key = "Feature 3", Name = "Compact Size" },
+                        new ProductSpecifications() { Key = "Feature 4", Name = "Intel" },
+                        new ProductSpecifications() { Key = "Feature 5", Name = "Travel" },
+                        new ProductSpecifications() { Key = "Graphics Memory Name", Name = "Intel Iris Xe" },
+                        new ProductSpecifications() { Key = "Graphics Memory Version", Name = "Yes" },
+                        new ProductSpecifications() { Key = "HDMI Output", Name = "Yes" },
+                        new ProductSpecifications() { Key = "Internal Memory", Name = "1 TB" },
+                        new ProductSpecifications() { Key = "Keyboard Language", Name = "English/Arabic" },
+                        new ProductSpecifications() { Key = "Model Name", Name = "Vostro 3510-2" },
+                        new ProductSpecifications() { Key = "Model Number", Name = "3510-E0003-BLK" },
+                        new ProductSpecifications() { Key = "Number of Cores", Name = "3510-E0003-BLK" },
+                        new ProductSpecifications() { Key = "Number of HDMI Ports", Name = "Quad Core" },
+                        new ProductSpecifications() { Key = "Number of Cores", Name = "1" },
+                        new ProductSpecifications() { Key = "Number of USB Ports", Name = "3" },
+                        new ProductSpecifications() { Key = "Operating System", Name = "Ubuntu" },
+                        new ProductSpecifications() { Key = "Primary Camera Resolution", Name = "0.3 MP" },
+                        new ProductSpecifications() { Key = "Processor Brand", Name = "Intel" },
+                        new ProductSpecifications() { Key = "Processor Speed", Name = "2.4 GHz" },
+                        new ProductSpecifications() { Key = "Processor Type", Name = "Core i5" },
+                        new ProductSpecifications() { Key = "Processor Version", Name = "Core i5-1135G7" },
+                        new ProductSpecifications()
+                        {
+                            Key = "Processor Version Number/Generation", Name = "11th Gen"
+                        },
+                        new ProductSpecifications() { Key = "Product Height", Name = "0.71 inch" },
+                        new ProductSpecifications() { Key = "Product Length", Name = "14.23 inch" },
+                        new ProductSpecifications() { Key = "Product Weight", Name = "1.9 kg" },
+                        new ProductSpecifications() { Key = "Product Width/Depth", Name = "9.76 inch" },
+                        new ProductSpecifications() { Key = "RAM Size", Name = "8 GB" },
+                        new ProductSpecifications() { Key = "RAM Type", Name = "DDR4" },
+                        new ProductSpecifications() { Key = "Screen Size", Name = "15.6 inch" },
+                        new ProductSpecifications() { Key = "SD Card Slot", Name = "Yes" },
+                        new ProductSpecifications() { Key = "Storage Type", Name = "HDD" },
+                        new ProductSpecifications() { Key = "Usage Type", Name = "Personal" },
+                    }
+                };
+                await _productRepo.Add(pro7);
+                await _unitOfWork.Save();
             }
         }
 
