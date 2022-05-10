@@ -13,5 +13,6 @@ namespace BL.ViewModels.RequestVModels
         public string City { get; set; }
         public int PostalCode { get; set; }
         public bool IsPrimary { get; set; }
+        public string AddressPhone { get; set; }
     }
 }

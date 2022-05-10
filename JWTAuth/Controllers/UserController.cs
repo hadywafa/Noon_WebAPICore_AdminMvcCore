@@ -46,9 +46,9 @@ namespace JWTAuth.Controllers
         public async Task<ActionResult> GetAllAddresses()
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
-            var addresses = await this._addressRepo.GetAll().Where(u => u.User.Id == userId)
+            var addresses = await this._addressRepo.GetAll().Where(x=>x.User.Id == userId)
                 .Select(a => new
-                    { City = a.City, Street = a.Street, PostalCode = a.PostalCode, Id = a.Id, IsPrimary = a.IsPrimary })
+                    { City = a.City, Street = a.Street, PostalCode = a.PostalCode, Id = a.Id, IsPrimary = a.IsPrimary , addressPhone = a.AddressPhone})
                 .ToListAsync();
 
             return Ok(addresses);
@@ -64,11 +64,10 @@ namespace JWTAuth.Controllers
 
             await _addressRepo.Add(new Address()
             {
-                User = user,
-                Street = _address.Street , City = _address.City , PostalCode = _address.PostalCode, IsPrimary = false
+                User = user,Street = _address.Street , City = _address.City , PostalCode = _address.PostalCode, IsPrimary = false , AddressPhone = _address.AddressPhone
             });
-
-            return Ok("Address added Successfully");
+            await _unitOfWork.Save();
+            return StatusCode(200);
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
@@ -89,12 +88,13 @@ namespace JWTAuth.Controllers
                 {
                     a.IsPrimary = false;
                     await _addressRepo.Update(a);
+                    await _unitOfWork.Save();
                 }
             }
             address.IsPrimary = newAddress.IsPrimary;
             await _addressRepo.Update(address);
-
-            return Ok("Address added Successfully");
+            await _unitOfWork.Save();
+            return StatusCode(200,new {MessagePack="Address is Updated Successfully"});
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
@@ -106,26 +106,27 @@ namespace JWTAuth.Controllers
 
             if (address == null)
             {
-                return Ok("Address is not exist");
+                return StatusCode(200,new {MessagePack="Address is not exist"});
             }
             await _addressRepo.Remove(address);
-            return Ok("Address is removed Successfully");
+            await _unitOfWork.Save();
+            return StatusCode(200,new {MessagePack="Address is removed Successfully"});
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpPut("UpdateUserName")]
-        public async Task<IActionResult> UpdateUserName([FromQuery]string firstName , [FromQuery] string lasName)
+        public async Task<IActionResult> UpdateUserName([FromQuery]string first , [FromQuery] string last)
         {
           
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
             //var customer = await _customerRepo.GetById(userId );
-            var customer = await _customerRepo.Find(x => x.Id == userId  );
-            customer.User.FirstName = firstName;
-            customer.User.LastName = lasName;
-            await _customerRepo.Update(customer);
-            return Ok("Your name updated Successfully");
+            var user = await _userRepo.Find(x => x.Id == userId );
+            user.FirstName = first;
+            user.LastName = last;
+            await _userRepo.Update(user);
+            await _unitOfWork.Save();
+            return StatusCode(200 , new {message="Your name updated Successfully"});
         }
-
         
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpPut("UpdatePassword")]
@@ -133,13 +134,14 @@ namespace JWTAuth.Controllers
         {
           
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
-            var customer = await _customerRepo.Find(x => x.Id == userId  );
-            var result = await _userManager.ChangePasswordAsync(customer.User, passObj.OldPassword, passObj.NewPassword);
+            var user = await _userRepo.Find(x => x.Id == userId );
+            var result = await _userManager.ChangePasswordAsync(user, passObj.OldPassword, passObj.NewPassword);
             if (!result.Succeeded)
             {
                 return Ok(result.Errors);
             }
-            return Ok("Password updated Successfully");
+            return StatusCode(200 , new {message="Password updated Successfully"});
+
         }
     }
 }
