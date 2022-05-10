@@ -47,7 +47,7 @@ namespace EFModel.Models.EFModels
         {
             foreach (var order in OrderItems)
             {
-                TotalPrice += order.Price * Discount;
+                TotalPrice += (order.Price-(order.Price * Discount));
                 TotalRevenue += order.Revenue;
             }
         }

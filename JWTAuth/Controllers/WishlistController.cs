@@ -50,7 +50,7 @@ namespace JWTAuth.Controllers
             var wishlists = await _custProWishlistRepo.GetAll().Include(x=>x.Customer).Include(x=>x.Product).Where(p=>p.Customer.Id== userId).ToListAsync();
             if (wishlists == null)
             {
-                return Ok("Your Cart is Empty");
+                return StatusCode(404);
             }
 
             var vmProducts = _mapper.Map<List<CustProWishlist>, List<VmWishlistProduct>>(wishlists);
@@ -79,7 +79,7 @@ namespace JWTAuth.Controllers
 
             await _custProWishlistRepo.Add(new CustProWishlist() {Customer = customer , Product = pro });
             await _unitOfWork.Save();
-            return Ok("item added successfully to your Wishlist");
+            return StatusCode(200);
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
@@ -89,14 +89,14 @@ namespace JWTAuth.Controllers
             var pro = await _productRepo.GetById(proId);
             if (pro== null)
             {
-                return BadRequest("There is no Product with that id");
+                return StatusCode(404);
             }
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
             var wishlistItem = await _custProWishlistRepo.Find(x => x.Customer.Id == userId && x.Product.Id == proId);
             if (wishlistItem == null )
             {
-                return Ok("Item is Not Existed in your wishlist");
+                return StatusCode(200);
             }
             await _custProWishlistRepo.Remove(wishlistItem);
             await _unitOfWork.Save();

@@ -47,13 +47,16 @@ namespace JWTAuth.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var orders = _orderRepo.GetAll();
+            var userId = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
+
+            var orders = _orderRepo.GetAll().Where(c=>c.Customer.Id == userId);
+
             return Ok(orders);
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpPost("Add")]
-        public async Task<IActionResult> PlaceOrder([FromQuery] PaymentMethod _PaymentMethod, [FromQuery] string addressId)
+        public async Task<IActionResult> PlaceOrder([FromQuery] PaymentMethod PaymentMethod, [FromQuery] string addressId)
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
             var carts = await _custProCartRepo.GetAll().Include(x => x.Product).Where(c => c.Customer.Id == userId).ToListAsync();
@@ -77,7 +80,7 @@ namespace JWTAuth.Controllers
                 Shipper = await _shipperRepo.Find(s => s.User.Email == "MoShipper@gmail.com"),
                 Discount = (decimal)0.0,
                 DeliveryStatus = DeliveryStatus.Processing,
-                PaymentMethod = _PaymentMethod,
+                PaymentMethod = PaymentMethod,
                 OrderDate = DateTime.Now,
                 OrderItems = _orderitems,
                 AddressId=int.Parse(addressId)
@@ -94,6 +97,8 @@ namespace JWTAuth.Controllers
                 product.Quantity -= reducedQuantity;
             }
 
+
+
             //reduce Customer Balance
             if (order.PaymentMethod == PaymentMethod.NoonBalance)
             {
@@ -105,10 +110,28 @@ namespace JWTAuth.Controllers
                 user.Balance -= order.TotalPrice;
             }
 
+            //await _unitOfWork.Save();
+
+            
+            foreach (var item in carts)
+            {
+                var cartItem = await _custProCartRepo.Find(x => x.Customer.User.Id == userId && x.Product.Id == item.Product.Id);
+                await _custProCartRepo.Remove(cartItem);
+             
+
+            }
             await _unitOfWork.Save();
 
             return Ok();
         }
+
+
+
+
+
+
+
+
 
     }
 }
