@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using EFModel.Enums;
 
 namespace EFModel.Models.EFModels
@@ -46,7 +47,7 @@ namespace EFModel.Models.EFModels
         {
             foreach (var order in OrderItems)
             {
-                TotalPrice += order.Price * Discount;
+                TotalPrice += (order.Price-(order.Price * Discount));
                 TotalRevenue += order.Revenue;
             }
         }

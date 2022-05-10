@@ -24,7 +24,7 @@ namespace NoonAdminMvcCore.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IGenericRepo<OrderItem> _orderItems;
 
-        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager )
+        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
@@ -37,41 +37,48 @@ namespace NoonAdminMvcCore.Controllers
             ViewData["PageSize"] = pageSize;
 
             int rowsPerPage = pageSize ?? 10;
+
             ViewBag.rowsPerPage = rowsPerPage;
 
             List<Order> orders;
 
             if (id != null)
-                   orders = await  _orderRepo.FindAll(orders => orders.CustomerID == id).OrderByDescending(order => order.OrderDate).ToListAsync();
+                orders = await _orderRepo.FindAll(orders => orders.CustomerID == id).OrderByDescending(order => order.OrderDate).Include(order => order.User).ToListAsync();
             else
-               orders = await _orderRepo.GetAll().OrderByDescending(order => order.OrderDate).ToListAsync();
+                orders = await _orderRepo.GetAll().OrderByDescending(order => order.OrderDate).Include(order => order.User).ToListAsync();
+
+            // get count of all orders
+            var ordersCount = _orderRepo.GetAll().Count();
+
+            ViewBag.Count = ordersCount;
 
             return View(EFModel.Models.PaginatedList<Order>.CreateAsync(orders, pageNumber ?? 1, rowsPerPage));
         }
 
         public async Task<IActionResult> OrderProducts(int id)
         {
-            
+
             var order = await _orderRepo.Find(o => o.Id == id);
-            var items=  _orderItems.FindAll(item => item.OrderId == id,p=>p.Product);
+            var items = _orderItems.FindAll(item => item.OrderId == id, p => p.Product);
             ViewBag.TotalPrice = order.TotalPrice;
-            
+
             return View(items);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
 
-            var order= await _orderRepo.Find(o => o.Id == id);
+            var order = await _orderRepo.Find(o => o.Id == id);
 
-            OrderViewModel model = new OrderViewModel {
+            OrderViewModel model = new OrderViewModel
+            {
                 Id = order.Id,
                 DeliveryStatus = order.DeliveryStatus,
                 DeliveryStatusDescription = order.DeliveryStatusDescription,
                 Shippers = _userManager.GetUsersInRoleAsync(AuthorizeRoles.Shipper).Result.ToList(),
                 ShipperId = order.ShipperId,
             };
-            
+
             return View(model);
         }
 
@@ -79,12 +86,12 @@ namespace NoonAdminMvcCore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(OrderViewModel model)
         {
-            var order = await  _orderRepo.Find(o=>o.Id==model.Id);
+            var order = await _orderRepo.Find(o => o.Id == model.Id);
 
             order.DeliveryStatus = model.DeliveryStatus;
             order.DeliveryStatusDescription = model.DeliveryStatusDescription;
             order.ShipperId = model.ShipperId;
-            await  _unitOfWork.Save();
+            await _unitOfWork.Save();
             return RedirectToAction("Index");
         }
 

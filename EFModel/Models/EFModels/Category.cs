@@ -12,19 +12,19 @@ namespace EFModel.Models.EFModels
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
+        [Required, MaxLength(500)]
         public string Code { get; set; }
 
-        //[Required, MaxLength(20)]
+        [Required, MaxLength(200)]
         public string Name { get; set; }
 
-        //[Required, MaxLength(20)]
+        [Required, MaxLength(200)]
         public string NameArabic { get; set; }
 
-        //[MaxLength(200)]
+        [MaxLength(200)]
         public string Description { get; set; }
 
-        //[MaxLength(200)]
+        [MaxLength(200)]
         public string DescriptionArabic { get; set; }
 
         public Image Image { get; set; }

@@ -30,8 +30,10 @@ namespace EFModel.Models.EFModels
         [Required]
         public bool IsDeliveredOnTime { get; set; }
 
+        [MaxLength(200)]
         public string ProductComment { get; set; }
 
+        [MaxLength(200)]
         public string SellerComment { get; set; }
 
         [Required]
