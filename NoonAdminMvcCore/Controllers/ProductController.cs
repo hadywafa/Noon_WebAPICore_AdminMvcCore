@@ -191,15 +191,24 @@ namespace NoonAdminMvcCore.Controllers
                             string filePath = Path.Combine(imgSave, (item.FileName));
                             var stream = new FileStream(filePath, FileMode.Create);
                             await item.CopyToAsync(stream);
-                            stream.Close();
                             Image img = new Image()
                             {
-                                ProductId = prod.Id,
-                                ImageName = item.FileName
+                                ImageName = item.FileName,
+                                ProductId = prod.Id
                             };
+
+                            if (files.First() == item)
+                            {
+                                prod.ImageThumb = item.FileName;
+                            }
+                            
                             await _imageRepository.Add(img);
-                            await _unitOfWork.Save();
+
                         }
+
+                        await _productRepository.Update(prod);
+
+                        await _unitOfWork.Save();
                     }
                     #endregion
 
@@ -248,13 +257,21 @@ namespace NoonAdminMvcCore.Controllers
                             string filePath = Path.Combine(imgSave, (item.FileName));
                             var stream = new FileStream(filePath, FileMode.Create);
                             await item.CopyToAsync(stream);
-                            stream.Close();
                             Image img = await _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefaultAsync();
 
                             img.ImageName = item.FileName;
                             await _imageRepository.Update(img);
-                            await _unitOfWork.Save();
+
+                            if (files.First() == item)
+                            {
+                                prod.ImageThumb = item.FileName;
+                            }
+
                         }
+
+                        await _productRepository.Update(prod);
+
+                        await _unitOfWork.Save();
 
                     }
 
@@ -282,6 +299,7 @@ namespace NoonAdminMvcCore.Controllers
 
             var productViewmodel = new ProductViewModel
             {
+                Id = productVM.Id.ToString(),
                 Name = productVM.Name,
                 NameArabic = productVM.NameArabic,
                 ModelNumber = productVM.ModelNumber,
@@ -296,8 +314,7 @@ namespace NoonAdminMvcCore.Controllers
                 CategoryId = productVM.CategoryId,
                 MaxQuantityPerOrder = productVM.MaxQuantityPerOrder,
                 BrandId = productVM.Brand.Id,
-                isAvaliable = productVM.IsAvailable
-
+                IsActive = productVM.IsAvailable
             };
 
             ViewBag.Seller = new SelectList(await _userManager.GetUsersInRoleAsync("Seller"), "Id", "FirstName");
@@ -345,7 +362,7 @@ namespace NoonAdminMvcCore.Controllers
 
         private void deleteFilefromRoot(string img)
         {
-            img = Path.Combine(Configuration["imagesPath"] + "/images/", img);
+            img = Path.Combine(iweb.WebRootPath, "Images", img);
             FileInfo fileinfo = new FileInfo(img);
             if (fileinfo != null)
             {

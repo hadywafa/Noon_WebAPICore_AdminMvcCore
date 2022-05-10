@@ -47,6 +47,11 @@ namespace NoonAdminMvcCore.Controllers
             else
                 orders = await _orderRepo.GetAll().OrderByDescending(order => order.OrderDate).Include(order => order.User).ToListAsync();
 
+            // get count of all orders
+            var ordersCount = _orderRepo.GetAll().Count();
+
+            ViewBag.Count = ordersCount;
+
             return View(EFModel.Models.PaginatedList<Order>.CreateAsync(orders, pageNumber ?? 1, rowsPerPage));
         }
 

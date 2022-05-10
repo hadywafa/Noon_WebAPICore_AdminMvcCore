@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using BL.Helpers;
 using BL.ViewModels.RequestVModels;
+using BL.ViewModels.ResponseVModels;
 using EFModel.Enums;
 using Microsoft.AspNetCore.Mvc;
 using EFModel.Models.EFModels;
@@ -31,6 +33,7 @@ namespace JWTAuth.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IGenericRepo<Product> _productRepo;
+        private readonly IGenericRepo<Category> _categoryRepo;
 
         public ProductsController(IUnitOfWork unitOfWork, IMapper mapper , IConfiguration configuration)
         {
@@ -38,33 +41,70 @@ namespace JWTAuth.Controllers
             _mapper = mapper;
             _configuration = configuration;
             _productRepo = _unitOfWork.Products;
+            _categoryRepo = _unitOfWork.Categories;
         }
 
         #endregion
 
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
-        {
-            var productList = _productRepo.GetAll().Include(x=>x.ImagesGallery).Include(x => x.Brand).Include(x => x.Category)
-                .Include(x => x.Seller).Include(x => x.Seller.User).Include(x => x.ProductHighlights)
-                .Include(x => x.Specifications).Include(x => x.Orders).AsNoTracking();
+        #region Product End Points
 
-            var vmProductsList = _mapper.Map<IEnumerable<Product>, IEnumerable<VmProduct>>(productList);
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllProductsAsync()
+        {
+            var productList =  _productRepo.GetAll().Include(x=>x.ImagesGallery).Include(x => x.Brand).Include(x => x.Category)
+                .Include(x => x.Seller).Include(x => x.Seller.User).Include(x => x.ProductHighlights)
+                .Include(x => x.Specifications).Include(x => x.Orders);
+
+            var vmProductsList = _mapper.Map<List<Product>, List<VmProduct>>(await productList.ToListAsync());
 
             return Ok(vmProductsList);
         }
 
-        [HttpGet("GetProductById")]
-        public async Task<IActionResult> GetProductById( [FromQuery] int id)
+        [HttpGet("GetProductById/{id}")]
+        public async Task<IActionResult> GetProductById([FromRoute] int id)
         {
-            var Product = await _productRepo.Find(x => x.Id == id, x => x.ImagesGallery, x => x.Brand, x => x.Category,
+            var product = await _productRepo.Find(x => x.Id == id, x => x.ImagesGallery, x => x.Brand, x => x.Category,
                 x => x.Seller, x => x.Seller.User, x => x.ProductHighlights, x => x.Specifications, x => x.Orders);
-            var vmProduct = _mapper.Map<Product,VmProduct>(Product);
+            var vmProduct = _mapper.Map<Product,VmProduct>(product);
 
             return Ok(vmProduct);
         }
 
+        //Don't use this End point because it's hell 
+        [HttpGet("GetProductsByCatCode/{catCode}")]
+        public async Task<IActionResult> GetProductsByCatCode([FromRoute] string catCode)
+        {
+            int catId = await _categoryRepo.GetAll().Where(x => x.Code == catCode).Select(x => x.Id).FirstOrDefaultAsync();
 
+
+
+            var proAll = await _productRepo.GetAll()
+                .Include(x => x.ImagesGallery).Include(x => x.Brand).Include(x => x.Category)
+                .Include(x => x.Seller).Include(x => x.Seller.User).Include(x => x.ProductHighlights)
+                .Include(x => x.Specifications).Include(x => x.Orders).ToListAsync();
+
+            List<Product> productLists = new List<Product>();
+            foreach (Product pro in proAll)
+            {
+                var pathStr = await GetCategoryPathStr(pro.Category.Id);
+                var pathArr = pathStr.Split(',').ToList();
+                foreach (var str in pathArr)
+                {
+                    if (str == catCode)
+                    {
+                        productLists.Add(pro);
+                    }
+                }
+            }
+
+            var vmProductsList = _mapper.Map<IEnumerable<Product>, IEnumerable<VmProduct>>( productLists);
+
+            return Ok(vmProductsList);
+        }
+
+        #endregion
+
+        #region Category End Points
 
         [HttpGet("GetAllCategoriesJson")]
         public async Task<IActionResult> GetAllCategoriesJson()
@@ -99,27 +139,24 @@ namespace JWTAuth.Controllers
             }
         }
 
-        
-        [HttpGet("GetCategoryById")]
-        public IActionResult GetCategoryById()
+
+        [HttpGet("GetCategoryPath")]
+        public async Task<IActionResult> GetCategoryPath([FromQuery] int parentCatId)
         {
-            var productList = _productRepo.GetAll().Include(x=>x.ImagesGallery).Include(x => x.Brand).Include(x => x.Category)
-                .Include(x => x.Seller).Include(x => x.Seller.User).Include(x => x.ProductHighlights)
-                .Include(x => x.Specifications).Include(x => x.Orders).AsNoTracking();
+            var pathStr = await GetCategoryPathStr(parentCatId);
+            
+            var pathArr = pathStr.Split(',');
 
-            var vmProductsList = _mapper.Map<IEnumerable<Product>, IEnumerable<VmProduct>>(productList);
+            var categories = new List<Category>();
+            foreach (var str in pathArr)
+            {
+                categories.Add(await _categoryRepo.Find(x=>x.Code == str));
+            }
 
-            return Ok(vmProductsList);
+            var vmCategories = _mapper.Map<ICollection<Category>,ICollection< VmCategory>>(categories);
+
+            return Ok(vmCategories);
         }
-
-        //[HttpGet("GetCategoryPath")]
-        //public async Task<IActionResult> GetCategoryPath()
-        //{
- 
-
-
-        //    //return Ok(vmProductsList);
-        //}
 
         //====Helpful Functions======//
 
@@ -182,7 +219,7 @@ namespace JWTAuth.Controllers
                             [Name] as name,
                             [NameArabic] as nameAr,
                             [ParentID] as parentId,
-                            children = JSON_QUERY(dbo.GetJson([Id]))
+                            childrens = JSON_QUERY(dbo.GetJson([Id]))
                         FROM [dbo].[Categories]
                         WHERE EXISTS ( SELECT [ParentID]
                         INTERSECT
@@ -257,6 +294,25 @@ namespace JWTAuth.Controllers
             }
         }
 
+        //private async Task <bool> CheckPath(int catId,string catCode)
+        //{
+        //    var pathStr = await GetCategoryPathStr(catId);
+
+        //    var pathArr = pathStr.Split(',').ToList();
+        //    foreach (var str in pathArr)
+        //    {
+        //        if (str == catCode)
+        //        {
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //}
+
+        #endregion
 
 
     }
