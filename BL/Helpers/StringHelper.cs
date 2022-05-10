@@ -1,4 +1,8 @@
-﻿namespace BL.Helpers
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace BL.Helpers
 {
    public static class StringHelper
     {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BL.ViewModels.RequestVModels;
+using BL.ViewModels.ResponseVModels;
 using EFModel.Models.EFModels;
 
 namespace BL.Profiles
@@ -17,9 +18,12 @@ namespace BL.Profiles
             //then 
             // tr => src => x
             CreateMap<Category, VmCategory>()
-                .ForMember(tr => tr.id, src => src.MapFrom(c => c.Id))
+                .ForMember(tr => tr.Id, src => src.MapFrom(c => c.Id))
+                .ForMember(tr => tr.Code, src => src.MapFrom(c => c.Code))
                 .ForMember(tr => tr.Name, src => src.MapFrom(c => c.Name))
-                .ForMember(tr => tr.Code, src => src.MapFrom(c => c.ParentID));
+                .ForMember(tr => tr.NameAr, src => src.MapFrom(c => c.NameArabic))
+                .ForMember(tr => tr.ParentId, src => src.MapFrom(c => c.ParentID))
+                .ForMember(tr => tr.Brands, src => src.MapFrom(c => c.Brands));
         }
     }
 }
