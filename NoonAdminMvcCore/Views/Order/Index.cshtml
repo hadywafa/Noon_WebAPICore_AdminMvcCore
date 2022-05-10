@@ -3,197 +3,13 @@
 }
 
 
-
-
-
-
-<@*div class="container">*@
-
-
-    @*<div class="mb-5 ">
-        <select action="Index" class="form-control">
-        <option value="@EFModel.Enums.DeliveryStatus.Processing" class="text-primary">  Processing </option>
-        <option value="@EFModel.Enums.DeliveryStatus.Shipped" class="text-info">  Shipped </option>
-        <option value="@EFModel.Enums.DeliveryStatus.Delivered" class="text-success">  Delivered </option>
-        <option value="@EFModel.Enums.DeliveryStatus.Returned" class="text-danger">  Returned </option>
-        <option value="@EFModel.Enums.DeliveryStatus.Cancelled" class="text-warning">  Cancelled </option>
-        </select>
-        </div>*@
-
-    @*<div>
-
-        <table class="table table-striped ">
-
-            <thead>
-            <th>Order Date</th>
-            <th>Total Price</th>
-            <th>Payment</th>
-            <th>Discount</th>
-            <th>Delivery State</th>
-            <th>Product List</th>
-            <th>Edit</th>
-            </thead>
-
-            <tbody>
-
-                @foreach (var order in Model)
-                {
-                    <tr>
-                        <td>@order.OrderDate</td>
-                        <td>@order.TotalPrice</td>
-                        <td>
-                            @{
-                                var paymentMethod = @order.PaymentMethod;
-                                switch (paymentMethod)
-                                {
-                                    case EFModel.Enums.PaymentMethod.Paypal:
-                                        <text>PayPal</text>
-                                        break;
-
-                                    case EFModel.Enums.PaymentMethod.Cash:
-                                        <text>Cash</text>
-                                        break;
-
-                                    case EFModel.Enums.PaymentMethod.NoonBalance:
-                                        <text>Noon Balance</text>
-                                        break;
-                                }
-                            }
-                        </td>
-                        <td>@order.Discount</td>
-                        @{
-                            var color = "secondary";
-                            switch (order.DeliveryStatus)
-                            {
-
-                                case EFModel.Enums.DeliveryStatus.Processing:
-                                    color = "primary";
-                                    break;
-                                case EFModel.Enums.DeliveryStatus.Shipped:
-                                    color = "info";
-                                    break;
-                                case EFModel.Enums.DeliveryStatus.Delivered:
-                                    color = "success";
-                                    break;
-                                case EFModel.Enums.DeliveryStatus.Cancelled:
-                                    color = "warning";
-                                    break;
-                                case EFModel.Enums.DeliveryStatus.Returned:
-                                    color = "danger";
-                                    break;
-                                default:
-                                    color = "info";
-                                    break;
-
-                            }
-
-                            <td class="text-@color ">@order.DeliveryStatus</td>
-
-
-                        }
-
-
-                        <td>
-                            <a asp-action="OrderProducts" asp-route-id="@order.Id" class="btn btn-info">Product List</a>
-                        </td>
-
-                        <td>
-
-                            <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-success">Edit</a>
-
-                        </td>
-
-                    </tr>
-
-
-
-                }
-
-
-
-
-            </tbody>
-
-
-        </table>
-
-    </div>
-
-    <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end">
-        <ul class="link-check">
-            <li>
-                <span>Show</span>
-            </li>
-            <li class="@(@ViewBag.rowsPerPage == 10 ? "active" : "hide")">
-                <a asp-action="Index"
-                   asp-route-pageSize="2">
-                    2
-                </a>
-            </li>
-            <li class="@(@ViewBag.rowsPerPage == 20 ? "active" : "hide")">
-                <a asp-action="Index"
-                   asp-route-pageSize="4">
-                    4
-                </a>
-            </li>
-            <li class="@(@ViewBag.rowsPerPage == 50 ? "active" : "hide")">
-                <a asp-action="Index"
-                   asp-route-pageSize="6">
-                    6
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    @{
-        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-    }
-
-    <div class="container d-flex flex-direction-row justify-content-center align-content-center align-items-center">
-        <a asp-action="Index"
-           asp-route-pageNumber="@(Model.PageIndex - 1)"
-           asp-route-pageSize=@ViewBag.rowsPerPage
-           class="btn @prevDisabled"
-           style="text-decoration: none;
-                            color: white;
-                            background: #0FAC81;
-                            padding: 7px 10px;
-                            border-radius: 2px;
-                            margin: 7px 3px;
-                            font-size: 15px;"
-           onMouseOver="this.style.backgroundColor='rgb(15 172 129 / 85%)'"
-           onmouseout="this.style.backgroundColor='#0FAC81'">
-            &laquo; Previous
-        </a>
-        <a asp-action="Index"
-           asp-route-pageNumber="@(Model.PageIndex + 1)"
-           asp-route-pageSize=@ViewBag.rowsPerPage
-           class="btn @nextDisabled"
-           style="text-decoration: none;
-                            color: white;
-                            background: #0FAC81;
-                            padding: 7px 10px;
-                            border-radius: 2px;
-                            margin: 7px 3px;
-                            font-size: 15px;"
-           onMouseOver="this.style.backgroundColor='rgb(15 172 129 / 85%)'"
-           onmouseout="this.style.backgroundColor='#0FAC81'">
-            Next &raquo;
-        </a>
-    </div>
-
-</div>*@
-
-
-
 @model EFModel.Models.PaginatedList<EFModel.Models.EFModels.Order>
 
 <div class="nk-content-body">
     <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
             <div class="nk-block-head-content">
-                <h3 class="nk-block-title page-title">Products Lists</h3>
+                <h3 class="nk-block-title page-title">Order Lists</h3>
                 <div class="nk-block-des text-soft">
                     <p>You have total @ViewBag.Count orders.</p>
                 </div>
@@ -239,11 +55,7 @@
                         </div><!-- .card-tools -->
                         <div class="card-tools me-n1">
                             <ul class="btn-toolbar gx-1">
-                                <li>
-                                    <a href="#" class="btn btn-icon search-toggle toggle-search" data-target="search">
-                                        <em class="icon ni ni-search"></em>
-                                    </a>
-                                </li><!-- li -->
+                                
                                 <li class="btn-toolbar-sep"></li><!-- li -->
                                 <li>
                                     <div class="toggle-wrap">

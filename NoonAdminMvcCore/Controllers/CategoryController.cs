@@ -183,8 +183,7 @@ namespace NoonAdminMvcCore.Controllers
                         string filePath = Path.Combine(imgSave, (files.FileName));
                         var stream = new FileStream(filePath, FileMode.Create);
                         await files.CopyToAsync(stream);
-                        Image img = await _imageRepository.GetAll().Where(i => i.CategoryId == cat.Id)
-                            .FirstOrDefaultAsync();
+                        Image img = await _imageRepository.GetAll().Where(i => i.CategoryId == cat.Id).FirstOrDefaultAsync();
                         deleteFilefromRoot(img.ImageName);
                         img.ImageName = files.FileName;
                         await _imageRepository.Update(img);

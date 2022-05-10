@@ -55,7 +55,7 @@ namespace JWTAuth.Controllers
         }
 
         [HttpGet("GetProductById")]
-        public async Task<IActionResult> GetProductById( int id)
+        public async Task<IActionResult> GetProductById(int id)
         {
             var Product = await _productRepo.Find(x => x.Id == id, x => x.ImagesGallery, x => x.Brand, x => x.Category,
                 x => x.Seller, x => x.Seller.User, x => x.ProductHighlights, x => x.Specifications, x => x.Orders);
