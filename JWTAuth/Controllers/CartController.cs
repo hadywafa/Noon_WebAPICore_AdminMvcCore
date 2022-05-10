@@ -71,7 +71,7 @@ namespace JWTAuth.Controllers
             var pro = await _productRepo.GetById(proId);
             if (pro== null || pro.IsAvailable == false)
             {
-                return  BadRequest("There is no Product with that id");
+                return StatusCode(404);
             }
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
@@ -83,19 +83,19 @@ namespace JWTAuth.Controllers
             {
                 await _custProCartRepo.Add(new CustProCart() {Customer = customer , Product = pro , Quantity = count});
                 await _unitOfWork.Save();
-                return Ok("item added successfully to your Cart");
+                return StatusCode(200);
             }
             //update only quantity
             if (cartItem.Quantity + count > pro.Quantity )
             {
                 cartItem.Quantity = pro.Quantity;
                 await _unitOfWork.Save();
-                return Ok("item quantity updated successfully");
+                return StatusCode(200);
             }
             cartItem.Quantity += count;
             await _unitOfWork.Save();
             // update cart
-            return Ok("item added successfully to your Cart");
+            return StatusCode(200);
         }
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
@@ -135,18 +135,18 @@ namespace JWTAuth.Controllers
             var pro = await _productRepo.GetById(proId);
             if (pro== null || pro.IsAvailable == false)
             {
-                return BadRequest("There is no Product with that id");
+                return StatusCode(404);
             }
             // get user from request
             var userId= User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value; //Get  Custom Claim User Id
             var cartItem = await _custProCartRepo.Find(x => x.Customer.User.Id == userId && x.Product.Id == proId);
             if (cartItem == null )
             {
-                return Ok("Item is Not Existed in your Cart");
+                return StatusCode(404);
             }
             await _custProCartRepo.Remove(cartItem);
             await _unitOfWork.Save();
-            return Ok("item Removed successfully from your Cart");
+            return StatusCode(200);
         }
     }
 }
