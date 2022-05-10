@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SqlServerDBContext.Migrations
 {
-    public partial class FinalTouch : Migration
+    public partial class finalTouch : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

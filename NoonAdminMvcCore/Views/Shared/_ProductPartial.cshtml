@@ -6,34 +6,40 @@
         <div class="nk-tb-col">
             <span class="sub-text">Product Name</span>
         </div>
-        <div class="nk-tb-col tb-col-mb">
-            <span class="sub-text">product Name Arabic</span>
-        </div>
-        <div class="nk-tb-col tb-col-md">
-            <span class="sub-text">Description</span>
-        </div>
+
+
         <div class="nk-tb-col tb-col-lg">
-            <span class="sub-text">Description Arabic</span>
+            <span class="sub-text">Selling Price</span>
         </div>
+
         <div class="nk-tb-col tb-col-lg">
-            <span class="sub-text">Price</span>
+            <span class="sub-text">Buying Price</span>
         </div>
+
         <div class="nk-tb-col tb-col-lg">
-            <span class="sub-text">Quentity</span>
+            <span class="sub-text">Discount</span>
         </div>
+
+        <div class="nk-tb-col tb-col-lg">
+            <span class="sub-text">Quantity</span>
+        </div>
+
         <div class="nk-tb-col tb-col-lg">
             <span class="sub-text">Category</span>
         </div>
+
         <div class="nk-tb-col tb-col-lg">
             <span class="sub-text">Seller</span>
         </div>
 
         <div class="nk-tb-col tb-col-lg">
-            <span class="sub-text">Created At</span>
+            <span class="sub-text">Added On</span>
         </div>
+
         <div class="nk-tb-col tb-col-md">
             <span class="sub-text">Status</span>
         </div>
+
         <div class="nk-tb-col nk-tb-col-tools">
             <ul class="nk-tb-actions gx-1 my-n1">
                 <li>
@@ -51,53 +57,69 @@
     foreach (var product in Model)
     {
         <div class="nk-tb-item">
-            
+
             <div class="nk-tb-col">
                 <a href="html/user-details-regular.html">
                     <div class="user-card">
                         <div class="user-avatar bg-primary">
-                                <span><img src="~/Images/@product.ImageThumb" /></span>
+                            <span><img src="~/Images/@product.ImageThumb" /></span>
                         </div>
                         <div class="user-info">
                             <span class="tb-lead">
-                                @product.Name <span class="dot dot-success d-md-none ms-1"></span>
+                                @{
+                                    var productName = product.Name;
+                                    if (product.Name.Length > 45)
+                                    {
+                                        productName = product.Name.Substring(0, 46);
+                                    }
+                                    else
+                                    {
+                                        productName = product.Name;
+                                    }
+                                }
+                                @productName... <span class="dot dot-success d-md-none ms-1"></span>
                             </span>
 
                         </div>
                     </div>
                 </a>
             </div>
-            <div class="nk-tb-col tb-col-mb">
-                <span class="tb-amount">
-                    @product.NameArabic
-                </span>
-            </div>
-            <div class="nk-tb-col tb-col-mb">
-                <span class="tb-amount">
-                    @product.Description
-                </span>
-            </div>
-            <div class="nk-tb-col tb-col-mb">
-                <span class="tb-amount">
-                    @product.DescriptionArabic
-                </span>
-            </div>
+
             <div class="nk-tb-col tb-col-mb">
                 <span class="tb-amount">
                     @product.SellingPrice
                 </span>
             </div>
+
+
             <div class="nk-tb-col tb-col-mb">
                 <span class="tb-amount">
+                    @product.BuyingPrice
+                </span>
+            </div>
+
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount" style="color: #816BFF">
+                    %@(product.Discount * 100)
+                </span>
+            </div>
+
+
+
+            <div class="nk-tb-col tb-col-mb">
+                <span class="tb-amount @(product.Quantity < 5 ? "text-danger" : product.Quantity < 20 ? "text-warning" : "text-primary")">
                     @product.Quantity
                 </span>
             </div>
+
             <div class="nk-tb-col tb-col-md">
                 <span>@product.Category.Name</span>
             </div>
+
             <div class="nk-tb-col tb-col-lg">
-                <span>@product.Seller.User.FirstName</span>
+                <span>@product.Seller.User.FirstName @product.Seller.User.LastName</span>
             </div>
+
             <div class="nk-tb-col tb-col-lg">
                 <span>@product.AddedOn.ToShortDateString()</span>
             </div>
@@ -114,16 +136,6 @@
             </div>
             <div class="nk-tb-col nk-tb-col-tools">
                 <ul class="nk-tb-actions gx-1">
-                    <li class="nk-tb-action-hidden">
-                        <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Send Email">
-                            <em class="icon ni ni-mail-fill"></em>
-                        </a>
-                    </li>
-                    <li class="nk-tb-action-hidden">
-                        <a href="#" class="btn btn-trigger btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Suspend">
-                            <em class="icon ni ni-user-cross-fill"></em>
-                        </a>
-                    </li>
                     <li>
                         <div class="drodown">
                             <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown">
@@ -134,24 +146,24 @@
 
                                     <li>
                                         @Html.ActionLink("Suspend", "Suspend", "Product",
-                                        new
-                                             {
-                                                 @id = product.Id,
-
-                                            @currentFilter = @ViewBag.Search,
-                                            @pageNumber = @ViewBag.Page,
-                                            })
+                                new
+                                {
+                                @id = product.Id,
+                                @currentFilter = @ViewBag.Search,
+                                @searchString = @ViewBag.Search,
+                                @pageNumber = @ViewBag.Page,
+                                })
                                     </li>
 
                                     <li>
                                         @Html.ActionLink("Activate", "Activate", "Product",
-                                        new
-                                             {
-                                                 @id = product.Id,
-                                            @currentFilter = @ViewBag.Search,
-                                            @searchString = @ViewBag.Search,
-                                            @pageNumber = @ViewBag.Page,
-                                            })
+                                new
+                                {
+                                @id = product.Id,
+                                @currentFilter = @ViewBag.Search,
+                                @searchString = @ViewBag.Search,
+                                @pageNumber = @ViewBag.Page,
+                                })
                                     </li>
 
                                     <li>

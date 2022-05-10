@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,25 +20,26 @@ using Microsoft.Extensions.Configuration;
 
 namespace NoonAdminMvcCore.Controllers
 {
-    
+
     public class ProductController : Controller
     {
         #region Intitilazition Repo
         private readonly IUnitOfWork _unitOfWork;
 
-        
+
         private readonly UserManager<User> _userManager;
-        readonly IGenericRepo<User> _userRepository;
-        readonly IGenericRepo<Product> _productRepository;
-        readonly IGenericRepo<Image> _imageRepository;
+        private readonly IGenericRepo<User> _userRepository;
+        private readonly IGenericRepo<Product> _productRepository;
+        private readonly IGenericRepo<Image> _imageRepository;
         private readonly IConfiguration Configuration;
-       
+        private readonly IGenericRepo<Brand> _BrandsRepository;
+
         readonly IGenericRepo<Category> _categoryRepository;
         #endregion
 
 
         private readonly IWebHostEnvironment iweb;
-        public ProductController(IUnitOfWork unitOfWork, UserManager<User> userManager, IWebHostEnvironment _iwab , IConfiguration configuration)
+        public ProductController(IUnitOfWork unitOfWork, UserManager<User> userManager, IWebHostEnvironment _iwab, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
@@ -47,6 +48,7 @@ namespace NoonAdminMvcCore.Controllers
             _productRepository = _unitOfWork.Products;
             _imageRepository = _unitOfWork.Images;
             _categoryRepository = _unitOfWork.Categories;
+            _BrandsRepository = _unitOfWork.Brands;
             iweb = _iwab;
         }
 
@@ -59,7 +61,7 @@ namespace NoonAdminMvcCore.Controllers
 
             var prods = new List<Product>();
             var products = _productRepository.GetAll().Include(i => i.ImagesGallery)
-                .Include(c=>c.Category).Include(s=>s.Seller.User).ToList();
+                .Include(c => c.Category).Include(s => s.Seller.User).ToList();
             if (!(String.IsNullOrEmpty(searchString) && string.IsNullOrEmpty(currentFilter)))
             {
                 // Case: first search but not first page => second, third ...etc
@@ -77,13 +79,13 @@ namespace NoonAdminMvcCore.Controllers
 
                 foreach (var prod in products)
                 {
-                    
+
                     var _prod = await _productRepository.Find(p => p.Id == prod.Id
 
                         && (p.Name.Contains(searchString)
                         || p.NameArabic.Contains(searchString) || p.Quantity.ToString().Contains(searchString)
                         || p.Seller.User.FirstName.Contains(searchString) || p.Seller.User.LastName.Contains(searchString)
-                        || p.Category.Name.Contains(searchString)|| p.Category.NameArabic.Contains(searchString)));
+                        || p.Category.Name.Contains(searchString) || p.Category.NameArabic.Contains(searchString)));
 
                     if (_prod != null)
                         prods.Add(_prod);
@@ -99,7 +101,7 @@ namespace NoonAdminMvcCore.Controllers
             {
                 // send role, users count, and the current page number to the view page
                 // we will need to get them later in suspend and activate actions below
-           
+
                 ViewBag.Count = products.Count();
                 ViewBag.Page = pageNumber;
 
@@ -112,7 +114,7 @@ namespace NoonAdminMvcCore.Controllers
                 int rowsPerPage = pageSize ?? 10;
                 ViewBag.rowsPerPage = rowsPerPage;
 
-                 
+
                 //return View(users);
                 return View("Index", EFModel.Models.PaginatedList<Product>.CreateAsync(prods, pageNumber ?? 1, rowsPerPage));
             }
@@ -130,6 +132,7 @@ namespace NoonAdminMvcCore.Controllers
         {
             ViewBag.Seller = new SelectList(await _userManager.GetUsersInRoleAsync("Seller"), "Id", "FirstName");
             ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID == null).ToList(), "Id", "Name");
+            ViewBag.Brands = new SelectList(_BrandsRepository.GetAll().ToList(), "Id", "Name");
             var productViewModel = new ProductViewModel { IsActive = true };
             return View("productForm", productViewModel);
         }
@@ -139,33 +142,36 @@ namespace NoonAdminMvcCore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> Create(ProductViewModel productVM, [FromForm] IFormFile[] files)
+        public async Task<IActionResult> Create(ProductViewModel productVM, [FromForm] IFormFile[] files)
         {
             if (ModelState.IsValid)
             {
 
                 if (productVM.Id == null)
                 {
-
                     #region addproduct
                     Product prod = new Product()
                     {
                         Name = productVM.Name,
                         NameArabic = productVM.NameArabic,
+                        ModelNumber = productVM.ModelNumber,
                         Description = productVM.Description,
                         DescriptionArabic = productVM.DescriptionArabic,
                         BuyingPrice = productVM.BuyingPrice,
                         SellingPrice = productVM.SellingPrice,
+                        Discount = productVM.Discount,
                         Quantity = productVM.Quantity,
                         Weight = productVM.Weight,
                         SellerId = productVM.SellerId,
                         CategoryId = productVM.CategoryId,
                         IsAvailable = productVM.IsActive,
-                        Revenue = (productVM.SellingPrice - productVM.BuyingPrice)
-                    };
+                        Revenue = (productVM.SellingPrice - productVM.BuyingPrice),
+                        MaxQuantityPerOrder = productVM.MaxQuantityPerOrder,
+                        Brand = await _BrandsRepository.GetById(productVM.BrandId),
+                };
                     await _productRepository.Add(prod);
                     await _unitOfWork.Save();
                     #endregion
@@ -197,7 +203,7 @@ namespace NoonAdminMvcCore.Controllers
                     }
                     #endregion
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Display");
                 }
                 else
                 { //if productVm is not null  for Updtening
@@ -213,13 +219,21 @@ namespace NoonAdminMvcCore.Controllers
 
                     prod.Name = productVM.Name;
                     prod.NameArabic = productVM.NameArabic;
-                    prod.BuyingPrice = productVM.BuyingPrice;
-                    prod.SellingPrice = productVM.SellingPrice;
-                    prod.Quantity = productVM.Quantity;
+                    prod.ModelNumber = productVM.ModelNumber;
                     prod.Description = productVM.Description;
                     prod.DescriptionArabic = productVM.DescriptionArabic;
+                    prod.BuyingPrice = productVM.BuyingPrice;
+                    prod.SellingPrice = productVM.SellingPrice;
+                    prod.Discount = productVM.Discount;
+                    prod.Quantity = productVM.Quantity;
                     prod.Weight = productVM.Weight;
-                    prod.Revenue = productVM.SellingPrice - productVM.BuyingPrice;
+                    prod.SellerId = productVM.SellerId;
+                    prod.CategoryId = productVM.CategoryId;
+                    prod.IsAvailable = productVM.IsActive;
+                    prod.Revenue = (productVM.SellingPrice - productVM.BuyingPrice);
+                    prod.MaxQuantityPerOrder = productVM.MaxQuantityPerOrder;
+                    prod.Brand = await _BrandsRepository.GetById(productVM.BrandId);
+
                     await _productRepository.Update(prod);
                     await _unitOfWork.Save();
                     #endregion
@@ -236,7 +250,7 @@ namespace NoonAdminMvcCore.Controllers
                             await item.CopyToAsync(stream);
                             stream.Close();
                             Image img = await _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefaultAsync();
-                          
+
                             img.ImageName = item.FileName;
                             await _imageRepository.Update(img);
                             await _unitOfWork.Save();
@@ -246,7 +260,7 @@ namespace NoonAdminMvcCore.Controllers
 
                     #endregion
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Display");
                 }
             }
 
@@ -258,9 +272,9 @@ namespace NoonAdminMvcCore.Controllers
         {
 
             #region fetch data for updating
-            var productVM = await _productRepository.Find(u => u.Id == id);
-           
-       
+            var productVM = await _productRepository.Find(u => u.Id == id, u => u.Brand);
+
+
             if (productVM == null)
             {
                 return NotFound();
@@ -268,20 +282,27 @@ namespace NoonAdminMvcCore.Controllers
 
             var productViewmodel = new ProductViewModel
             {
-                Id = productVM.Id.ToString(),
                 Name = productVM.Name,
                 NameArabic = productVM.NameArabic,
+                ModelNumber = productVM.ModelNumber,
                 Description = productVM.Description,
                 DescriptionArabic = productVM.DescriptionArabic,
                 BuyingPrice = productVM.BuyingPrice,
                 SellingPrice = productVM.SellingPrice,
+                Discount = productVM.Discount,
                 Quantity = productVM.Quantity,
                 Weight = productVM.Weight,
+                SellerId = productVM.SellerId,
+                CategoryId = productVM.CategoryId,
+                MaxQuantityPerOrder = productVM.MaxQuantityPerOrder,
+                BrandId = productVM.Brand.Id,
+                isAvaliable = productVM.IsAvailable
 
             };
 
             ViewBag.Seller = new SelectList(await _userManager.GetUsersInRoleAsync("Seller"), "Id", "FirstName");
             ViewBag.Category = new SelectList(_categoryRepository.GetAll().ToList(), "Id", "Name");
+            ViewBag.Brands = new SelectList(_BrandsRepository.GetAll().ToList(), "Id", "Name");
 
             #endregion
 
@@ -302,13 +323,13 @@ namespace NoonAdminMvcCore.Controllers
             // save updates
             await _unitOfWork.Save();
 
-            return RedirectToAction("Index", new {currentFilter = currentFilter, pageNumber = pageNumber });
+            return RedirectToAction("Display", new { currentFilter = currentFilter, pageNumber = pageNumber });
         }
 
         public async Task<ActionResult> Activate(int id, string currentFilter, int? pageNumber)
         {
             // get the product
-            var prod= await _productRepository.GetById(id);
+            var prod = await _productRepository.GetById(id);
 
             // suspend the product
             prod.IsAvailable = true;
@@ -319,12 +340,12 @@ namespace NoonAdminMvcCore.Controllers
             // save updates
             await _unitOfWork.Save();
 
-            return RedirectToAction("Index", new {  currentFilter = currentFilter, pageNumber = pageNumber });
+            return RedirectToAction("Display", new { currentFilter = currentFilter, pageNumber = pageNumber });
         }
 
         private void deleteFilefromRoot(string img)
         {
-            img = Path.Combine(Configuration["imagesPath"]+"/images/", img);
+            img = Path.Combine(Configuration["imagesPath"] + "/images/", img);
             FileInfo fileinfo = new FileInfo(img);
             if (fileinfo != null)
             {

@@ -156,7 +156,7 @@ namespace NoonAdminMvcCore.Controllers
                         await _unitOfWork.Save();
                     }
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Display");
                 }
                 else
                 {
@@ -191,7 +191,7 @@ namespace NoonAdminMvcCore.Controllers
                         await _unitOfWork.Save();
                     }
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Display");
                 }
             }
 
