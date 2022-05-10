@@ -140,7 +140,25 @@
                                 </div>
 
                                 <div class="nk-tb-col">
-                                    <span class="tb-sub tb-amount">@(@order.IsPaid ? "Card" : "Cash")</span>
+                                    <span class="tb-sub tb-amount">
+                                        @{
+                                            var paymentMethod = @order.PaymentMethod;
+                                            switch (paymentMethod)
+                                            {
+                                                case EFModel.Enums.PaymentMethod.Paypal:
+                                                    <text>PayPal</text>
+                                                    break;
+
+                                                case EFModel.Enums.PaymentMethod.Cash:
+                                                    <text>Cash</text>
+                                                    break;
+
+                                                case EFModel.Enums.PaymentMethod.NoonBalance:
+                                                    <text>Noon Balance</text>
+                                                    break;
+                                            }
+                                        }
+                                    </span>
                                 </div>
 
                                 @{

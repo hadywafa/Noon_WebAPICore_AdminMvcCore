@@ -20,9 +20,6 @@ namespace EFModel.Models.EFModels
 
         public decimal TotalPrice { get; set; }
         public decimal TotalRevenue { get; set; }
-
-        public bool IsPaid { get; set; }
-
         public decimal Discount { get; set; }
 
         public DeliveryStatus DeliveryStatus { get; set; }

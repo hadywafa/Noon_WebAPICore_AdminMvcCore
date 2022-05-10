@@ -10,15 +10,15 @@ using SqlServerDBContext;
 namespace SqlServerDBContext.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220510000401_Emad")]
-    partial class Emad
+    [Migration("20220510124726_FinalTouch")]
+    partial class FinalTouch
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.16")
+                .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BrandCategory", b =>
@@ -335,9 +335,6 @@ namespace SqlServerDBContext.Migrations
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");

@@ -832,7 +832,7 @@ namespace JWTAuth
                     SellingPrice = 9999,
                     Revenue = 30000 - 25000,
                     Quantity = 20,
-                    Discount = 0.7f,
+                    Discount = 0.07f,
                     IsAvailable = true,
                     AddedOn = DateTime.Now,
                     Weight = "500 gm",
@@ -946,9 +946,8 @@ namespace JWTAuth
                     Customer = await _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
                     Shipper = await _shipperRepo.Find(s => s.User.Email == "MoShipper@gmail.com"),
                     Discount = (decimal)0.5,
-                    IsPaid = true,
                     DeliveryStatus = DeliveryStatus.Delivered,
-                    PaymentMethod = PaymentMethod.Ondelivered,
+                    PaymentMethod = PaymentMethod.Cash,
                     OrderDate = DateTime.Now,
                     //AddressPhone = "0123456789",
                     OrderItems = new Collection<OrderItem>()
@@ -968,7 +967,7 @@ namespace JWTAuth
                 }
 
                 //reduce Customer Balance 
-                if (orderMo1.PaymentMethod == PaymentMethod.Chash)
+                if (orderMo1.PaymentMethod == PaymentMethod.NoonBalance)
                 {
                     var user = await _userRepo.Find(c => c.Id == orderMo1.Customer.Id);
                     user.Balance -= orderMo1.TotalPrice;
@@ -986,9 +985,8 @@ namespace JWTAuth
                     Customer = await _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
                     Shipper = await _shipperRepo.Find(s => s.User.Email == "MoShipper@gmail.com"),
                     Discount = (decimal)0.5,
-                    IsPaid = true,
                     DeliveryStatus = DeliveryStatus.Processing,
-                    PaymentMethod = PaymentMethod.Chash,
+                    PaymentMethod = PaymentMethod.Cash,
                     OrderDate = DateTime.Now,
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
@@ -1007,7 +1005,7 @@ namespace JWTAuth
                 }
 
                 //reduce Customer Balance 
-                if (orderMo2.PaymentMethod == PaymentMethod.Chash)
+                if (orderMo2.PaymentMethod == PaymentMethod.Cash)
                 {
                     var user = await _userRepo.Find(c => c.Id == orderMo2.Customer.Id);
                     user.Balance -= orderMo1.TotalPrice;
@@ -1029,9 +1027,8 @@ namespace JWTAuth
                     Customer = await _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
                     Shipper = await _shipperRepo.Find(s => s.User.Email == "KeroShipper@gmail.com"),
                     Discount = (decimal)0.5,
-                    IsPaid = true,
                     DeliveryStatus = DeliveryStatus.Delivered,
-                    PaymentMethod = PaymentMethod.Ondelivered,
+                    PaymentMethod = PaymentMethod.Paypal,
                     OrderDate = DateTime.Now,
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
@@ -1051,7 +1048,7 @@ namespace JWTAuth
                 }
 
                 //reduce Customer Balance 
-                if (orderKero1.PaymentMethod == PaymentMethod.Chash)
+                if (orderKero1.PaymentMethod == PaymentMethod.NoonBalance)
                 {
                     var user = await _userRepo.Find(c => c.Id == orderKero1.Customer.Id);
                     user.Balance -= orderKero1.TotalPrice;
@@ -1069,9 +1066,8 @@ namespace JWTAuth
                     Customer = await _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
                     Shipper = await _shipperRepo.Find(s => s.User.Email == "KeroShipper@gmail.com"),
                     Discount = (decimal)0.5,
-                    IsPaid = true,
                     DeliveryStatus = DeliveryStatus.Processing,
-                    PaymentMethod = PaymentMethod.Chash,
+                    PaymentMethod = PaymentMethod.Cash,
                     OrderDate = DateTime.Now,
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
@@ -1090,7 +1086,7 @@ namespace JWTAuth
                 }
 
                 //reduce Customer Balance 
-                if (orderKero2.PaymentMethod == PaymentMethod.Chash)
+                if (orderKero2.PaymentMethod == PaymentMethod.Cash)
                 {
                     var user = await _userRepo.Find(c => c.Id == orderKero2.Customer.Id);
                     user.Balance -= orderKero2.TotalPrice;
@@ -1112,9 +1108,8 @@ namespace JWTAuth
                     Customer = await _customerRepo.Find(c => c.User.Email == "EmadCustomer@gmail.com"),
                     Shipper = await _shipperRepo.Find(s => s.User.Email == "EmadShipper@gmail.com"),
                     Discount = (decimal)0.5,
-                    IsPaid = true,
                     DeliveryStatus = DeliveryStatus.Delivered,
-                    PaymentMethod = PaymentMethod.Ondelivered,
+                    PaymentMethod = PaymentMethod.NoonBalance,
                     OrderDate = DateTime.Now,
                    // AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
@@ -1134,7 +1129,7 @@ namespace JWTAuth
                 }
 
                 //reduce Customer Balance 
-                if (orderEmad1.PaymentMethod == PaymentMethod.Chash)
+                if (orderEmad1.PaymentMethod == PaymentMethod.NoonBalance)
                 {
                     var user = await _userRepo.Find(c => c.Id == orderEmad1.Customer.Id);
                     user.Balance -= orderEmad1.TotalPrice;
@@ -1152,9 +1147,8 @@ namespace JWTAuth
                     Customer = await _customerRepo.Find(c => c.User.Email == "EmadCustomer@gmail.com"),
                     Shipper = await _shipperRepo.Find(s => s.User.Email == "EmadShipper@gmail.com"),
                     Discount = (decimal)0.5,
-                    IsPaid = true,
                     DeliveryStatus = DeliveryStatus.Processing,
-                    PaymentMethod = PaymentMethod.Chash,
+                    PaymentMethod = PaymentMethod.Cash,
                     OrderDate = DateTime.Now,
                    // AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
@@ -1173,7 +1167,7 @@ namespace JWTAuth
                 }
 
                 //reduce Customer Balance 
-                if (orderEmad2.PaymentMethod == PaymentMethod.Chash)
+                if (orderEmad2.PaymentMethod == PaymentMethod.NoonBalance)
                 {
                     var user = await _userRepo.Find(c => c.Id == orderEmad2.Customer.Id);
                     user.Balance -= orderEmad2.TotalPrice;
@@ -1195,9 +1189,8 @@ namespace JWTAuth
                     Customer = await _customerRepo.Find(c => c.User.Email == "HadyCustomer@gmail.com"),
                     Shipper = await _shipperRepo.Find(s => s.User.Email == "HadyShipper@gmail.com"),
                     Discount = (decimal)0.5,
-                    IsPaid = true,
                     DeliveryStatus = DeliveryStatus.Delivered,
-                    PaymentMethod = PaymentMethod.Ondelivered,
+                    PaymentMethod = PaymentMethod.Cash,
                     OrderDate = DateTime.Now,
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
@@ -1217,7 +1210,7 @@ namespace JWTAuth
                 }
 
                 //reduce Customer Balance 
-                if (orderHady1.PaymentMethod == PaymentMethod.Chash)
+                if (orderHady1.PaymentMethod == PaymentMethod.NoonBalance)
                 {
                     var user = await _userRepo.Find(c => c.Id == orderHady1.Customer.Id);
                     user.Balance -= orderHady1.TotalPrice;
@@ -1235,9 +1228,8 @@ namespace JWTAuth
                     Customer = await _customerRepo.Find(c => c.User.Email == "HadyCustomer@gmail.com"),
                     Shipper = await _shipperRepo.Find(s => s.User.Email == "HadyShipper@gmail.com"),
                     Discount = (decimal)0.5,
-                    IsPaid = true,
                     DeliveryStatus = DeliveryStatus.Processing,
-                    PaymentMethod = PaymentMethod.Chash,
+                    PaymentMethod = PaymentMethod.NoonBalance,
                     OrderDate = DateTime.Now,
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
@@ -1256,7 +1248,7 @@ namespace JWTAuth
                 }
 
                 //reduce Customer Balance 
-                if (orderHady2.PaymentMethod == PaymentMethod.Chash)
+                if (orderHady2.PaymentMethod == PaymentMethod.NoonBalance)
                 {
                     var user = await _userRepo.Find(c => c.Id == orderHady2.Customer.Id);
                     user.Balance -= orderHady2.TotalPrice;

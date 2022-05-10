@@ -8,7 +8,8 @@ namespace EFModel.Enums
 {
     public enum PaymentMethod
     {
-        Chash,
-        Ondelivered
+        Paypal,
+        Cash,
+        NoonBalance,
     }
 }
