@@ -90,25 +90,25 @@ namespace JWTAuth.Controllers
             await _orderRepo.Add(order);
 
             //reduce product quantity
-            foreach (var orderItem in order.OrderItems)
-            {
-                var product = orderItem.Product;
-                var reducedQuantity = orderItem.Quantity;
-                product.Quantity -= reducedQuantity;
-            }
+            //foreach (var orderItem in order.OrderItems)
+            //{
+            //    var product = orderItem.Product;
+            //    var reducedQuantity = orderItem.Quantity;
+            //    product.Quantity -= reducedQuantity;
+            //}
 
 
 
             //reduce Customer Balance
-            if (order.PaymentMethod == PaymentMethod.NoonBalance)
-            {
-                var user = await _userRepo.Find(c => c.Id == userId);
+            //if (order.PaymentMethod == PaymentMethod.NoonBalance)
+            //{
+            //    var user = await _userRepo.Find(c => c.Id == userId);
 
-                if (user.Balance < order.TotalPrice)
-                    return NotFound();
+            //    if (user.Balance < order.TotalPrice)
+            //        return NotFound();
 
-                user.Balance -= order.TotalPrice;
-            }
+            //    user.Balance -= order.TotalPrice;
+            //}
 
             //await _unitOfWork.Save();
 
@@ -117,8 +117,6 @@ namespace JWTAuth.Controllers
             {
                 var cartItem = await _custProCartRepo.Find(x => x.Customer.User.Id == userId && x.Product.Id == item.Product.Id);
                 await _custProCartRepo.Remove(cartItem);
-             
-
             }
             await _unitOfWork.Save();
 
