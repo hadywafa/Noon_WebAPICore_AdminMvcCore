@@ -123,6 +123,7 @@ namespace JWTAuth
                             City = $"city{user.FirstName + user.LastName}",
                             PostalCode = 1234,
                             IsPrimary = true,
+                            AddressPhone = "0123456789"
                         };
 
                         var addressTwo = new Address
@@ -132,6 +133,7 @@ namespace JWTAuth
                             City = $"city{user.FirstName + user.LastName}",
                             PostalCode = 1234,
                             IsPrimary = false,
+                            AddressPhone = "0123456789"
                         };
 
                         await _addressRepo.Add(address);
@@ -839,7 +841,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Delivered,
                     PaymentMethod = PaymentMethod.Ondelivered,
                     OrderDate = DateTime.Now,
-                    AddressPhone = "0123456789",
+                    //AddressPhone = "0123456789",
                     OrderItems = new Collection<OrderItem>()
                     {
                         new OrderItem() { Quantity = 1, Product = await _productRepo.Find(p => p.Id == 1) },
@@ -879,7 +881,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Processing,
                     PaymentMethod = PaymentMethod.Chash,
                     OrderDate = DateTime.Now,
-                    AddressPhone = "0123456789",
+                    //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
                         new OrderItem() { Quantity = 3, Product = await _productRepo.Find(p => p.Id == 3) },
@@ -922,7 +924,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Delivered,
                     PaymentMethod = PaymentMethod.Ondelivered,
                     OrderDate = DateTime.Now,
-                    AddressPhone = "0123456789",
+                    //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
                         new OrderItem() { Quantity = 1, Product = await _productRepo.Find(p => p.Id == 1) },
@@ -962,7 +964,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Processing,
                     PaymentMethod = PaymentMethod.Chash,
                     OrderDate = DateTime.Now,
-                    AddressPhone = "0123456789",
+                    //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
                         new OrderItem() { Quantity = 3, Product = await _productRepo.Find(p => p.Id == 3) }
@@ -1005,7 +1007,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Delivered,
                     PaymentMethod = PaymentMethod.Ondelivered,
                     OrderDate = DateTime.Now,
-                    AddressPhone = "0123456789",
+                   // AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
                         new OrderItem() { Quantity = 1, Product = await _productRepo.Find(p => p.Id == 4) },
@@ -1045,7 +1047,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Processing,
                     PaymentMethod = PaymentMethod.Chash,
                     OrderDate = DateTime.Now,
-                    AddressPhone = "0123456789",
+                   // AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
                         new OrderItem() { Quantity = 2, Product = await _productRepo.Find(p => p.Id == 6) }
@@ -1088,7 +1090,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Delivered,
                     PaymentMethod = PaymentMethod.Ondelivered,
                     OrderDate = DateTime.Now,
-                    AddressPhone = "0123456789",
+                    //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
                         new OrderItem() { Quantity = 1, Product = await _productRepo.Find(p => p.Id == 4) },
@@ -1128,7 +1130,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Processing,
                     PaymentMethod = PaymentMethod.Chash,
                     OrderDate = DateTime.Now,
-                    AddressPhone = "0123456789",
+                    //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
                         new OrderItem() { Quantity = 2, Product = await _productRepo.Find(p => p.Id == 6) }

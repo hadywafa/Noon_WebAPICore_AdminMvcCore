@@ -29,11 +29,8 @@ namespace EFModel.Models.EFModels
 
         public PaymentMethod PaymentMethod { get; set; }
 
-        [Required]
-        public string AddressPhone { get; set; }
 
         //DeliveryStatusDescription---Mohamed
-
         public string DeliveryStatusDescription { get; set; }
 
         // Each Order has a collection of Items

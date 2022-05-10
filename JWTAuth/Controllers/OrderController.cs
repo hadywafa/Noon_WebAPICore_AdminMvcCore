@@ -48,6 +48,11 @@ namespace JWTAuth.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
+            var userId = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
+
+            var orders = _orderRepo.GetAll();
+
+
             return Ok();
         }
 
@@ -89,8 +94,9 @@ namespace JWTAuth.Controllers
                 DeliveryStatus = DeliveryStatus.Processing,
                 PaymentMethod =payment? PaymentMethod.Ondelivered:PaymentMethod.Chash,
                 OrderDate = DateTime.Now,
-                OrderItems = _orderitems
-                   
+                OrderItems = _orderitems,
+                AddressId=int.Parse(addressId)
+
             };
            
             

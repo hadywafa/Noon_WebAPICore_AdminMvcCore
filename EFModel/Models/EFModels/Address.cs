@@ -18,6 +18,10 @@ namespace EFModel.Models.EFModels
 
         public bool IsPrimary { get; set; }
 
+        [Required]
+        public string AddressPhone { get; set; }
+
+
         #region Navigation Property
         // Each address is belonged to one User
         public User User { get; set; }
