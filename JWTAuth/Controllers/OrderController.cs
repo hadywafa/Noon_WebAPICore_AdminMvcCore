@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using EFModel.Models;
 using System;
 using System.Collections.ObjectModel;
+using JWTAuth.ViewModels;
 
 namespace JWTAuth.Controllers
 {
@@ -51,8 +52,25 @@ namespace JWTAuth.Controllers
 
             var orders = _orderRepo.GetAll().Where(c=>c.Customer.Id == userId);
 
-            return Ok(orders);
+            var OrdersVM = new Collection<OrderVM>();
+
+            foreach(var item in orders)
+            {
+                var orderVM = new OrderVM
+                {
+                    OrderId=item.Id,
+                    DeliveryStatus=item.DeliveryStatus,
+                    TotalPrice=item.TotalPrice
+                };
+
+                OrdersVM.Add(orderVM);
+            }
+
+            return Ok(OrdersVM);
         }
+
+
+
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpPost("Add")]
@@ -83,42 +101,40 @@ namespace JWTAuth.Controllers
                 PaymentMethod = PaymentMethod,
                 OrderDate = DateTime.Now,
                 OrderItems = _orderitems,
-                AddressId=int.Parse(addressId)
+                AddressId = int.Parse(addressId)
             };
-           
+
             order.CalcTotalPrice();
             await _orderRepo.Add(order);
 
             //reduce product quantity
-            foreach (var orderItem in order.OrderItems)
-            {
-                var product = orderItem.Product;
-                var reducedQuantity = orderItem.Quantity;
-                product.Quantity -= reducedQuantity;
-            }
+            //foreach (var orderItem in order.OrderItems)
+            //{
+            //    var product = orderItem.Product;
+            //    var reducedQuantity = orderItem.Quantity;
+            //    product.Quantity -= reducedQuantity;
+            //}
 
 
 
             //reduce Customer Balance
-            if (order.PaymentMethod == PaymentMethod.NoonBalance)
-            {
-                var user = await _userRepo.Find(c => c.Id == userId);
+            //if (order.PaymentMethod == PaymentMethod.NoonBalance)
+            //{
+            //    var user = await _userRepo.Find(c => c.Id == userId);
 
-                if (user.Balance < order.TotalPrice)
-                    return NotFound();
+            //    if (user.Balance < order.TotalPrice)
+            //        return NotFound();
 
-                user.Balance -= order.TotalPrice;
-            }
+            //    user.Balance -= order.TotalPrice;
+            //}
 
             //await _unitOfWork.Save();
 
-            
+
             foreach (var item in carts)
             {
                 var cartItem = await _custProCartRepo.Find(x => x.Customer.User.Id == userId && x.Product.Id == item.Product.Id);
                 await _custProCartRepo.Remove(cartItem);
-             
-
             }
             await _unitOfWork.Save();
 
