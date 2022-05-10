@@ -10,8 +10,8 @@ using SqlServerDBContext;
 namespace SqlServerDBContext.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220510124726_FinalTouch")]
-    partial class FinalTouch
+    [Migration("20220510151537_finalTouch")]
+    partial class finalTouch
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

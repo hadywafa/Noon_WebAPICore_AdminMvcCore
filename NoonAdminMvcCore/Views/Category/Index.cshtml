@@ -152,7 +152,7 @@
                                                                     <span>Show</span>
                                                                 </li>
                                                                 <li class="@(@ViewBag.rowsPerPage == 10 ? "active" : "hide")">
-                                                                    <a asp-action="Index"
+                                                                    <a asp-action="Display"
                                                                        asp-route-currentFilter=@ViewBag.Search
                                                                        asp-route-role=@ViewBag.Role
                                                                        asp-route-pageSize="10">
@@ -160,7 +160,7 @@
                                                                     </a>
                                                                 </li>
                                                                 <li class="@(@ViewBag.rowsPerPage == 20 ? "active" : "hide")">
-                                                                    <a asp-action="Index"
+                                                                    <a asp-action="Display"
                                                                        asp-route-currentFilter=@ViewBag.Search
                                                                        asp-route-role=@ViewBag.Role
                                                                        asp-route-pageSize="20">
@@ -168,7 +168,7 @@
                                                                     </a>
                                                                 </li>
                                                                 <li class="@(@ViewBag.rowsPerPage == 50 ? "active" : "hide")">
-                                                                    <a asp-action="Index"
+                                                                    <a asp-action="Display"
                                                                        asp-route-currentFilter=@ViewBag.Search
                                                                        asp-route-role=@ViewBag.Role
                                                                        asp-route-pageSize="50">
@@ -194,7 +194,7 @@
                                 </a>
 
 
-                                <form asp-controller="Category" asp-action="Index" asp-route-role=@ViewBag.Role method="get">
+                                <form asp-controller="Category" asp-action="Display" asp-route-role=@ViewBag.Role method="get">
 
                                     <input type="text" class="form-control border-transparent form-focus-none"
                                            placeholder="Search by name or email"
@@ -230,7 +230,7 @@
             </div><!-- .card-inner-group -->
         </div><!-- .card -->
         <div class="container d-flex flex-direction-row justify-content-center align-content-center align-items-center">
-            <a asp-action="Index"
+            <a asp-action="Display"
                asp-route-pageNumber="@(Model.PageIndex - 1)"
                asp-route-currentFilter=@ViewBag.Search
                asp-route-role=@ViewBag.Role
@@ -247,7 +247,7 @@
                onmouseout="this.style.backgroundColor='#0FAC81'">
                 &laquo; Previous
             </a>
-            <a asp-action="Index"
+            <a asp-action="Display"
                asp-route-pageNumber="@(Model.PageIndex + 1)"
                asp-route-currentFilter=@ViewBag.Search
                asp-route-role=@ViewBag.Role

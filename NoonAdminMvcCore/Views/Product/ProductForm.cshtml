@@ -30,9 +30,10 @@
                             </div>
                         </div>
                         <!--col-->
+
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
-                                @Html.LabelFor(m => m.NameArabic, "NameArabic", new { @class = "form-label" })
+                                @Html.LabelFor(m => m.NameArabic, "Arabic Name", new { @class = "form-label" })
                                 <div class="form-control-wrap">
                                     @Html.TextBoxFor(m => m.NameArabic, new { @class = "form-control" })
                                     @Html.ValidationMessageFor(m => m.NameArabic, null, new { @class = "tex-danger" })
@@ -40,6 +41,18 @@
                             </div>
                         </div>
                         <!--col-->
+
+                        <div class="col-xl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.ModelNumber, "Model Number", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.ModelNumber, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.NameArabic, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--col-->
+
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Description, "Description", new { @class = "form-label" })
@@ -50,15 +63,17 @@
                             </div>
                         </div>
                         <!--col-->
+
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
-                                @Html.LabelFor(m => m.DescriptionArabic, "DescriptionArabic", new { @class = "form-label" })
+                                @Html.LabelFor(m => m.DescriptionArabic, "Arabic Description", new { @class = "form-label" })
                                 <div class="form-control-wrap">
                                     @Html.TextBoxFor(m => m.DescriptionArabic, new { @class = "form-control" })
                                     @Html.ValidationMessageFor(m => m.DescriptionArabic, null, new { @class = "tex-danger" })
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.BuyingPrice, "Buying Price", new { @class = "form-label" })
@@ -89,6 +104,17 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-xl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.MaxQuantityPerOrder, "Quantity Per Order", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.TextBoxFor(m => m.MaxQuantityPerOrder, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.MaxQuantityPerOrder, null, new { @class = "tex-danger" })
+                                </div>
+                            </div>
+                        </div>
+
                         <!--col-->
                         <!--col-->
                         <div class="col-xl-3 col-md-4">
@@ -101,6 +127,7 @@
                             </div>
                         </div>
                         <!--col-->
+
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Discount, "Discount", new { @class = "form-label" })
@@ -111,6 +138,7 @@
                             </div>
                         </div>
                         <!--col-->
+
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.SellerId, "Seller", new { @class = "form-label" })
@@ -120,11 +148,21 @@
                             </div>
                         </div>
                         <!--col-->
+
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.CategoryId, "Category", new { @class = "form-label" })
                                 <div class="form-control-wrap">
                                     @Html.DropDownListFor(m => m.CategoryId, ViewBag.category as SelectList, new { @class = "orm-select js-select2" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.BrandId, "Brand", new { @class = "form-label" })
+                                <div class="form-control-wrap">
+                                    @Html.DropDownListFor(m => m.BrandId, ViewBag.Brands as SelectList, new { @class = "orm-select js-select2" })
                                 </div>
                             </div>
                         </div>

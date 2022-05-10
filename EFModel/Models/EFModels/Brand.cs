@@ -19,7 +19,6 @@ namespace EFModel.Models.EFModels
         //[Key,Column(Order = 2)]
         [Required]
         public string Code { get; set; }
-
         public string Name { get; set; }
         public string Image { get; set; }
         public bool IsTop { get; set; }
