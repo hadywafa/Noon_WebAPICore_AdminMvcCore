@@ -111,9 +111,7 @@ namespace NoonAdminMvcCore.Controllers
         // GET: Category/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.Category =
-                new SelectList(await _categoryRepository.GetAll().ToListAsync(), "Id",//Hady
-                    "Name");
+            ViewBag.Category = new SelectList(await _categoryRepository.GetAll().ToListAsync(), "Id", "Name");;
             return View("CategoryForm");
         }
 
@@ -173,6 +171,7 @@ namespace NoonAdminMvcCore.Controllers
                     cat.DescriptionArabic = categoryVM.DescriptionArabic;
                     cat.Code = categoryVM.Code;
                     cat.IsTop = categoryVM.IsTop;
+                    cat.ParentID = categoryVM.ParentId;
                     await _categoryRepository.Update(cat);
                     await _unitOfWork.Save();
                     if (files != null)
@@ -219,9 +218,7 @@ namespace NoonAdminMvcCore.Controllers
                 Code = categoryVM.Code,
                 IsTop = categoryVM.IsTop
             };
-            ViewBag.Category =
-                new SelectList(await _categoryRepository.GetAll().Where(c => c.ParentID == null).ToListAsync(), "Id",
-                    "Name");
+            ViewBag.Category = new SelectList(await _categoryRepository.GetAll().ToListAsync(), "Id", "Name");
 
             #endregion
 
