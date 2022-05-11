@@ -112,7 +112,7 @@ namespace NoonAdminMvcCore.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Category =
-                new SelectList(await _categoryRepository.GetAll().Where(c => c.ParentID == null).ToListAsync(), "Id",
+                new SelectList(await _categoryRepository.GetAll().ToListAsync(), "Id",//Hady
                     "Name");
             return View("CategoryForm");
         }
