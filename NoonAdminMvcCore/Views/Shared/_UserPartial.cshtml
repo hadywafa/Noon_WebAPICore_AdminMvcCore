@@ -54,7 +54,7 @@
                 <span>@user.PhoneNumber</span>
             </div>
             <div class="nk-tb-col tb-col-lg">
-                <span>@user.Addresses.FirstOrDefault(a => a.User.Id == user.Id)!.City</span>
+                <span>@user.Addresses.FirstOrDefault(a => a.User.Id == user.Id)?.City</span>
             </div>
             <div class="nk-tb-col tb-col-lg">
                 <span>@user.CreatedAt.ToShortDateString()</span>

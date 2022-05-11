@@ -29,6 +29,7 @@ namespace BL.ViewModels.RequestVModels
         public string SellerId { get; set; }
         public string SellerName { get; set; }
         public int MaxQuantityPerOrder { get; set; }
+        public bool IsFreeDelivered { get; set; }
         
     }
 }
