@@ -106,13 +106,13 @@ namespace JWTAuth.Controllers
 
         #region Category End Points
 
-        [HttpGet("GetAllCategoriesJson")]
-        public async Task<IActionResult> GetAllCategoriesJson()
+        [HttpGet("GetTreeCategories")]
+        public async Task<IActionResult> GetTreeCategories()
         {
             //var connStr = _configuration["ConnectionStrings:DefaultConnection"];
             var connStr = _configuration.GetConnectionString("DefaultConnection");
-            CreateSqlFunction(connStr);
-            CreateSqlSp(connStr);
+            await CreateSqlFunction(connStr);
+            await CreateSqlSp(connStr);
             var queryWithForJson = "exec [dbo].[spGetJson]";
             await using (var conn = new SqlConnection(connStr))
             {
@@ -150,7 +150,8 @@ namespace JWTAuth.Controllers
             var categories = new List<Category>();
             foreach (var str in pathArr)
             {
-                categories.Add(await _categoryRepo.Find(x=>x.Code == str));
+                var cat = await _categoryRepo.Find(x => x.Code == str, x => x.Brands);
+                categories.Add(cat);
             }
 
             var vmCategories = _mapper.Map<ICollection<Category>,ICollection< VmCategory>>(categories);
@@ -202,7 +203,7 @@ namespace JWTAuth.Controllers
             return catpath;
         }
 
-        private async void CreateSqlFunction(string connectionString)
+        private async Task CreateSqlFunction(string connectionString)
         {
             await using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -249,7 +250,7 @@ namespace JWTAuth.Controllers
             }
         }
 
-        private async void CreateSqlSp(string connectionString)
+        private async Task CreateSqlSp(string connectionString)
         {
             await using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -313,7 +314,6 @@ namespace JWTAuth.Controllers
         //}
 
         #endregion
-
 
     }
 }
