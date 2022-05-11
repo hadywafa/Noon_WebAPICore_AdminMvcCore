@@ -70,6 +70,13 @@ namespace JWTAuth.Controllers
                     Product = item.Product
                 };
 
+                var product = await _productRepo.Find(p => p.Id == item.Product.Id);
+
+                if (product.Quantity < oi.Quantity)
+                    return BadRequest();
+
+                product.Quantity -= oi.Quantity;
+
                 _orderitems.Add(oi);
             }
 
@@ -79,48 +86,35 @@ namespace JWTAuth.Controllers
                 Customer = await _customerRepo.Find(c => c.User.Id == userId),
                 Shipper = await _shipperRepo.Find(s => s.User.Email == "MoShipper@gmail.com"),
                 Discount = (decimal)0.0,
-                DeliveryStatus = DeliveryStatus.Processing,
                 PaymentMethod = PaymentMethod,
-                OrderDate = DateTime.Now,
                 OrderItems = _orderitems,
-                AddressId=int.Parse(addressId)
+                AddressId = int.Parse(addressId)
             };
            
             order.CalcTotalPrice();
+
             await _orderRepo.Add(order);
 
-            //reduce product quantity
-            //foreach (var orderItem in order.OrderItems)
-            //{
-            //    var product = orderItem.Product;
-            //    var reducedQuantity = orderItem.Quantity;
-            //    product.Quantity -= reducedQuantity;
-            //}
-
-
-
             //reduce Customer Balance
-            //if (order.PaymentMethod == PaymentMethod.NoonBalance)
-            //{
-            //    var user = await _userRepo.Find(c => c.Id == userId);
+            if (order.PaymentMethod == PaymentMethod.NoonBalance)
+            {
+                var user = await _userRepo.Find(c => c.Id == userId);
 
-            //    if (user.Balance < order.TotalPrice)
-            //        return NotFound();
+                if (user.Balance < order.TotalPrice)
+                    return NotFound();
 
-            //    user.Balance -= order.TotalPrice;
-            //}
+                user.Balance -= order.TotalPrice;
+            }
 
-            //await _unitOfWork.Save();
-
-            
             foreach (var item in carts)
             {
                 var cartItem = await _custProCartRepo.Find(x => x.Customer.User.Id == userId && x.Product.Id == item.Product.Id);
                 await _custProCartRepo.Remove(cartItem);
             }
+
             await _unitOfWork.Save();
 
-            return Ok();
+            return Ok(order);
         }
 
 

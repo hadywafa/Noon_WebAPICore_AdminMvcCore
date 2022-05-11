@@ -53,7 +53,7 @@ namespace JWTAuth.Controllers
         {
             var productList =  _productRepo.GetAll().Include(x=>x.ImagesGallery).Include(x => x.Brand).Include(x => x.Category)
                 .Include(x => x.Seller).Include(x => x.Seller.User).Include(x => x.ProductHighlights)
-                .Include(x => x.Specifications).Include(x => x.Orders);
+                .Include(x => x.Specifications).Include(x => x.Orders).Where(p => p.Quantity > 0);
 
             var vmProductsList = _mapper.Map<List<Product>, List<VmProduct>>(await productList.ToListAsync());
 

@@ -34,13 +34,15 @@ namespace EFModel.Models.EFModels
         // Each Order has a collection of Items
         public virtual ICollection<OrderItem> OrderItems { get; set; }
 
-        public int? AddressId { get; set; }
-        public virtual Address CustomerAddress { get; set; }
+        [ForeignKey("Address")]
+        public int AddressId { get; set; }
+        public virtual Address Address { get; set; }
 
         public Order()
         {
             OrderDate = DateTime.Now;
             DeliveryStatus = DeliveryStatus.Processing;
+            DeliveryStatusDescription = "Your Orders is placed, awaiting for shipping";
         }
 
         public void CalcTotalPrice()

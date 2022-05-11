@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SqlServerDBContext.Migrations
 {
-    public partial class finalTouchEmad : Migration
+    public partial class finalTouch : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -410,7 +410,7 @@ namespace SqlServerDBContext.Migrations
                     DeliveryStatus = table.Column<int>(type: "int", nullable: false),
                     PaymentMethod = table.Column<int>(type: "int", nullable: false),
                     DeliveryStatusDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AddressId = table.Column<int>(type: "int", nullable: true)
+                    AddressId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -420,7 +420,7 @@ namespace SqlServerDBContext.Migrations
                         column: x => x.AddressId,
                         principalTable: "Addresses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Customers_CustomerID",
                         column: x => x.CustomerID,
@@ -709,9 +709,7 @@ namespace SqlServerDBContext.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_AddressId",
                 table: "Orders",
-                column: "AddressId",
-                unique: true,
-                filter: "[AddressId] IS NOT NULL");
+                column: "AddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerID",

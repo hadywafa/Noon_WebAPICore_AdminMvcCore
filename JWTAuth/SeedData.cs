@@ -950,6 +950,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Delivered,
                     PaymentMethod = PaymentMethod.Cash,
                     OrderDate = DateTime.Now,
+                    AddressId = 19,
                     //AddressPhone = "0123456789",
                     OrderItems = new Collection<OrderItem>()
                     {
@@ -989,6 +990,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Processing,
                     PaymentMethod = PaymentMethod.Cash,
                     OrderDate = DateTime.Now,
+                    AddressId = 19,
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
@@ -1029,6 +1031,7 @@ namespace JWTAuth
                     Shipper = await _shipperRepo.Find(s => s.User.Email == "KeroShipper@gmail.com"),
                     Discount = (decimal)0.5,
                     DeliveryStatus = DeliveryStatus.Delivered,
+                    AddressId = 19,
                     PaymentMethod = PaymentMethod.Paypal,
                     OrderDate = DateTime.Now,
                     //AddressPhone = "0123456789",
@@ -1069,6 +1072,7 @@ namespace JWTAuth
                     Discount = (decimal)0.5,
                     DeliveryStatus = DeliveryStatus.Processing,
                     PaymentMethod = PaymentMethod.Cash,
+                    AddressId = 19,
                     OrderDate = DateTime.Now,
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
@@ -1111,6 +1115,7 @@ namespace JWTAuth
                     Discount = (decimal)0.5,
                     DeliveryStatus = DeliveryStatus.Delivered,
                     PaymentMethod = PaymentMethod.NoonBalance,
+                    AddressId = 19,
                     OrderDate = DateTime.Now,
                    // AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
@@ -1151,7 +1156,8 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Processing,
                     PaymentMethod = PaymentMethod.Cash,
                     OrderDate = DateTime.Now,
-                   // AddressPhone = "0123456789",
+                    AddressId = 19,
+                    // AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
                         new OrderItem() { Quantity = 2, Product = await _productRepo.Find(p => p.Id == 6) }
@@ -1193,6 +1199,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Delivered,
                     PaymentMethod = PaymentMethod.Cash,
                     OrderDate = DateTime.Now,
+                    AddressId = 19,
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
@@ -1232,6 +1239,7 @@ namespace JWTAuth
                     DeliveryStatus = DeliveryStatus.Processing,
                     PaymentMethod = PaymentMethod.NoonBalance,
                     OrderDate = DateTime.Now,
+                    AddressId = 19,
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {

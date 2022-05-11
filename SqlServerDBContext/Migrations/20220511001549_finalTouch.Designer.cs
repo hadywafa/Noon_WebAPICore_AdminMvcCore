@@ -10,8 +10,8 @@ using SqlServerDBContext;
 namespace SqlServerDBContext.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220510182656_finalTouch-Emad")]
-    partial class finalTouchEmad
+    [Migration("20220511001549_finalTouch")]
+    partial class finalTouch
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -335,7 +335,7 @@ namespace SqlServerDBContext.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AddressId")
+                    b.Property<int>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<string>("CustomerID")
@@ -370,9 +370,7 @@ namespace SqlServerDBContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique()
-                        .HasFilter("[AddressId] IS NOT NULL");
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("CustomerID");
 
@@ -942,9 +940,11 @@ namespace SqlServerDBContext.Migrations
 
             modelBuilder.Entity("EFModel.Models.EFModels.Order", b =>
                 {
-                    b.HasOne("EFModel.Models.EFModels.Address", "CustomerAddress")
-                        .WithOne("Order")
-                        .HasForeignKey("EFModel.Models.EFModels.Order", "AddressId");
+                    b.HasOne("EFModel.Models.EFModels.Address", "Address")
+                        .WithMany("Orders")
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
                         .WithMany("Orders")
@@ -958,9 +958,9 @@ namespace SqlServerDBContext.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Customer");
+                    b.Navigation("Address");
 
-                    b.Navigation("CustomerAddress");
+                    b.Navigation("Customer");
 
                     b.Navigation("Shipper");
 
@@ -1102,7 +1102,7 @@ namespace SqlServerDBContext.Migrations
 
             modelBuilder.Entity("EFModel.Models.EFModels.Address", b =>
                 {
-                    b.Navigation("Order");
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Brand", b =>

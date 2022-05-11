@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,7 +27,7 @@ namespace EFModel.Models.EFModels
         // Each address is belonged to one User
         public User User { get; set; }
 
-        public Order Order { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
 
         #endregion
 
