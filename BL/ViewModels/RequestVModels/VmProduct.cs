@@ -11,10 +11,12 @@ namespace BL.ViewModels.RequestVModels
         public int Id { get; set; }
         public string ModelNumber { get; set; }
         public string Name { get; set; }
+        public string NameArabic { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public float Discount { get; set; }
         public string Description { get; set; }
+        public string DescriptionAr { get; set; }
         public string ImageThumb { get; set; }
         public ICollection<VmImage> ImagesGallery { get; set; }
         public int CategoryId { get; set; }

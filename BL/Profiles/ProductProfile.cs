@@ -19,6 +19,7 @@ namespace BL.Profiles
                 .ForMember(dst => dst.Id, src => src.MapFrom(p => p.Id))
                 .ForMember(dst => dst.ModelNumber, src => src.MapFrom(p => p.ModelNumber))
                 .ForMember(dst => dst.Name, src => src.MapFrom(p => p.Name))
+                .ForMember(dst => dst.NameArabic, src => src.MapFrom(p => p.NameArabic))
                 .ForMember(dst => dst.Price, src => src.MapFrom(p => p.SellingPrice))
                 .ForMember(dst => dst.Quantity, src => src.MapFrom(p => p.Quantity))
                 .ForMember(dst => dst.Discount, src => src.MapFrom(p => p.Discount))
