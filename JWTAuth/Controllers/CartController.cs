@@ -148,5 +148,26 @@ namespace JWTAuth.Controllers
             await _unitOfWork.Save();
             return StatusCode(200);
         }
+
+        [Authorize(Roles = AuthorizeRoles.Customer)]
+        [HttpGet("GetCartPrice")]
+        public async Task<IActionResult> GetPrice()
+        {
+            decimal totalPrice = (decimal)0.0;
+            var userId = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
+            var carts = await _custProCartRepo.GetAll().Include(x => x.Product).Where(p => p.Customer.Id == userId).ToListAsync();
+            if (carts == null)
+                return BadRequest();
+
+            foreach(var prd in carts)
+            {
+
+                totalPrice += (prd.Product.SellingPrice - (prd.Product.SellingPrice * (decimal)prd.Product.Discount)) * prd.Quantity;
+
+            }
+
+            return Ok(totalPrice);
+        }
+
     }
 }

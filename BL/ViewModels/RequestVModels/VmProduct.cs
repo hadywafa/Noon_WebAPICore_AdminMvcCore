@@ -16,6 +16,7 @@ namespace BL.ViewModels.RequestVModels
         public int Quantity { get; set; }
         public float Discount { get; set; }
         public string Description { get; set; }
+        public string DescriptionAr { get; set; }
         public string ImageThumb { get; set; }
         public ICollection<VmImage> ImagesGallery { get; set; }
         public int CategoryId { get; set; }

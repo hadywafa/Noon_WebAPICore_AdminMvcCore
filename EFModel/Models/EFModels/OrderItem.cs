@@ -25,8 +25,6 @@ namespace EFModel.Models.EFModels
         public int ProductId { get; set; }
         public virtual Product Product { get; set; }
 
-        // 3-ternary relationship Customer review product of specific seller
-        public virtual ICollection<CustomerOrderItemSellerReviews> CustomerOrderItemSellerReviews { get; set; }
 
         #endregion
     }

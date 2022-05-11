@@ -30,7 +30,7 @@ namespace Repository.UnitWork
         public IGenericRepo<ProductHighlights> ProductHighlights { get; }
         public IGenericRepo<CustProWishlist> CustProWishlists { get; }
         public IGenericRepo<CustProCart> CustProCarts { get; }
-        public IGenericRepo<CustomerOrderItemSellerReviews> Reviews { get;  }
+        public IGenericRepo<CustProSellReviews> Reviews { get;  }
 
         // Constructor
         public UnitOfWork(SqlContext _Context, IAuthRepo authRepo)
@@ -53,7 +53,7 @@ namespace Repository.UnitWork
             ProductHighlights = new GenericRepo<ProductHighlights>(Context);
             CustProWishlists = new GenericRepo<CustProWishlist>(Context);
             CustProCarts = new GenericRepo<CustProCart>(Context);
-            Reviews = new GenericRepo<CustomerOrderItemSellerReviews>(Context);
+            Reviews = new GenericRepo<CustProSellReviews>(Context);
             AuthRepo = authRepo;
         }
         #endregion

@@ -34,6 +34,7 @@ namespace JWTAuth.Controllers
         private readonly IConfiguration _configuration;
         private readonly IGenericRepo<Product> _productRepo;
         private readonly IGenericRepo<Category> _categoryRepo;
+        private readonly IGenericRepo<CustProSellReviews> _custProSellReviewsRepo;
 
         public ProductsController(IUnitOfWork unitOfWork, IMapper mapper , IConfiguration configuration)
         {
@@ -42,6 +43,7 @@ namespace JWTAuth.Controllers
             _configuration = configuration;
             _productRepo = _unitOfWork.Products;
             _categoryRepo = _unitOfWork.Categories;
+            _custProSellReviewsRepo = _unitOfWork.Reviews;
         }
 
         #endregion
@@ -100,6 +102,19 @@ namespace JWTAuth.Controllers
             var vmProductsList = _mapper.Map<IEnumerable<Product>, IEnumerable<VmProduct>>( productLists);
 
             return Ok(vmProductsList);
+        }
+
+        #endregion
+
+        #region Reviews Endpoints
+
+        [HttpGet("GetAllProductReviews/{id}")]
+        public async Task<IActionResult> GetAllProductReviews([FromRoute] int id)
+        {
+            var reviews = await _custProSellReviewsRepo.FindAll(x => x.Product.Id == id, c=>c.Customer.User , x=>x.Seller.User).ToListAsync();
+            var vmReviews = _mapper.Map<List<CustProSellReviews>,List<VmReview>>(reviews);
+
+            return Ok(vmReviews);
         }
 
         #endregion
@@ -315,5 +330,6 @@ namespace JWTAuth.Controllers
 
         #endregion
 
+        
     }
 }

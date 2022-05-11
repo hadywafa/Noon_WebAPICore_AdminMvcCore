@@ -13,9 +13,9 @@ namespace BL.Profiles
     {
         public ReviewProfile()
         {
-            CreateMap<CustomerOrderItemSellerReviews, VmReview>()
+            CreateMap<CustProSellReviews, VmReview>()
                 .ForMember(tr => tr.Id, src => src.MapFrom(r => r.Id))
-                .ForMember(tr => tr.ProductId, src => src.MapFrom(r => r.OrderItem.Product.Id))
+                .ForMember(tr => tr.ProductId, src => src.MapFrom(r => r.Product.Id))
                 .ForMember(tr => tr.CustomerName, src => src.MapFrom(r => r.Customer.User.FirstName))
                 .ForMember(tr => tr.SellerName, src => src.MapFrom(r => r.Seller.User.FirstName))
                 .ForMember(tr => tr.ProductRating, src => src.MapFrom(r => r.ProductRate))

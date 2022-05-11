@@ -89,6 +89,9 @@ namespace EFModel.Models.EFModels
         //each product have many specifications
         public virtual ICollection<ProductSpecifications> Specifications { get; set; }
 
+        // 3-ternary relationship Customer review product of specific seller
+        public virtual ICollection<CustProSellReviews> CustProSellReviews { get; set; }
+
         #endregion
 
         #endregion

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SqlServerDBContext.Migrations
 {
-    public partial class finalTouch : Migration
+    public partial class HwReviews : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -467,6 +467,48 @@ namespace SqlServerDBContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustProSellReviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductRate = table.Column<int>(type: "int", nullable: false),
+                    SellerRate = table.Column<int>(type: "int", nullable: false),
+                    ReviewDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsAsDescription = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeliveredOnTime = table.Column<bool>(type: "bit", nullable: false),
+                    ProductComment = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    SellerComment = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    IsProductCommentAnonymous = table.Column<bool>(type: "bit", nullable: false),
+                    IsSellerCommentAnonymous = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustProSellReviews", x => new { x.Id, x.CustomerId, x.ProductId, x.SellerId });
+                    table.ForeignKey(
+                        name: "FK_CustProSellReviews_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustProSellReviews_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustProSellReviews_Sellers_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "Sellers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CustProWishlists",
                 columns: table => new
                 {
@@ -585,48 +627,6 @@ namespace SqlServerDBContext.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "CustomerOrderItemSellerReviews",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderItemId = table.Column<int>(type: "int", nullable: false),
-                    SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductRate = table.Column<int>(type: "int", nullable: false),
-                    SellerRate = table.Column<int>(type: "int", nullable: false),
-                    ReviewDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsAsDescription = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeliveredOnTime = table.Column<bool>(type: "bit", nullable: false),
-                    ProductComment = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    SellerComment = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    IsProductCommentAnonymous = table.Column<bool>(type: "bit", nullable: false),
-                    IsSellerCommentAnonymous = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CustomerOrderItemSellerReviews", x => new { x.Id, x.CustomerId, x.OrderItemId, x.SellerId });
-                    table.ForeignKey(
-                        name: "FK_CustomerOrderItemSellerReviews_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CustomerOrderItemSellerReviews_OrderItems_OrderItemId",
-                        column: x => x.OrderItemId,
-                        principalTable: "OrderItems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CustomerOrderItemSellerReviews_Sellers_SellerId",
-                        column: x => x.SellerId,
-                        principalTable: "Sellers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_UserId",
                 table: "Addresses",
@@ -660,24 +660,24 @@ namespace SqlServerDBContext.Migrations
                 column: "ParentID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerOrderItemSellerReviews_CustomerId",
-                table: "CustomerOrderItemSellerReviews",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CustomerOrderItemSellerReviews_OrderItemId",
-                table: "CustomerOrderItemSellerReviews",
-                column: "OrderItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CustomerOrderItemSellerReviews_SellerId",
-                table: "CustomerOrderItemSellerReviews",
-                column: "SellerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CustProCarts_ProductId",
                 table: "CustProCarts",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustProSellReviews_CustomerId",
+                table: "CustProSellReviews",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustProSellReviews_ProductId",
+                table: "CustProSellReviews",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustProSellReviews_SellerId",
+                table: "CustProSellReviews",
+                column: "SellerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustProWishlists_ProductId",
@@ -803,16 +803,19 @@ namespace SqlServerDBContext.Migrations
                 name: "Cards");
 
             migrationBuilder.DropTable(
-                name: "CustomerOrderItemSellerReviews");
+                name: "CustProCarts");
 
             migrationBuilder.DropTable(
-                name: "CustProCarts");
+                name: "CustProSellReviews");
 
             migrationBuilder.DropTable(
                 name: "CustProWishlists");
 
             migrationBuilder.DropTable(
                 name: "Images");
+
+            migrationBuilder.DropTable(
+                name: "OrderItems");
 
             migrationBuilder.DropTable(
                 name: "ProductHighlights");
@@ -836,16 +839,13 @@ namespace SqlServerDBContext.Migrations
                 name: "UserTokens");
 
             migrationBuilder.DropTable(
-                name: "OrderItems");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
-
-            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Addresses");

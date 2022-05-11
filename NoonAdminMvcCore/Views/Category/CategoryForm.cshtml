@@ -64,8 +64,14 @@
                         <div class="col-xl-3 col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.ParentId, "Category", new { @class = "form-label" })
-                                <div class="form-control-wrap">
-                                    @Html.DropDownListFor(m => m.ParentId, ViewBag.category as SelectList, new { @class = "form-select js-select2" })
+                                <div class="form-group">
+                                    <label asp-for="@Model" class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <select asp-for="@Model.ParentId" asp-items="@ViewBag.Category" class="form-control">
+                                            <option ></option>
+                                        </select>
+                                        <span asp-validation-for="@Model.ParentId" class="text-danger" ></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

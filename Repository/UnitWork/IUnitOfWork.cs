@@ -26,7 +26,7 @@ namespace Repository.UnitWork
         IGenericRepo<ProductHighlights> ProductHighlights { get; }
         IGenericRepo<CustProWishlist> CustProWishlists { get; }
         IGenericRepo<CustProCart> CustProCarts { get; }
-        IGenericRepo<CustomerOrderItemSellerReviews> Reviews { get; }
+        IGenericRepo<CustProSellReviews> Reviews { get; }
         IAuthRepo GetAuthRepo();
         public Task Save();
     }
