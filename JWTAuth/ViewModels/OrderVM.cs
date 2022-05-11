@@ -9,10 +9,10 @@ namespace JWTAuth.ViewModels
     public class OrderVM
     {
 
-        public int OrderId { get; set; }
-        public DeliveryStatus DeliveryStatus { get; set; }
+        public int orderId { get; set; }
+        public DeliveryStatus deliveryStatus { get; set; }
 
-        public decimal TotalPrice { get; set; }
+        public decimal totalPrice { get; set; }
 
 
 

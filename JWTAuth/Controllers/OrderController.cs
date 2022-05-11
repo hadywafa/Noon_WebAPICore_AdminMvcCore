@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Identity;
 using EFModel.Models;
 using System;
 using System.Collections.ObjectModel;
+using JWTAuth.ViewModels;
+using System.Collections.Generic;
+using BL.Helpers;
 
 namespace JWTAuth.Controllers
 {
@@ -27,6 +30,7 @@ namespace JWTAuth.Controllers
         private readonly IGenericRepo<Shipper> _shipperRepo;
         private readonly IGenericRepo<Order> _orderRepo;
         private readonly IGenericRepo<CustProCart> _custProCartRepo;
+        private readonly IGenericRepo<OrderItem> _orderItemsRepo;
         private readonly IGenericRepo<User> _userRepo;
 
         public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager)
@@ -37,6 +41,7 @@ namespace JWTAuth.Controllers
             _orderRepo = _unitOfWork.Orders;
             _shipperRepo = _unitOfWork.Shippers;
             _custProCartRepo=_unitOfWork.CustProCarts;
+            _orderItemsRepo = _unitOfWork.OrderItems;
             _userManager = userManager;
             _userRepo = _unitOfWork.Users;
         }
@@ -119,6 +124,40 @@ namespace JWTAuth.Controllers
 
 
 
+        [Authorize(Roles = AuthorizeRoles.Customer)]
+        [HttpGet("OrderDetails")]
+
+        public async Task<IActionResult> OrderDetails([FromQuery]int id)
+        {
+
+            Order order = await _orderRepo.Find(o => o.Id == id);
+            if (order == null)
+                return BadRequest();
+
+            var items = _orderItemsRepo.FindAll(item => item.OrderId == id, p => p.Product);
+
+            Collection<Product> productList=new Collection<Product>() ;
+            foreach(var product in items)
+            {
+                product.Product.ImageThumb.ToImageUrl();
+                productList.Add(product.Product);
+
+
+            }
+
+            var orderDetails = new OrderDetails {
+
+                id = order.Id,
+                deliveryStatus = order.DeliveryStatus,
+                deliveryStatusDescription = order.DeliveryStatusDescription,
+                totalPrice = order.TotalPrice,
+                products = productList
+
+            };
+
+
+            return Ok(orderDetails);
+        }
 
 
 
