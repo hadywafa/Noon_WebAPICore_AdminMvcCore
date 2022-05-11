@@ -28,7 +28,7 @@ namespace SqlServerDBContext
         public virtual DbSet<OrderItem> OrderItems { get; set; }
         public virtual DbSet<CustProWishlist> CustProWishlists { get; set; }
         public virtual DbSet<CustProCart> CustProCarts { get; set; }
-        public virtual DbSet<CustomerOrderItemSellerReviews> CustomerOrderItemSellerReviews { get; set; }
+        public virtual DbSet<CustProSellReviews> CustProSellReviews { get; set; }
 
         public SqlContext(DbContextOptions options) : base(options)
         {
@@ -48,7 +48,7 @@ namespace SqlServerDBContext
             builder.ApplyConfiguration(new UserConfig());
             builder.ApplyConfiguration(new CustProWishlistConfig());
             builder.ApplyConfiguration(new CustProCartConfig());
-            builder.ApplyConfiguration(new CustOrderItemSellReviewConfig());
+            builder.ApplyConfiguration(new CustProSellReviewsConfig());
 
             //Restricted on delete
             foreach (var foreignKey in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys())

@@ -379,10 +379,42 @@ namespace JWTAuth
                         new ProductSpecifications() { Key = "Number of USB Ports", Name = "2" },
                         new ProductSpecifications() { Key = "RAM Type", Name = "DDR4" },
                         new ProductSpecifications() { Key = "Screen Size", Name = "32 inch" },
+                    },
+                    CustProSellReviews = new List<CustProSellReviews>()
+                    {
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "it's awesome product",
+                            SellerComment = "The Seller is very kind",
+                            ProductRate = Rate.Five,
+                            SellerRate = Rate.Four,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "HadySeller@gmail.com")
+                        },
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "this product is very bad ",
+                            SellerComment = "The Seller is very stupid",
+                            ProductRate = Rate.One,
+                            SellerRate = Rate.Two,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "EmadSeller@gmail.com")
+                        }
                     }
                 };
                 await _productRepo.Add(pro1);
                 await _unitOfWork.Save();
+
                 var pro2 = new Product()
                 {
                     Name =
@@ -472,10 +504,12 @@ namespace JWTAuth
                         new ProductSpecifications() { Key = "SD Card Slot", Name = "Yes" },
                         new ProductSpecifications() { Key = "Storage Type", Name = "HDD" },
                         new ProductSpecifications() { Key = "Usage Type", Name = "Personal" },
+
                     }
                 };
                 await _productRepo.Add(pro2);
                 await _unitOfWork.Save();
+
                 var pro3 = new Product()
                 {
                     Name = "Gaming Console Wireless Controller For PlayStation 4",
@@ -531,10 +565,42 @@ namespace JWTAuth
                         {
                             Key = "Type of Console Software", Name = "PlayStation 4 (PS4)"
                         }
+                    },
+                    CustProSellReviews = new List<CustProSellReviews>()
+                    {
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "it's awesome product",
+                            SellerComment = "The Seller is very kind",
+                            ProductRate = Rate.Five,
+                            SellerRate = Rate.Four,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "HadySeller@gmail.com")
+                        },
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "this product is very bad ",
+                            SellerComment = "The Seller is very stupid",
+                            ProductRate = Rate.One,
+                            SellerRate = Rate.Two,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "EmadSeller@gmail.com")
+                        }
                     }
                 };
                 await _productRepo.Add(pro3);
                 await _unitOfWork.Save();
+
                 var pro4 = new Product()
                 {
                     Name =
@@ -633,10 +699,42 @@ namespace JWTAuth
                         new ProductSpecifications() { Key = "SD Card Slot", Name = "Yes" },
                         new ProductSpecifications() { Key = "Storage Type", Name = "HDD" },
                         new ProductSpecifications() { Key = "Usage Type", Name = "Personal" },
+                    },
+                    CustProSellReviews = new List<CustProSellReviews>()
+                    {
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "it's awesome product",
+                            SellerComment = "The Seller is very kind",
+                            ProductRate = Rate.Five,
+                            SellerRate = Rate.Four,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "HadySeller@gmail.com")
+                        },
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "this product is very bad ",
+                            SellerComment = "The Seller is very stupid",
+                            ProductRate = Rate.One,
+                            SellerRate = Rate.Two,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "EmadSeller@gmail.com")
+                        }
                     }
                 };
                 await _productRepo.Add(pro4);
                 await _unitOfWork.Save();
+
                 var pro5 = new Product()
                 {
                     Name = "Watch Series 7 GPS 45mm Aluminium Case with Sport Band Midnight",
@@ -711,10 +809,42 @@ namespace JWTAuth
                         {
                             Key = "What's In The Box", Name = "Smartwatch, Band & Charger"
                         },
+                    },
+                    CustProSellReviews = new List<CustProSellReviews>()
+                    {
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "it's awesome product",
+                            SellerComment = "The Seller is very kind",
+                            ProductRate = Rate.Five,
+                            SellerRate = Rate.Four,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "HadySeller@gmail.com")
+                        },
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "this product is very bad ",
+                            SellerComment = "The Seller is very stupid",
+                            ProductRate = Rate.One,
+                            SellerRate = Rate.Two,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "EmadSeller@gmail.com")
+                        }
                     }
                 };
                 await _productRepo.Add(pro5);
                 await _unitOfWork.Save();
+
                 var pro6 = new Product()
                 {
                     Name =
@@ -925,6 +1055,37 @@ namespace JWTAuth
                         new ProductSpecifications() { Key = "SD Card Slot", Name = "Yes" },
                         new ProductSpecifications() { Key = "Storage Type", Name = "HDD" },
                         new ProductSpecifications() { Key = "Usage Type", Name = "Personal" },
+                    },
+                    CustProSellReviews = new List<CustProSellReviews>()
+                    {
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "it's awesome product",
+                            SellerComment = "The Seller is very kind",
+                            ProductRate = Rate.Five,
+                            SellerRate = Rate.Four,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "MoCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "HadySeller@gmail.com")
+                        },
+                        new CustProSellReviews()
+                        {
+                            IsAsDescription = true,
+                            IsDeliveredOnTime = true,
+                            IsProductCommentAnonymous = false,
+                            IsSellerCommentAnonymous = false,
+                            ProductComment = "this product is very bad ",
+                            SellerComment = "The Seller is very stupid",
+                            ProductRate = Rate.One,
+                            SellerRate = Rate.Two,
+                            ReviewDate = DateTime.Now,
+                            Customer = await _customerRepo.Find(c => c.User.Email == "KeroCustomer@gmail.com"),
+                            Seller = await _sellerRepo.Find(s => s.User.Email == "EmadSeller@gmail.com")
+                        }
                     }
                 };
                 await _productRepo.Add(pro7);
@@ -1117,7 +1278,7 @@ namespace JWTAuth
                     PaymentMethod = PaymentMethod.NoonBalance,
                     AddressId = 19,
                     OrderDate = DateTime.Now,
-                   // AddressPhone = "0123456789",
+                    // AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
                         new OrderItem() { Quantity = 1, Product = await _productRepo.Find(p => p.Id == 4) },
@@ -1203,8 +1364,12 @@ namespace JWTAuth
                     //AddressPhone = "0123456789",
                     OrderItems = new List<OrderItem>()
                     {
-                        new OrderItem() { Quantity = 1, Product = await _productRepo.Find(p => p.Id == 4) },
-                        new OrderItem() { Quantity = 2, Product = await _productRepo.Find(p => p.Id == 5) },
+                        new OrderItem()
+                        {
+                            Quantity = 1,
+                            Product = await _productRepo.Find(p => p.Id == 4)
+                        },
+                        new OrderItem() { Quantity = 2, Product = await _productRepo.Find(p => p.Id == 5) }
                     }
                 };
                 orderHady1.CalcTotalPrice();

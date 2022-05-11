@@ -16,7 +16,7 @@ namespace SqlServerDBContext.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.16")
+                .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BrandCategory", b =>
@@ -215,35 +215,7 @@ namespace SqlServerDBContext.Migrations
                     b.ToTable("CustProCarts");
                 });
 
-            modelBuilder.Entity("EFModel.Models.EFModels.CustProWishlist", b =>
-                {
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CustomerId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CustProWishlists");
-                });
-
-            modelBuilder.Entity("EFModel.Models.EFModels.Customer", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Customers");
-                });
-
-            modelBuilder.Entity("EFModel.Models.EFModels.CustomerOrderItemSellerReviews", b =>
+            modelBuilder.Entity("EFModel.Models.EFModels.CustProSellReviews", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -253,7 +225,7 @@ namespace SqlServerDBContext.Migrations
                     b.Property<string>("CustomerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("OrderItemId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<string>("SellerId")
@@ -288,15 +260,43 @@ namespace SqlServerDBContext.Migrations
                     b.Property<int>("SellerRate")
                         .HasColumnType("int");
 
-                    b.HasKey("Id", "CustomerId", "OrderItemId", "SellerId");
+                    b.HasKey("Id", "CustomerId", "ProductId", "SellerId");
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("OrderItemId");
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("CustomerOrderItemSellerReviews");
+                    b.ToTable("CustProSellReviews");
+                });
+
+            modelBuilder.Entity("EFModel.Models.EFModels.CustProWishlist", b =>
+                {
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CustomerId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CustProWishlists");
+                });
+
+            modelBuilder.Entity("EFModel.Models.EFModels.Customer", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Image", b =>
@@ -864,6 +864,33 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("EFModel.Models.EFModels.CustProSellReviews", b =>
+                {
+                    b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
+                        .WithMany("CustProSellReviews")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFModel.Models.EFModels.Product", "Product")
+                        .WithMany("CustProSellReviews")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFModel.Models.EFModels.Seller", "Seller")
+                        .WithMany("CustProSellReviews")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Seller");
+                });
+
             modelBuilder.Entity("EFModel.Models.EFModels.CustProWishlist", b =>
                 {
                     b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
@@ -892,33 +919,6 @@ namespace SqlServerDBContext.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EFModel.Models.EFModels.CustomerOrderItemSellerReviews", b =>
-                {
-                    b.HasOne("EFModel.Models.EFModels.Customer", "Customer")
-                        .WithMany("CustomerOrderItemSellerReviews")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EFModel.Models.EFModels.OrderItem", "OrderItem")
-                        .WithMany("CustomerOrderItemSellerReviews")
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EFModel.Models.EFModels.Seller", "Seller")
-                        .WithMany("CustomerOrderItemSellerReviews")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("OrderItem");
-
-                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("EFModel.Models.EFModels.Image", b =>
@@ -1117,9 +1117,9 @@ namespace SqlServerDBContext.Migrations
 
             modelBuilder.Entity("EFModel.Models.EFModels.Customer", b =>
                 {
-                    b.Navigation("CustomerOrderItemSellerReviews");
-
                     b.Navigation("CustProCart");
+
+                    b.Navigation("CustProSellReviews");
 
                     b.Navigation("CustProWishlist");
 
@@ -1131,14 +1131,11 @@ namespace SqlServerDBContext.Migrations
                     b.Navigation("OrderItems");
                 });
 
-            modelBuilder.Entity("EFModel.Models.EFModels.OrderItem", b =>
-                {
-                    b.Navigation("CustomerOrderItemSellerReviews");
-                });
-
             modelBuilder.Entity("EFModel.Models.EFModels.Product", b =>
                 {
                     b.Navigation("CustProCart");
+
+                    b.Navigation("CustProSellReviews");
 
                     b.Navigation("CustProWishlist");
 
@@ -1153,7 +1150,7 @@ namespace SqlServerDBContext.Migrations
 
             modelBuilder.Entity("EFModel.Models.EFModels.Seller", b =>
                 {
-                    b.Navigation("CustomerOrderItemSellerReviews");
+                    b.Navigation("CustProSellReviews");
 
                     b.Navigation("Products");
                 });

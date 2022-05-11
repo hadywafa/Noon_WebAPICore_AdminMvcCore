@@ -5,9 +5,9 @@ using EFModel.Enums;
 
 namespace EFModel.Models.EFModels
 {
-    public class CustomerOrderItemSellerReviews 
+    public class CustProSellReviews 
     {
-        public CustomerOrderItemSellerReviews()
+        public CustProSellReviews()
         {
             ReviewDate = DateTime.Now;
         }
@@ -45,20 +45,11 @@ namespace EFModel.Models.EFModels
 
         #region Navigation Property
 
-        //public string Id { get; set; }
-        //[ForeignKey("Id")]
-        //[Key, Column(Order = 2)]
         public virtual Customer Customer { get; set; }
-
-        //public string SellerId { get; set; }
-        //[ForeignKey("SellerId")]
-        //[Key, Column(Order = 3)]
+    
         public virtual Seller Seller { get; set; }
 
-        //public int ProductId { get; set; }
-        //[ForeignKey("ProductId")]
-        //[Key, Column(Order = 4)]
-        public virtual OrderItem OrderItem { get; set; }
+        public virtual Product Product { get; set; }
 
         #endregion
 
