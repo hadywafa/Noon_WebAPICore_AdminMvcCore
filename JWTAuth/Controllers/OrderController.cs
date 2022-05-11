@@ -65,6 +65,10 @@ namespace JWTAuth.Controllers
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
             var carts = await _custProCartRepo.GetAll().Include(x => x.Product).Where(c => c.Customer.Id == userId).ToListAsync();
+            if(carts==null)
+            {
+                return BadRequest();
+            }
             var _orderitems = new Collection<OrderItem>();
 
             foreach (var item in carts)
