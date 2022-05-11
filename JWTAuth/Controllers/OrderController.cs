@@ -13,7 +13,9 @@ using System;
 using System.Collections.ObjectModel;
 using JWTAuth.ViewModels;
 using System.Collections.Generic;
+using AutoMapper;
 using BL.Helpers;
+using BL.ViewModels.ResponseVModels;
 
 namespace JWTAuth.Controllers
 {
@@ -24,6 +26,7 @@ namespace JWTAuth.Controllers
     {
         #region Inject Product Repository in Author Controller
         readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepo<Customer> _customerRepo;
         private readonly IGenericRepo<Product> _productRepo;
@@ -33,7 +36,7 @@ namespace JWTAuth.Controllers
         private readonly IGenericRepo<OrderItem> _orderItemsRepo;
         private readonly IGenericRepo<User> _userRepo;
 
-        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager)
+        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager , IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _productRepo = _unitOfWork.Products;
@@ -43,6 +46,7 @@ namespace JWTAuth.Controllers
             _custProCartRepo=_unitOfWork.CustProCarts;
             _orderItemsRepo = _unitOfWork.OrderItems;
             _userManager = userManager;
+            _mapper = mapper;
             _userRepo = _unitOfWork.Users;
         }
 
@@ -130,7 +134,6 @@ namespace JWTAuth.Controllers
 
         [Authorize(Roles = AuthorizeRoles.Customer)]
         [HttpGet("OrderDetails")]
-
         public async Task<IActionResult> OrderDetails([FromQuery]int id)
         {
 
@@ -145,8 +148,6 @@ namespace JWTAuth.Controllers
             {
                 product.Product.ImageThumb.ToImageUrl();
                 productList.Add(product.Product);
-
-
             }
 
             var orderDetails = new OrderDetails {
@@ -156,17 +157,26 @@ namespace JWTAuth.Controllers
                 deliveryStatusDescription = order.DeliveryStatusDescription,
                 totalPrice = order.TotalPrice,
                 products = productList
-
             };
 
 
             return Ok(orderDetails);
         }
 
+        [HttpGet("GetOrderDetails")]
+        public async Task<IActionResult> GetOrderDetails([FromQuery]int id)
+        {
 
+            var order = await _orderRepo.Find(o => o.Id == id , x=>x.OrderItems);
+            if (order == null)
+                return BadRequest();
 
-
-
+            else
+            {
+                var vmOrder = _mapper.Map<Order, VmOrder >(order);
+                return Ok(order);
+            }
+        }
 
     }
 }
