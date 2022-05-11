@@ -258,6 +258,10 @@ namespace NoonAdminMvcCore.Controllers
                             break;
                     }
 
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+
                     await _unitOfWork.Save();
                 }
             }

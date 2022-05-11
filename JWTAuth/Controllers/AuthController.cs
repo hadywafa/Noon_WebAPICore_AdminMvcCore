@@ -55,8 +55,13 @@ namespace JWTAuth.Controllers
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
             var user = await _userRepo.Find(x => x.Email == vmSignInUser.Email);
+
+            if (!user.IsActive)
+                return BadRequest("Your account is suspended, kindly call customer service");
+
             result.FirstName = user.FirstName;
             result.LastName = user.LastName;
+
             return Ok(result);
         }
     }

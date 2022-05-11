@@ -11,6 +11,7 @@ namespace BL.ViewModels.RequestVModels
         public int Id { get; set; }
         public string ModelNumber { get; set; }
         public string Name { get; set; }
+        public string NameArabic { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public float Discount { get; set; }
