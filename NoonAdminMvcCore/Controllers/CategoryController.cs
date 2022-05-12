@@ -174,6 +174,9 @@ namespace NoonAdminMvcCore.Controllers
                     cat.ParentID = categoryVM.ParentId;
                     await _categoryRepository.Update(cat);
                     await _unitOfWork.Save();
+
+                    files = categoryVM.Image;
+
                     if (files != null)
                     {
                         //var stream = new FileStream(filepath, FileMode.Create);
@@ -183,9 +186,24 @@ namespace NoonAdminMvcCore.Controllers
                         var stream = new FileStream(filePath, FileMode.Create);
                         await files.CopyToAsync(stream);
                         Image img = await _imageRepository.GetAll().Where(i => i.CategoryId == cat.Id).FirstOrDefaultAsync();
-                        deleteFilefromRoot(img.ImageName);
-                        img.ImageName = files.FileName;
-                        await _imageRepository.Update(img);
+
+                        if (img != null)
+                        {
+                            deleteFilefromRoot(img.ImageName);
+                            img.ImageName = files.FileName;
+                            await _imageRepository.Update(img);
+                        }
+                        else
+                        {
+                            var newImg = new Image()
+                            {
+                                ImageName = files?.FileName,
+                                CategoryId = cat.Id,
+                            };
+
+                           await _imageRepository.Add(newImg);
+                        }
+  
                         await _unitOfWork.Save();
                     }
 

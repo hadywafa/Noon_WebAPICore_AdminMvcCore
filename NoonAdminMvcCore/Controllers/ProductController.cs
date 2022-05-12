@@ -131,7 +131,7 @@ namespace NoonAdminMvcCore.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Seller = new SelectList(await _userManager.GetUsersInRoleAsync("Seller"), "Id", "FirstName");
-            ViewBag.Category = new SelectList(_categoryRepository.GetAll().Where(c => c.ParentID == null).ToList(), "Id", "Name");
+            ViewBag.Category = new SelectList(_categoryRepository.GetAll().ToList(), "Id", "Name");
             ViewBag.Brands = new SelectList(_BrandsRepository.GetAll().ToList(), "Id", "Name");
             var productViewModel = new ProductViewModel { IsActive = true };
             return View("productForm", productViewModel);
@@ -258,6 +258,9 @@ namespace NoonAdminMvcCore.Controllers
                             var stream = new FileStream(filePath, FileMode.Create);
                             await item.CopyToAsync(stream);
                             Image img = await _imageRepository.GetAll().Where(i => i.ProductId == prod.Id).FirstOrDefaultAsync();
+
+                            if (img.ImageName != null)
+                                deleteFilefromRoot(img.ImageName);
 
                             img.ImageName = item.FileName;
                             await _imageRepository.Update(img);

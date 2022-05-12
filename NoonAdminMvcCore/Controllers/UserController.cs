@@ -185,7 +185,8 @@ namespace NoonAdminMvcCore.Controllers
                         User = user,
                         Street = model.Street,
                         City = model.City,
-                        PostalCode = model.PostalCode
+                        PostalCode = model.PostalCode,
+                        AddressPhone = model.PhoneNumber
                     };
 
                     // Add to the Address table

@@ -49,6 +49,7 @@ namespace Repository.CustomRepository.AuthRepo
             else
             {
                 User user = vmRegisterUser.ToUser();
+                user.IsActive = true;
                 var result = await _userManager.CreateAsync(user, vmRegisterUser.Password);
                 if (!result.Succeeded)
                 {

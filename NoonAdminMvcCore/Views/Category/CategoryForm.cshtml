@@ -77,12 +77,11 @@
                         </div>
 
                         <!--col-->
-                        <div class="col-xl-3 col-md-4">
+                       <div class="col-xl-3 col-md-4">
                             <div class="form-group">
-
-                                @Html.LabelFor(m => m.Image, "ImageName", new { @class = "form-label" })
+                                @Html.LabelFor(m => m.Image,"ImageName", new { @class = "form-label" })
                                 <div class="form-control-wrap">
-                                    @Html.EditorFor(m => m.Image, new { @class = "form-control" })
+                                    <input type="file" name="Image" class="form-control" asp-for="Image" />
                                 </div>
                             </div>
                         </div>
